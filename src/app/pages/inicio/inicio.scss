@@ -1,0 +1,393 @@
+// VARIABLES DE DISEÑO
+$bg-dark: #0f172a;       // Slate 900
+$bg-light: #f8fafc;      // Slate 50
+$primary: #3b82f6;       // Blue 500
+$accent: #f59e0b;        // Amber 500 (Naranja Ya)
+$text-dark: #1e293b;
+$text-light: #f1f5f9;
+
+.landing-page {
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* =========================================
+   1. HERO SECTION (DARK MODE)
+   ========================================= */
+.hero-section {
+  position: relative;
+  background-color: $bg-dark;
+  color: white;
+  padding: 6rem 0 8rem 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* Efecto de luz de fondo moderno */
+.hero-bg-glow {
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 1000px;
+  background: radial-gradient(circle, rgba($primary, 0.2) 0%, rgba($bg-dark, 0) 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Badge "Sistema Jurídico" */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background-color: $accent; // Naranja
+    border-radius: 50%;
+    box-shadow: 0 0 10px $accent;
+  }
+}
+
+h1 {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+
+  .text-ya {
+    color: $accent;
+    font-weight: 900;
+    font-style: italic;
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.6;
+}
+
+/* BOTONES HERO */
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.btn-primary-glow {
+  background: $accent;
+  color: $bg-dark;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  box-shadow: 0 0 20px rgba($accent, 0.4);
+
+  svg { width: 20px; height: 20px; }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba($accent, 0.6);
+    background: lighten($accent, 5%);
+  }
+}
+
+.btn-outline-light {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  padding: 14px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s;
+
+  &:hover {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* ESTADÍSTICAS */
+.trust-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    strong { font-size: 1.5rem; color: white; display: block; }
+    span { font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 1px; }
+  }
+
+  .divider {
+    width: 1px; height: 40px; background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* =========================================
+   2. STEPS SECTION
+   ========================================= */
+.steps-section {
+  padding: 6rem 0;
+  background-color: $bg-light;
+}
+
+.section-header {
+  margin-bottom: 4rem;
+  h2 { font-size: 2.5rem; font-weight: 700; color: $bg-dark; margin-bottom: 0.5rem; }
+  p { font-size: 1.1rem; color: lighten($bg-dark, 40%); }
+  
+  .brand-text { font-weight: 700; }
+  .accent { color: $accent; font-style: italic; }
+  &.center { text-align: center; }
+  &.left { text-align: left; }
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.step-card {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  position: relative;
+  transition: transform 0.3s;
+  overflow: hidden;
+
+  &:hover { transform: translateY(-5px); }
+
+  .step-number {
+    position: absolute;
+    top: -10px; right: -10px;
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba($bg-dark, 0.03);
+    pointer-events: none;
+  }
+
+  .card-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+    
+    svg { width: 30px; height: 30px; }
+
+    &.blue { background: rgba($primary, 0.1); color: $primary; }
+    &.orange { background: rgba($accent, 0.1); color: darken($accent, 5%); }
+    &.green { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+  }
+
+  h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: $bg-dark; }
+  p { font-size: 0.95rem; color: lighten($bg-dark, 30%); line-height: 1.6; }
+}
+
+/* =========================================
+   3. REVOCA SECCIÓN (FULL WIDTH)
+   ========================================= */
+.revoca-section-full {
+  width: 100%;
+  background-color: #0f172a;
+  padding: 4rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  /* Decoración sutil de fondo (opcional) */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 30%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03));
+    pointer-events: none;
+  }
+}
+
+.revoca-content {
+  display: flex;
+  justify-content: space-between; /* Texto izq, Botón der */
+  align-items: center;
+  gap: 3rem;
+}
+
+.revoca-text {
+  max-width: 600px;
+
+  h3 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 1.05rem;
+    margin: 0;
+    
+    strong {
+      color: var(--color-accent); /* El naranja para resaltar la marca */
+      font-weight: 600;
+    }
+  }
+}
+
+.revoca-action {
+  flex-shrink: 0; /* Para que el botón no se aplaste */
+}
+
+.btn-white-pill {
+  background: #ffffff;
+  color: var(--color-bg-dark);
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  svg { 
+    width: 20px; 
+    height: 20px; 
+    transition: transform 0.3s;
+  }
+
+  &:hover {
+    background: var(--color-accent); /* Naranja al hover */
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    
+    svg { transform: translateX(4px); }
+  }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .revoca-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .revoca-action, .btn-white-pill {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =========================================
+   4. FAQ SECTION
+   ========================================= */
+.faq-section {
+  padding: 5rem 0;
+  background: $bg-light;
+}
+
+.faq-list {
+  max-width: 800px;
+}
+
+.faq-item {
+  background: white;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.05);
+  cursor: pointer;
+  overflow: hidden;
+
+  &.active {
+    border-color: $accent;
+    .icon-plus::after { transform: rotate(0); } /* Signo menos visualmente */
+  }
+}
+
+.faq-head {
+  padding: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  font-weight: 600; color: $bg-dark;
+}
+
+.icon-plus {
+  width: 20px; height: 20px; position: relative;
+  &::before, &::after {
+    content: ''; position: absolute; background: $bg-dark;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+  }
+  &::before { width: 12px; height: 2px; }
+  &::after { width: 2px; height: 12px; transition: transform 0.3s; }
+}
+
+.faq-body {
+  max-height: 0;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 1.5rem;
+  color: lighten($bg-dark, 30%);
+  
+  &.show {
+    max-height: 300px; /* Suficiente para texto */
+    padding-bottom: 1.5rem;
+  }
+}
+
+
+/* =========================================
+   MÓVIL
+   ========================================= */
+@media (max-width: 768px) {
+  h1 { font-size: 2.2rem; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .btn-primary-glow, .btn-outline-light { width: 100%; justify-content: center; }
+  
+  .trust-stats { flex-direction: column; gap: 1rem; .divider { display: none; } }
+  
+  .steps-grid { grid-template-columns: 1fr; }
+  
+  .revoca-card { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem; }
+  .btn-white-pill { width: 100%; text-align: center; display: block; }
+}

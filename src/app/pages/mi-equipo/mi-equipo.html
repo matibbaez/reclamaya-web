@@ -1,0 +1,94 @@
+<div class="dashboard-container fade-in">
+
+  <header class="page-header">
+    <div>
+      <h1>Gestión de Equipo</h1>
+      <p>Administrá los accesos de Productores y Tramitadores.</p>
+    </div>
+    <button class="btn-primary" (click)="toggleFormulario()">
+      {{ mostrarFormulario ? 'Cancelar' : '+ Nuevo Usuario' }}
+    </button>
+  </header>
+
+  <div *ngIf="mostrarFormulario" class="form-card slide-down">
+    <h3>Alta de Nuevo Usuario</h3>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="grid-form">
+      
+      <div class="field">
+        <label>Nombre Completo</label>
+        <input type="text" formControlName="nombre" placeholder="Ej: Juan Perez">
+      </div>
+
+      <div class="field">
+        <label>Email (Usuario)</label>
+        <input type="email" formControlName="email" placeholder="juan@seguros.com">
+      </div>
+
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
+      </div>
+
+      <div class="field">
+        <label>Rol</label>
+        <select formControlName="role">
+          <option value="Productor">Productor (P.A.S)</option>
+          <option value="Tramitador">Tramitador (Abogado)</option>
+          <option value="Admin">Administrador</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>DNI</label>
+        <input type="text" formControlName="dni">
+      </div>
+      <div class="field">
+        <label>Matrícula</label>
+        <input type="text" formControlName="matricula">
+      </div>
+
+      <div class="field full-width">
+        <button type="submit" [disabled]="userForm.invalid" class="btn-submit">
+          Guardar Usuario
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="isLoading" class="loading">Cargando equipo...</div>
+
+    <div *ngIf="!isLoading" class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Matrícula</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of listaUsuarios">
+            <td class="font-bold">
+              <div class="user-info">
+                <div class="avatar">{{ u.nombre.charAt(0) }}</div>
+                {{ u.nombre }}
+              </div>
+            </td>
+            <td>{{ u.email }}</td>
+            <td>
+              <span class="role-badge" [ngClass]="u.role.toLowerCase()">
+                {{ u.role }}
+              </span>
+            </td>
+            <td>{{ u.matricula || '-' }}</td>
+            <td><span class="status-active">Activo</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

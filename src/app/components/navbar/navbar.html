@@ -1,0 +1,59 @@
+<nav class="navbar" [class.menu-abierto]="menuAbierto" [class.scrolled]="isScrolled">
+  <div class="navbar-container">
+    
+    <a class="brand-logo" routerLink="/" (click)="cerrarMenu()">
+      <span class="text-reclama">Reclama</span><span class="text-ya">Ya</span><span class="dot">.</span>
+    </a>
+    
+    <div class="navbar-links-desktop">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Inicio</a>
+      <a routerLink="/iniciar-reclamo" routerLinkActive="active" class="nav-link">Iniciar Reclamo</a>
+      <a routerLink="/consultar-tramite" routerLinkActive="active" class="nav-link">
+        Consultar Estado
+      </a>
+      
+      <a *ngIf="authService.isAuthenticated() && !authService.esAdmin" 
+         routerLink="/mis-referidos" 
+         routerLinkActive="active" 
+         class="btn-productor">
+         Soy Productor
+      </a>
+
+      <a *ngIf="authService.esAdmin" routerLink="/admin-dashboard" class="nav-link highlight">
+        Panel Admin
+      </a>
+
+      <a *ngIf="!authService.isAuthenticated()" routerLink="/login" class="btn-login">
+        Ingresar
+      </a>
+
+      <button *ngIf="authService.isAuthenticated()" class="btn-logout" (click)="cerrarSesion()" title="Cerrar Sesión">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+        </svg>
+      </button>
+
+    </div>
+
+    <button class="mobile-menu-button" (click)="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+
+  <div class="mobile-menu-dropdown" [class.abierto]="menuAbierto">
+    <a routerLink="/" (click)="cerrarMenu()">Inicio</a>
+    <a routerLink="/iniciar-reclamo" (click)="cerrarMenu()">Iniciar Reclamo</a>
+    <a routerLink="/consultar-tramite" (click)="cerrarMenu()">Consultar</a>
+    
+    <div class="divider" *ngIf="authService.isAuthenticated()"></div>
+
+    <a *ngIf="authService.esProductor" routerLink="/mis-referidos" (click)="cerrarMenu()" class="highlight-mobile">Mi Cartera</a>
+    <a *ngIf="authService.esAdmin" routerLink="/admin-dashboard" (click)="cerrarMenu()" class="highlight-mobile">Admin Panel</a>
+
+    <div class="actions-mobile">
+      <a *ngIf="!authService.isAuthenticated()" routerLink="/login" (click)="cerrarMenu()" class="btn-mobile-login">Ingresar</a>
+      <button *ngIf="authService.isAuthenticated()" class="btn-mobile-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </div>
+</nav>

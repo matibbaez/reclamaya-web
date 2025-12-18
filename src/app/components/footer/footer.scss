@@ -1,0 +1,146 @@
+.site-footer {
+  background-color: var(--color-bg-dark); /* El mismo azul oscuro del Hero */
+  color: rgba(255, 255, 255, 0.7);
+  padding-top: 5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Línea sutil elegante */
+  font-family: 'Montserrat', sans-serif;
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr; 
+  gap: 4rem;
+  padding-bottom: 4rem;
+}
+
+/* --- LOGO TIPOGRÁFICO (Igual al Navbar) --- */
+.footer-logo {
+  margin-bottom: 1.5rem;
+}
+
+.footer-logo-link {
+  text-decoration: none;
+  font-size: 2rem;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  
+  .text-reclama {
+    font-weight: 700;
+    color: white;
+    letter-spacing: -1px;
+  }
+
+  .text-ya {
+    font-weight: 900;
+    color: var(--color-accent); /* Naranja */
+    font-style: italic;
+  }
+
+  .dot {
+    color: var(--color-brand); /* Azul brand */
+    font-size: 2.5rem;
+    line-height: 0;
+  }
+
+  &:hover { opacity: 0.9; }
+}
+
+.brand-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 320px;
+  color: rgba(255, 255, 255, 0.5); /* Texto muteado */
+}
+
+/* --- COLUMNAS --- */
+.footer-links-col {
+  h4 {
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  ul {
+    list-style: none; padding: 0;
+    
+    li {
+      margin-bottom: 0.8rem;
+      
+      a {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: var(--color-accent); /* Naranja al hover */
+          padding-left: 5px; 
+        }
+      }
+    }
+  }
+}
+
+.contact-list li {
+  display: flex; align-items: center; gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.6); font-size: 0.95rem;
+  margin-bottom: 1rem;
+  
+  .icon {
+    width: 20px; height: 20px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+}
+
+/* --- BARRA FINAL --- */
+.footer-bottom {
+  background-color: rgba(0, 0, 0, 0.2); /* Un poquito más oscuro que el fondo */
+  padding: 1.5rem 0;
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bottom-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.4);
+  
+  p { margin: 0; }
+  
+  .dev-name {
+    color: white; font-weight: 600; opacity: 0.8;
+  }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    text-align: center;
+  }
+
+  /* Centrar el logo en móvil */
+  .footer-logo-link { justify-content: center; }
+  .brand-desc { margin: 0 auto; }
+  
+  .contact-list li { justify-content: center; }
+
+  .bottom-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}

@@ -1,0 +1,69 @@
+import { Routes } from '@angular/router';
+import { InicioComponent } from './pages/inicio/inicio';
+import { IniciarReclamoComponent } from './pages/iniciar-reclamo/iniciar-reclamo';
+import { ConsultarTramiteComponent } from './pages/consultar-tramite/consultar-tramite';
+import { LoginComponent } from './pages/login/login';
+import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard';
+import { MiEquipoComponent } from './pages/mi-equipo/mi-equipo';
+import { ExitoComponent } from './pages/exito/exito';
+import { MisReferidosComponent } from './pages/dashboard/mis-referidos/mis-referidos';
+import { DetalleReclamoComponent } from './pages/dashboard/detalle-reclamo/detalle-reclamo';
+import { authGuard } from './auth/auth-guard';
+import { adminGuard } from './auth/admin.guard';
+
+export const routes: Routes = [
+  { 
+    path: '', 
+    component: InicioComponent, 
+    pathMatch: 'full',
+    data: { animation: 'InicioPage' }
+  },
+  { 
+    path: 'iniciar-reclamo', 
+    component: IniciarReclamoComponent,
+    data: { animation: 'IniciarPage' } 
+  },
+  { 
+    path: 'consultar-tramite', 
+    component: ConsultarTramiteComponent,
+    data: { animation: 'ConsultarPage' } 
+  },
+  { 
+    path: 'login', 
+    component: LoginComponent,
+    data: { animation: 'LoginPage' } 
+  },
+  { 
+    path: 'admin-dashboard', 
+    component: AdminDashboardComponent, 
+    canActivate: [adminGuard], // 👈 CAMBIÁ authGuard POR adminGuard
+    data: { animation: 'AdminPage' } 
+  },
+
+  { 
+    path: 'mi-equipo', 
+    component: MiEquipoComponent, 
+    canActivate: [adminGuard], // 👈 ESTO TAMBIÉN ES SOLO DE ADMIN
+  },
+  
+  { 
+    path: 'reclamo/:id', 
+    component: DetalleReclamoComponent,
+    canActivate: [authGuard], // Protegida (Admin o Productor)
+    data: { animation: 'DetallePage' } 
+  },
+
+  { 
+    path: 'mis-referidos', 
+    component: MisReferidosComponent, 
+    canActivate: [authGuard], // 🔒 Protegida: requiere login
+    data: { animation: 'ReferidosPage' } 
+  },
+  { 
+    path: 'exito', 
+    component: ExitoComponent,
+    data: { animation: 'ExitoPage' } 
+  },
+  
+  { path: '**', redirectTo: '' } 
+];

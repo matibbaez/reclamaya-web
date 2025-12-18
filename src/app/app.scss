@@ -1,0 +1,22 @@
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem; // <-- ¡LISTO, PERRO! CAMBIADO A "BOTTOM"
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Hacemos que el host ocupe toda la altura */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* El contenido principal empuja el footer hacia abajo */
+.main-content {
+  flex: 1; 
+}
+

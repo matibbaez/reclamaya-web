@@ -1,0 +1,196 @@
+/* =========================================
+   FUENTES (Montserrat para ReclamaYa)
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* =========================================
+   VARIABLES GLOBALES (Paleta ReclamaYa)
+   ========================================= */
+:root {
+  /* --- COLORES PRINCIPALES (Dark Mode Style) --- */
+  /* Azul Marino Muy Oscuro (Fondo Hero / Navbar) */
+  --color-bg-dark: #0f172a;       /* Slate 900 */
+  --color-bg-dark-hover: #1e293b; /* Slate 800 */
+  
+  /* Azul Vibrante (Acciones Primarias / Links) */
+  --color-brand: #3b82f6;         /* Blue 500 */
+  
+  /* Naranja "Ya" (Acento / Call to Action) */
+  --color-accent: #f59e0b;        /* Amber 500 */
+  --color-accent-hover: #d97706;  /* Amber 600 */
+
+  /* --- UI & FONDOS (Light Mode Sections) --- */
+  --color-bg-light: #f8fafc;      /* Slate 50 */
+  --color-bg-white: #ffffff;
+  --color-border: #e2e8f0;        /* Slate 200 */
+  
+  /* --- TEXTOS --- */
+  --color-text-main: #ffffff;     /* Slate 800 (Casi negro) */
+  --color-text-muted: #64748b;    /* Slate 500 (Gris) */
+  --color-text-light: #f1f5f9;    /* Slate 100 (Para fondos oscuros) */
+
+  /* --- ESTADOS --- */
+  --color-success: #22c55e;       /* Green 500 */
+  --color-danger: #ef4444;        /* Red 500 */
+  --color-warning: #f59e0b;       /* Amber 500 */
+
+  /* --- CONFIGURACIÓN UI --- */
+  --font-main: 'Montserrat', sans-serif;
+  --radius-md: 12px;
+  --radius-pill: 50px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 20px rgba(245, 158, 11, 0.3); /* Brillo naranja */
+}
+
+/* =========================================
+   RESET & BASE
+   ========================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-main);
+  background-color: var(--color-bg-light);
+  color: var(--color-text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* =========================================
+   CLASES DE UTILIDAD (Botones)
+   ========================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  
+  svg { width: 20px; height: 20px; }
+
+  /* 1. PRIMARIO (Azul Brand) */
+  &-primary {
+    background-color: var(--color-brand);
+    color: white;
+    box-shadow: var(--shadow-md);
+    
+    &:hover {
+      background-color: darken(#3b82f6, 10%);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+
+  /* 2. ACENTO (Naranja Ya - Glow Effect) */
+  &-accent {
+    background-color: var(--color-accent);
+    color: var(--color-bg-dark); /* Texto oscuro para legibilidad */
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-glow);
+    
+    &:hover {
+      background-color: var(--color-accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.5); /* Glow más fuerte */
+    }
+  }
+
+  /* 3. SECUNDARIO (Borde) */
+  &-outline {
+    background-color: transparent;
+    border: 2px solid var(--color-border);
+    color: var(--color-text-main);
+    
+    &:hover {
+      border-color: var(--color-text-main);
+      background-color: white;
+    }
+  }
+
+  /* 4. DANGER (Rojo Salir/Eliminar) */
+  &-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+    
+    &:hover {
+      background-color: var(--color-danger);
+      color: white;
+    }
+  }
+}
+
+/* =========================================
+   SCROLLBAR (Dark Theme Friendly)
+   ========================================= */
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #475569 var(--color-bg-dark);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #475569;
+  border-radius: 4px;
+  border: 2px solid var(--color-bg-dark);
+  
+  &:hover { background-color: #64748b; }
+}
+
+/* =========================================
+   UTILIDADES DE TEXTO
+   ========================================= */
+.text-center { text-align: center; }
+.text-gradient {
+  background: linear-gradient(90deg, var(--color-brand), var(--color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.font-bold { font-weight: 700; }

@@ -1,0 +1,286 @@
+:host {
+  display: block;
+  /* ANTES: position: sticky; (Ocupaba espacio) */
+  /* AHORA: */
+  position: fixed; /* Flota SOBRE el contenido */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar {
+  /* Esto dejalo igual que recién, con la transparencia inicial */
+  background-color: transparent; 
+  backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  
+  height: 70px;
+  display: flex;
+  align-items: center;
+  transition: all 0.4s ease;
+
+  /* Cuando bajamos, se pinta de oscuro */
+  &.scrolled, &.menu-abierto {
+    background-color: rgba(15, 23, 42, 0.9); /* Dark Blue */
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.navbar-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* --- LOGO (Sincronizado con Footer) --- */
+.brand-logo {
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  cursor: pointer;
+  user-select: none;
+
+  .text-reclama {
+    font-weight: 700;
+    color: white;
+    letter-spacing: -1px;
+  }
+
+  .text-ya {
+    font-weight: 900;
+    color: var(--color-accent); /* Naranja */
+    font-style: italic;
+    margin-left: 2px;
+  }
+
+  .dot {
+    color: var(--color-brand); /* Azul */
+    font-size: 2rem;
+    line-height: 0;
+    margin-left: 2px;
+  }
+
+  &:hover { opacity: 0.9; }
+}
+
+/* --- LINKS ESCRITORIO --- */
+.navbar-links-desktop {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  /* Estilo base de los links */
+  .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    position: relative;
+    padding: 5px 0;
+    transition: color 0.3s;
+
+    /* Animación de subrayado */
+    &::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--color-accent);
+      transition: width 0.3s ease;
+    }
+
+    &:hover {
+      color: white;
+      &::after { width: 100%; }
+    }
+
+    &.active {
+      color: white;
+      font-weight: 600;
+      &::after { width: 100%; }
+    }
+  }
+
+  .highlight {
+    color: var(--color-brand);
+    font-weight: 700;
+  }
+
+  /* BOTÓN PRODUCTOR (Outline) */
+  .btn-productor {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    text-decoration: none;
+
+    &:hover {
+      border-color: var(--color-brand);
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--color-brand);
+    }
+  }
+
+  /* BOTÓN INGRESAR (Pill Filled) */
+  .btn-login {
+    background: white;
+    color: var(--color-bg-dark) !important;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s;
+    
+    &:hover {
+      background: var(--color-accent); /* Se pone naranja al hover */
+      color: white !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+  }
+
+  /* BOTÓN LOGOUT */
+  .btn-logout {
+    color: rgba(255, 255, 255, 0.5);
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    
+    svg { width: 20px; height: 20px; }
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--color-danger);
+    }
+  }
+}
+
+/* --- MÓVIL (Hamburguesa) --- */
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  width: 30px;
+  height: 20px;
+  position: relative;
+  cursor: pointer;
+  z-index: 1001;
+  margin-right: 17px;
+
+  span {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:nth-child(1) { top: 0; }
+    &:nth-child(2) { top: 9px; }
+    &:nth-child(3) { top: 18px; }
+  }
+}
+
+/* Animación Hamburguesa */
+.navbar.menu-abierto .mobile-menu-button span {
+  &:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+  &:nth-child(2) { opacity: 0; }
+  &:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+}
+
+/* --- MENÚ DESPLEGABLE MÓVIL --- */
+.mobile-menu-dropdown {
+  display: none;
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  background: var(--color-bg-dark); /* Fondo sólido oscuro */
+  border-top: 1px solid rgba(255,255,255,0.1);
+  flex-direction: column;
+  padding-bottom: 1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  
+  /* Animación de entrada */
+  transform-origin: top;
+  animation: slideDown 0.3s ease-out forwards;
+
+  &.abierto { display: flex; }
+
+  a {
+    padding: 1rem 2rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    font-size: 1rem;
+
+    &:hover, &:active {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--color-accent);
+    }
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 0.5rem 1.5rem;
+  }
+
+  .highlight-mobile {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .actions-mobile {
+    margin-top: 1rem;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn-mobile-login {
+    text-align: center;
+    background: white;
+    color: var(--color-bg-dark) !important;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .btn-mobile-logout {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 100%;
+  }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .navbar-links-desktop { display: none; }
+  .mobile-menu-button { display: block; }
+}

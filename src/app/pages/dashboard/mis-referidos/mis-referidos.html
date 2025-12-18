@@ -1,0 +1,73 @@
+<div class="dashboard-container fade-in">
+  <header class="page-header">
+    <h1>Mis Referidos</h1>
+    <p>Gestioná los siniestros de tus asegurados y compartí tu link.</p>
+  </header>
+
+  <div class="link-card">
+    <div class="link-info">
+      <h3>🚀 Tu Link de Productor</h3>
+      <p>Compartí este enlace con tus asegurados. Los reclamos que carguen aquí se vincularán automáticamente a tu cuenta.</p>
+    </div>
+    
+    <div class="link-action">
+      <div class="input-wrapper">
+        <input type="text" [value]="miLinkReferido" readonly>
+        <button (click)="copiarLink()" class="btn-copy">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" /></svg>
+          Copiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h2>Cartera de Siniestros</h2>
+      <span class="count-badge">{{ listaReclamos.length }} Casos</span>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando cartera...</p>
+    </div>
+
+    <div *ngIf="!isLoading && listaReclamos.length === 0" class="empty-state">
+      <div class="icon-empty">📭</div>
+      <h3>Aún no tenés referidos</h3>
+      <p>¡Empezá a compartir tu link para ver actividad!</p>
+    </div>
+
+    <div *ngIf="!isLoading && listaReclamos.length > 0" class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Asegurado</th>
+            <th>DNI</th>
+            <th>Código</th>
+            <th>Estado</th>
+            <th>Acción</th> </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listaReclamos">
+            <td>{{ item.fecha_creacion | date:'dd/MM/yyyy' }}</td>
+            <td class="font-bold">{{ item.nombre }}</td>
+            <td>{{ item.dni }}</td>
+            <td><span class="code-pill">{{ item.codigo_seguimiento }}</span></td>
+            <td>
+              <span class="status-badge" [ngClass]="getEstadoClass(item.estado)">
+                {{ item.estado }}
+              </span>
+            </td>
+            <td>
+              <a [routerLink]="['/reclamo', item.id]" class="btn-ver-tabla">
+                Ver Detalle
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

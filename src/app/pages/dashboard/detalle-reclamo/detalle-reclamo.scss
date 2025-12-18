@@ -1,0 +1,146 @@
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
+  
+  .btn-back {
+    background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;
+    &:hover { color: #0f172a; text-decoration: underline; }
+  }
+
+  .status-wrapper {
+    display: flex; align-items: center; gap: 10px;
+    .label { font-weight: 600; color: #64748b; }
+    .status-badge {
+        padding: 6px 14px; border-radius: 20px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem;
+        &.Enviado { background: #eff6ff; color: #1d4ed8; }
+        &.Recepcionado { background: #f3e8ff; color: #7e22ce; }
+        &.Iniciado { background: #e0f2fe; color: #0369a1; }
+        &.Negociacion { background: #ffedd5; color: #c2410c; }
+        &.Indemnizado { background: #dcfce7; color: #15803d; }
+        &.Rechazado { background: #fee2e2; color: #b91c1c; }
+    }
+  }
+}
+
+/* GRID PRINCIPAL */
+.expediente-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Izquierda ancho, Derecha angosto */
+  gap: 2rem;
+  
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+/* TARJETAS */
+.card {
+  background: white; border-radius: 12px; padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  border: 1px solid #f1f5f9;
+
+  h3 { margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.8rem; margin-bottom: 1rem; }
+}
+
+.data-row {
+  display: flex; gap: 2rem; margin-bottom: 1rem;
+  div { flex: 1; }
+}
+
+label { font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+p { margin: 0; color: #334155; font-size: 1rem; font-weight: 500; }
+.big-text { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+.highlight-blue { color: #4f46e5; font-weight: 700; }
+
+.tag-row { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+.tag { background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: #475569; }
+.tag.warning { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+
+.data-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;
+}
+
+.relato-box {
+    background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #4f46e5;
+    p { font-style: italic; line-height: 1.6; }
+}
+
+/* LISTA DE ARCHIVOS */
+.file-list { display: flex; flex-direction: column; gap: 0.8rem; }
+
+.file-item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s;
+    
+    &:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateX(5px); }
+
+    .icon { font-size: 1.5rem; }
+    .meta { 
+        flex: 1; display: flex; flex-direction: column; 
+        span { font-weight: 600; color: #334155; }
+        small { color: #64748b; font-size: 0.8rem; }
+    }
+    .arrow { color: #cbd5e1; font-weight: 700; }
+
+    &.highlight { border-color: #c7d2fe; background: #eef2ff; }
+    &.alert { border-color: #fecaca; background: #fef2f2; }
+}
+
+/* ZONA ADMIN */
+.admin-zone {
+    border: 2px solid #e2e8f0;
+    
+    .action-buttons {
+        display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem;
+    }
+
+    .btn-status {
+        background: white; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px;
+        cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #64748b;
+        transition: all 0.2s;
+
+        &:hover { background: #f1f5f9; }
+        &.active { background: #0f172a; color: white; border-color: #0f172a; }
+    }
+}
+
+.whatsapp-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.btn-whatsapp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #25d366; // El verde oficial de WhatsApp
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background: #128c7e;
+    transform: scale(1.05);
+  }
+}
+
+.loading-state { text-align: center; padding: 4rem; color: #94a3b8; }
+.spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #4f46e5; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }

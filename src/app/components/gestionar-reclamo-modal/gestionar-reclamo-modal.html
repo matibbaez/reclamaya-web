@@ -1,0 +1,105 @@
+<div class="modal-backdrop" (click)="cerrarModal()"></div>
+<div class="modal-content">
+  
+  <div class="modal-header">
+    <h3>Gestionar Expediente #{{ reclamo.codigo_seguimiento }}</h3>
+    <button class="close-btn" (click)="cerrarModal()">✕</button>
+  </div>
+
+  <div class="modal-body">
+    
+    <div class="detalle-cliente mb-4 p-4 bg-gray-50 rounded">
+      <div class="grid grid-cols-2 gap-4">
+         <div>
+            <label class="text-xs text-gray-500 uppercase">Cliente</label>
+            <div class="font-bold">{{ reclamo.nombre }}</div>
+         </div>
+         <div>
+            <label class="text-xs text-gray-500 uppercase">DNI</label>
+            <div>{{ reclamo.dni }}</div>
+         </div>
+         <div>
+            <label class="text-xs text-gray-500 uppercase">Email</label>
+            <div class="text-blue-600">{{ reclamo.email }}</div>
+         </div>
+         <div>
+            <label class="text-xs text-gray-500 uppercase">Rol</label>
+            <div class="font-bold">{{ reclamo.rol_victima }}</div>
+         </div>
+      </div>
+    </div>
+
+    <div class="rechazo-info-card mb-4" *ngIf="reclamo.aseguradora_tercero">
+      <div class="card-header-red bg-blue-100 text-blue-800 p-2 font-bold flex items-center gap-2">
+        <span>🚙 Datos del Tercero</span>
+      </div>
+      <div class="card-body-red p-3 border border-blue-100">
+         <p><strong>Aseguradora:</strong> {{ reclamo.aseguradora_tercero }}</p>
+         <p *ngIf="reclamo.patente_tercero"><strong>Patente Tercero:</strong> {{ reclamo.patente_tercero }}</p>
+         <p *ngIf="reclamo.patente_propia"><strong>Patente Cliente:</strong> {{ reclamo.patente_propia }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="reclamo.relato_hecho" class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+       <label class="text-xs font-bold text-yellow-800 uppercase">Relato de los Hechos:</label>
+       <p class="text-sm italic mt-1">{{ reclamo.relato_hecho }}</p>
+    </div>
+
+    <fieldset class="fieldset-archivos">
+      <legend>Documentación Adjunta</legend>
+      <div class="lista-archivos grid grid-cols-2 gap-2">
+        
+        <button class="btn-archivo" (click)="descargarArchivo('dni')">
+           🪪 Ver DNI
+           <span *ngIf="descargando === 'dni'" class="spinner-chico ml-2"></span>
+        </button>
+
+        <button *ngIf="reclamo.path_licencia" class="btn-archivo" (click)="descargarArchivo('licencia')">
+           🚗 Licencia
+           <span *ngIf="descargando === 'licencia'" class="spinner-chico ml-2"></span>
+        </button>
+
+        <button *ngIf="reclamo.path_cedula" class="btn-archivo" (click)="descargarArchivo('cedula')">
+           📄 Cédula
+           <span *ngIf="descargando === 'cedula'" class="spinner-chico ml-2"></span>
+        </button>
+
+        <button *ngIf="reclamo.path_poliza" class="btn-archivo" (click)="descargarArchivo('poliza')">
+           🛡️ Póliza
+           <span *ngIf="descargando === 'poliza'" class="spinner-chico ml-2"></span>
+        </button>
+
+        <button *ngIf="reclamo.path_denuncia" class="btn-archivo" (click)="descargarArchivo('denuncia')">
+           📝 Denuncia Admin.
+           <span *ngIf="descargando === 'denuncia'" class="spinner-chico ml-2"></span>
+        </button>
+
+        <button *ngIf="reclamo.path_medicos" class="btn-archivo btn-revoca" (click)="descargarArchivo('medicos')">
+           🏥 Cert. Médicos
+           <span *ngIf="descargando === 'medicos'" class="spinner-chico ml-2"></span>
+        </button>
+
+        <button *ngIf="reclamo.path_fotos" class="btn-archivo" (click)="descargarArchivo('fotos')">
+           📸 Fotos Daños
+           <span *ngIf="descargando === 'fotos'" class="spinner-chico ml-2"></span>
+        </button>
+
+      </div>
+    </fieldset>
+
+    <form [formGroup]="estadoForm" (ngSubmit)="guardarCambios()" class="mt-6 border-t pt-4">
+      <div class="form-field">
+        <label for="estado" class="block mb-2 font-bold">Cambiar Estado:</label>
+        <select id="estado" formControlName="estado" class="w-full p-2 border rounded">
+          <option *ngFor="let e of estadosPosibles" [value]="e">{{ e }}</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+    <button class="btn btn-primary" (click)="guardarCambios()" [disabled]="estadoForm.invalid">Guardar</button>
+  </div>
+
+</div>

@@ -1,0 +1,48 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+  
+  <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden text-center p-8 animate-fade-in-up">
+    
+    <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-10 w-10 text-green-600">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      </svg>
+    </div>
+
+    <h2 class="text-3xl font-bold text-gray-900 mb-2">¡Reclamo Enviado!</h2>
+    <p class="text-gray-500 mb-8">Hemos recibido toda tu documentación correctamente.</p>
+
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+      <p class="text-xs uppercase tracking-wide text-blue-600 font-bold mb-2">Tu Código de Seguimiento</p>
+      <div class="text-4xl font-mono font-black text-blue-900 tracking-wider select-all">
+        {{ codigo }}
+      </div>
+      <p class="text-xs text-blue-400 mt-2">(Guardalo, lo vas a necesitar)</p>
+    </div>
+
+    <div class="text-left text-sm text-gray-600 space-y-4 mb-8">
+      <div class="flex gap-3">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs">1</span>
+        <p>Te enviamos un email de confirmación (revisá Spam por las dudas).</p>
+      </div>
+      <div class="flex gap-3">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs">2</span>
+        <p>Nuestro equipo legal analizará el caso en las próximas 48hs hábiles.</p>
+      </div>
+      <div class="flex gap-3">
+        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs">3</span>
+        <p>Podés ver el estado en "Consultar Trámite" usando tu código.</p>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <a routerLink="/" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition">
+        Volver al Inicio
+      </a>
+      <a routerLink="/consultar-tramite" class="block w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition">
+        Consultar mi Trámite
+      </a>
+    </div>
+
+  </div>
+
+</div>
