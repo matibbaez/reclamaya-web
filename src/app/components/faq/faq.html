@@ -1,0 +1,28 @@
+<section class="faq-section">
+  <div class="container">
+    
+    <div class="section-header">
+      <div class="pill-label">Dudas Comunes</div>
+      <h2>Preguntas Frecuentes</h2>
+      <p>Resolvemos tus inquietudes para que inicies tu reclamo con confianza.</p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let item of faqs; let i = index" 
+           [class.active]="faqOpen === i" 
+           (click)="toggleFaq(i)">
+        
+        <div class="faq-head">
+          <span>{{ item.pregunta }}</span>
+          <div class="icon-plus"></div>
+        </div>
+        
+        <div class="faq-body" [class.show]="faqOpen === i">
+          <p>{{ item.respuesta }}</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>

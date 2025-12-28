@@ -1,111 +1,166 @@
-<div class="page-container">
-  <app-card [titulo]="'Panel de Administración'">
+<div class="dashboard-wrapper fade-in">
+
+  <header class="dashboard-header">
+    <div>
+      <h1>Panel de Control</h1>
+      <p>Vista general de expedientes y métricas.</p>
+    </div>
+    <div class="date-badge">
+      {{ fechaHoy | date:'EEEE, d MMMM' }}
+    </div>
+  </header>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="icon-box blue">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+      </div>
+      <div class="kpi-data">
+        <span class="value">{{ reclamosFiltrados.length }}</span>
+        <span class="label">Expedientes Totales</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="icon-box orange">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      </div>
+      <div class="kpi-data">
+        <span class="value">{{ contarPorEstado('Iniciado') + contarPorEstado('Negociacion') }}</span>
+        <span class="label">En Gestión Activa</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="icon-box green">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 0121 12z" /></svg>
+      </div>
+      <div class="kpi-data">
+        <span class="value">{{ contarPorEstado('Indemnizado') }}</span>
+        <span class="label">Finalizados Éxito</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar-card">
     
-    <div class="tools-bar">
-      <button class="btn-filter-toggle" (click)="toggleFiltros()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-        </svg>
-        {{ filtrosAbiertos ? 'Ocultar Filtros' : 'Filtrar' }}
+    <div class="search-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+      <input type="text" placeholder="Buscar por Nombre, DNI o Código..." (keyup)="filtrarGlobal($event)">
+    </div>
+
+    <div class="filters-group">
+      
+      <div class="select-wrapper">
+        <select (change)="cambiarEstado($event)">
+          <option value="">Estado: Todos</option>
+          <option value="Enviado">🔵 Nuevo</option>
+          <option value="Iniciado">🟠 En Proceso</option>
+          <option value="Indemnizado">🟢 Finalizado</option>
+          <option value="Rechazado">🔴 Rechazado</option>
+        </select>
+        <span class="arrow">▼</span>
+      </div>
+
+      <div class="select-wrapper">
+        <select (change)="cambiarRol($event)">
+          <option value="">Rol: Todos</option>
+          <option value="Conductor">🚗 Conductor</option>
+          <option value="Acompanante">👥 Acompañante</option>
+          <option value="Peaton">🚶 Peatón</option>
+        </select>
+        <span class="arrow">▼</span>
+      </div>
+
+      <button class="btn-sort" (click)="alternarOrden()" title="Cambiar Orden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg>
       </button>
-
-      <div class="filters-wrapper" [class.show-mobile]="filtrosAbiertos">
-        <div class="custom-select-wrapper" style="width: 200px;">
-          <select (change)="cambiarEstado($event)" class="custom-select">
-              <option value="">Todos los Estados</option>
-              <option value="Enviado">Enviado (Nuevo)</option>
-              <option value="Recepcionado">Recepcionado</option>
-              <option value="Iniciado">Iniciado</option>
-              <option value="Negociacion">Negociación</option>
-              <option value="Indemnizando">Indemnizando</option>
-              <option value="Indemnizado">Indemnizado (Cobrado)</option>
-              <option value="Rechazado">Rechazado</option>
-          </select>
-        </div>
-
-        <div class="filters-right">
-          <div class="custom-select-wrapper">
-            <select (change)="cambiarRol($event)" class="custom-select">
-              <option value="">Todos los Roles</option>
-              <option value="Conductor">Conductor</option>
-              <option value="Acompanante">Acompañante</option>
-              <option value="Peaton">Peatón</option>
-            </select>
-          </div>
-          <button class="btn-sort" (click)="alternarOrden()">
-            <span class="sort-text">{{ ordenDescendente ? 'Más Recientes' : 'Más Antiguos' }}</span>
-          </button>
-        </div>
-      </div>
     </div>
+  </div>
 
-    <div *ngIf="!loading; else loadingTemplate">
-      <div class="table-responsive" *ngIf="reclamosFiltrados.length > 0; else noReclamos">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Código/Fecha</th>
-              <th>Cliente</th>
-              <th>Rol</th>
-              <th>Siniestro (Tercero)</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of reclamosFiltrados">
-              <td>
-                 <div class="font-bold font-mono text-blue-700">{{ r.codigo_seguimiento }}</div>
-                 <div class="text-xs text-gray-500">{{ r.fecha_creacion | date:'dd/MM/yy' }}</div>
-              </td>
-              <td>
-                <div class="font-bold text-gray-800">{{ r.nombre }}</div>
-                <div class="text-xs text-gray-500">{{ r.dni }}</div>
-              </td>
-              <td>
-                 <span class="px-2 py-1 rounded-full text-xs font-bold"
-                    [ngClass]="{
-                      'bg-purple-100 text-purple-700': r.rol_victima === 'Conductor',
-                      'bg-teal-100 text-teal-700': r.rol_victima === 'Acompanante',
-                      'bg-orange-100 text-orange-700': r.rol_victima === 'Peaton'
-                    }">
-                    {{ r.rol_victima }}
-                 </span>
-              </td>
-              <td>
-                 <ng-container *ngIf="r.aseguradora_tercero">
-                    <div class="text-sm font-semibold">{{ r.aseguradora_tercero }}</div>
-                    <div class="text-xs" *ngIf="r.patente_tercero">Patente: <b>{{ r.patente_tercero }}</b></div>
-                 </ng-container>
-                 <span *ngIf="!r.aseguradora_tercero" class="text-xs italic text-red-500">Ver relato</span>
-              </td>
-              <td>
-                <span class="status-dot" [ngClass]="r.estado.toLowerCase()"></span>
+  <div class="table-container" *ngIf="!isLoading; else loadingTemplate">
+    
+    <div class="table-responsive" *ngIf="reclamosFiltrados.length > 0; else noData">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Expediente</th>
+            <th>Cliente</th>
+            <th>Rol</th>
+            <th>Siniestro</th>
+            <th>Estado</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of reclamosFiltrados" class="fade-in-item">
+            
+            <td>
+              <div class="col-code">
+                <span class="code">{{ r.codigo_seguimiento }}</span>
+                <span class="date">{{ r.fecha_creacion | date:'dd MMM yyyy' }}</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="col-client">
+                <div class="avatar">{{ r.nombre.charAt(0) }}</div>
+                <div class="info">
+                  <span class="name">{{ r.nombre }}</span>
+                  <span class="dni">{{ r.dni }}</span>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <span class="role-badge" [ngClass]="r.rol_victima.toLowerCase()">
+                <ng-container *ngIf="r.rol_victima === 'Conductor'">🚗 Conductor</ng-container>
+                <ng-container *ngIf="r.rol_victima === 'Acompanante'">👥 Acompañante</ng-container>
+                <ng-container *ngIf="r.rol_victima === 'Peaton'">🚶 Peatón</ng-container>
+              </span>
+            </td>
+
+            <td>
+              <div class="col-tercero">
+                <span class="company">{{ r.aseguradora_tercero || 'Sin datos' }}</span>
+                <span class="plate" *ngIf="r.patente_tercero">{{ r.patente_tercero }}</span>
+              </div>
+            </td>
+
+            <td>
+              <span class="status-indicator" [ngClass]="r.estado">
+                <span class="dot"></span>
                 {{ r.estado }}
-              </td>
-              <td>
-                <a [routerLink]="['/reclamo', r.id]" class="btn-icon-link" title="Ver Expediente Completo">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px;">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span>Abrir</span>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </span>
+            </td>
 
-      <ng-template #noReclamos>
-        <div class="empty-state">
-            <p>No hay trámites con estos filtros.</p>
-        </div>
-      </ng-template>
+            <td class="text-right">
+              <a [routerLink]="['/reclamo', r.id]" class="btn-action">
+                Ver
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+              </a>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <ng-template #loadingTemplate>
-      <div class="loading-box"><div class="spinner"></div></div>
+    <ng-template #noData>
+      <div class="empty-state">
+        <div class="icon">📂</div>
+        <h3>No se encontraron expedientes</h3>
+        <p>Intentá cambiar los filtros de búsqueda.</p>
+      </div>
     </ng-template>
-  </app-card>
+
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Sincronizando datos...</p>
+    </div>
+  </ng-template>
+
 </div>

@@ -1,98 +1,119 @@
 <div class="page-container anim-fade-in">
 
   <div *ngIf="!resultado && !isLoading" class="hero-search-container">
-    <div class="logo-area">
-      <div class="icon-brand">🔍</div>
+    
+    <div class="icon-brand-glow">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
     </div>
     
     <h1>Seguimiento de Expediente</h1>
-    <p>Ingresá el código que recibiste por email para ver el avance de tu reclamo en tiempo real.</p>
+    <p>Ingresá el código que recibiste por email para ver el avance en tiempo real.</p>
 
-    <form [formGroup]="consultaForm" (ngSubmit)="onSubmit()" class="search-box">
-      <div class="input-group">
-        <input type="text" formControlName="codigo" placeholder="Ej: A1B2C3" maxlength="10">
-        <button type="submit" [disabled]="consultaForm.invalid">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+    <form [formGroup]="consultaForm" (ngSubmit)="onSubmit()" class="search-box-large">
+      <div class="input-wrapper">
+        <input type="text" formControlName="codigo" placeholder="EJ: A1B2C3" maxlength="10">
+        <button type="submit" [disabled]="consultaForm.invalid" class="btn-search">
+          <span class="btn-text">Buscar</span>
+          <span class="btn-icon">→</span>
         </button>
       </div>
-      <div *ngIf="consultaForm.get('codigo')?.touched && consultaForm.get('codigo')?.invalid" class="error-msg">
+      
+      <div *ngIf="consultaForm.get('codigo')?.touched && consultaForm.get('codigo')?.invalid" class="error-msg fade-in">
         Por favor ingresá un código válido.
       </div>
     </form>
 
     <div *ngIf="errorMensaje" class="alert-box error anim-slide-up">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
       {{ errorMensaje }}
     </div>
   </div>
 
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
-    <p>Buscando expediente...</p>
+    <p>Conectando con el servidor...</p>
   </div>
 
-  <app-card *ngIf="resultado" [titulo]="'Estado del Trámite'" class="anim-slide-up">
+  <div *ngIf="resultado" class="result-card anim-slide-up">
     
     <div class="result-header">
-      <div class="meta">
-        <span class="label">CÓDIGO</span>
+      <div class="meta-group">
+        <span class="label">EXPEDIENTE</span>
         <span class="code">{{ resultado.codigo_seguimiento }}</span>
       </div>
-      <div class="meta date">
+      <div class="meta-group date">
         <span class="label">FECHA INICIO</span>
-        <span>{{ resultado.fecha_creacion | date:'dd/MM/yyyy' }}</span>
+        <span class="value">{{ resultado.fecha_creacion | date:'dd/MM/yyyy' }}</span>
       </div>
     </div>
 
     <div class="status-banner" [ngClass]="claseEstado">
-      <div class="status-icon">
-        <svg *ngIf="resultado.estado === 'Enviado' || resultado.estado === 'Recepcionado'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 15L6 9m0 0l3-3m-3 3h15M6 9l3-3m-3 3h15" /></svg>
-        <svg *ngIf="resultado.estado === 'Negociacion' || resultado.estado === 'Iniciado'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <svg *ngIf="resultado.estado === 'Indemnizando'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
-        <svg *ngIf="resultado.estado === 'Indemnizado'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
-        <svg *ngIf="resultado.estado === 'Rechazado'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <div class="icon-circle">
+        <svg *ngIf="['Enviado', 'Recepcionado', 'Iniciado', 'Negociacion'].includes(resultado.estado)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        
+        <svg *ngIf="['Indemnizado', 'Indemnizando'].includes(resultado.estado)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+        
+        <svg *ngIf="resultado.estado === 'Rechazado'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
       </div>
-      <div class="status-info">
+      
+      <div class="status-text">
         <small>ESTADO ACTUAL</small>
         <h2>{{ resultado.estado | uppercase }}</h2>
       </div>
     </div>
 
-    <div class="timeline-wrapper">
-      <div class="step" [class.completed]="pasoActual >= 0" [class.current]="pasoActual === 0">
-        <div class="circle">1</div>
-        <span>Inicio</span>
+    <div class="timeline-container">
+      
+      <div class="step" [class.active]="pasoActual >= 0">
+        <div class="step-icon">1</div>
+        <span class="step-label">Inicio</span>
       </div>
       <div class="line" [class.filled]="pasoActual >= 1"></div>
 
-      <div class="step" [class.completed]="pasoActual >= 1" [class.current]="pasoActual === 1">
-        <div class="circle">2</div>
-        <span>Gestión</span>
+      <div class="step" [class.active]="pasoActual >= 1">
+        <div class="step-icon">2</div>
+        <span class="step-label">Gestión</span>
       </div>
       <div class="line" [class.filled]="pasoActual >= 2"></div>
 
-      <div class="step" [class.completed]="pasoActual >= 2" [class.current]="pasoActual === 2">
-        <div class="circle">3</div>
-        <span>Resolución</span>
+      <div class="step" [class.active]="pasoActual >= 2">
+        <div class="step-icon">3</div>
+        <span class="step-label">Resolución</span>
       </div>
-      <div class="line" [class.filled]="pasoActual >= 3"></div>
+      
+      <div class="line" [class.filled]="pasoActual >= 3 && resultado.estado !== 'Rechazado'"></div>
 
-      <div class="step" [class.completed]="pasoActual >= 3" [class.current]="pasoActual === 3">
-        <div class="circle">4</div>
-        <span>Final</span>
+      <div class="step" 
+           [class.active]="pasoActual >= 3" 
+           [class.error]="resultado.estado === 'Rechazado'">
+        <div class="step-icon">4</div>
+        <span class="step-label">Final</span>
       </div>
+
     </div>
 
-    <div class="detail-box">
-      <p *ngIf="pasoActual === 0">Recibimos tu documentación. Nuestro equipo la está clasificando para iniciar el reclamo administrativo.</p>
-      <p *ngIf="pasoActual === 1">El reclamo está presentado en la compañía de seguros. Estamos en etapa de negociación.</p>
-      <p *ngIf="pasoActual === 2">¡Buenas noticias! Estamos en proceso de cobro o firma de acuerdo.</p>
-      <p *ngIf="resultado.estado === 'Indemnizado'">El trámite finalizó con éxito. El pago ha sido procesado.</p>
-      <p *ngIf="resultado.estado === 'Rechazado'">El trámite ha sido cerrado. Revisá tu email para más detalles.</p>
+    <div class="context-message">
+      <p *ngIf="pasoActual === 0">
+        Hemos recibido tu documentación. El equipo legal está analizando el caso para iniciar el reclamo administrativo.
+      </p>
+      <p *ngIf="pasoActual === 1">
+        El reclamo ya fue presentado ante la compañía de seguros. Estamos en etapa de seguimiento y negociación.
+      </p>
+      <p *ngIf="pasoActual === 2">
+        ¡Estamos cerca! Se está gestionando el acuerdo de pago o la firma del convenio.
+      </p>
+      <p *ngIf="resultado.estado === 'Indemnizado'">
+        ¡Felicidades! El trámite ha concluido exitosamente y el pago fue procesado.
+      </p>
+      <p *ngIf="resultado.estado === 'Rechazado'">
+        El trámite ha sido cerrado por improcedencia. Por favor revisá tu casilla de email para ver el informe legal detallado.
+      </p>
     </div>
 
-    <button (click)="resetForm()" class="btn-ghost">
+    <button (click)="resetForm()" class="btn-reset">
       Consultar otro código
     </button>
 
-  </app-card>
+  </div>
+
 </div>

@@ -1,8 +1,6 @@
 :host {
   display: block;
-  /* ANTES: position: sticky; (Ocupaba espacio) */
-  /* AHORA: */
-  position: fixed; /* Flota SOBRE el contenido */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -10,7 +8,6 @@
 }
 
 .navbar {
-  /* Esto dejalo igual que recién, con la transparencia inicial */
   background-color: transparent; 
   backdrop-filter: none;
   border-bottom: 1px solid transparent;
@@ -20,9 +17,8 @@
   align-items: center;
   transition: all 0.4s ease;
 
-  /* Cuando bajamos, se pinta de oscuro */
-  &.scrolled, &.menu-abierto {
-    background-color: rgba(15, 23, 42, 0.9); /* Dark Blue */
+  &.scrolled, &.menu-abierto, &.dark-bg {
+    background-color: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -39,7 +35,7 @@
   align-items: center;
 }
 
-/* --- LOGO (Sincronizado con Footer) --- */
+/* --- LOGO --- */
 .brand-logo {
   text-decoration: none;
   font-family: 'Montserrat', sans-serif;
@@ -58,13 +54,13 @@
 
   .text-ya {
     font-weight: 900;
-    color: var(--color-accent); /* Naranja */
+    color: var(--color-accent);
     font-style: italic;
     margin-left: 2px;
   }
 
   .dot {
-    color: var(--color-brand); /* Azul */
+    color: var(--color-brand);
     font-size: 2rem;
     line-height: 0;
     margin-left: 2px;
@@ -79,7 +75,6 @@
   align-items: center;
   gap: 2rem;
 
-  /* Estilo base de los links */
   .nav-link {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
@@ -89,7 +84,6 @@
     padding: 5px 0;
     transition: color 0.3s;
 
-    /* Animación de subrayado */
     &::after {
       content: '';
       position: absolute;
@@ -118,7 +112,7 @@
     font-weight: 700;
   }
 
-  /* BOTÓN PRODUCTOR (Outline) */
+  /* BOTÓN PRODUCTOR */
   .btn-productor {
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
@@ -129,13 +123,13 @@
     text-decoration: none;
 
     &:hover {
-      border-color: var(--color-brand);
+      border-color: var(--color-accent);
       background: rgba(59, 130, 246, 0.1);
-      color: var(--color-brand);
+      color: var(--color-accent);
     }
   }
 
-  /* BOTÓN INGRESAR (Pill Filled) */
+  /* BOTÓN INGRESAR */
   .btn-login {
     background: white;
     color: var(--color-bg-dark) !important;
@@ -147,7 +141,7 @@
     transition: all 0.3s;
     
     &:hover {
-      background: var(--color-accent); /* Se pone naranja al hover */
+      background: var(--color-accent);
       color: white !important;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
@@ -156,21 +150,31 @@
 
   /* BOTÓN LOGOUT */
   .btn-logout {
-    color: rgba(255, 255, 255, 0.5);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5); /* Gris base navbar */
     padding: 8px;
     border-radius: 50%;
-    transition: all 0.2s;
-    
-    svg { width: 20px; height: 20px; }
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
 
     &:hover {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--color-danger);
+      color: #ef4444; /* Rojo */
+      background-color: rgba(239, 68, 68, 0.1); 
+      transform: scale(1.1);
     }
   }
 }
 
-/* --- MÓVIL (Hamburguesa) --- */
+/* --- MÓVIL --- */
 .mobile-menu-button {
   display: none;
   background: none;
@@ -196,7 +200,6 @@
   }
 }
 
-/* Animación Hamburguesa */
 .navbar.menu-abierto .mobile-menu-button span {
   &:nth-child(1) { transform: translateY(9px) rotate(45deg); }
   &:nth-child(2) { opacity: 0; }
@@ -210,13 +213,11 @@
   top: 70px;
   left: 0;
   width: 100%;
-  background: var(--color-bg-dark); /* Fondo sólido oscuro */
+  background: var(--color-bg-dark);
   border-top: 1px solid rgba(255,255,255,0.1);
   flex-direction: column;
   padding-bottom: 1rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  
-  /* Animación de entrada */
   transform-origin: top;
   animation: slideDown 0.3s ease-out forwards;
 
@@ -266,12 +267,19 @@
 
   .btn-mobile-logout {
     background: rgba(239, 68, 68, 0.1);
-    color: var(--color-danger);
+    color: var(--color-danger); /* Asegúrate de tener esta variable o usa #ef4444 */
     border: 1px solid var(--color-danger);
     padding: 12px;
     border-radius: 8px;
     font-weight: 600;
     width: 100%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    
+    svg { width: 20px; height: 20px; }
   }
 }
 
@@ -283,4 +291,92 @@
 @media (max-width: 900px) {
   .navbar-links-desktop { display: none; }
   .mobile-menu-button { display: block; }
+}
+
+/* =========================================
+   SWEET ALERT PREMIUM CUSTOMIZATION
+   ========================================= */
+::ng-deep .premium-modal-popup {
+    border-radius: 24px !important;
+    padding: 2rem 1.5rem !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    font-family: 'Montserrat', sans-serif !important;
+
+    .swal-custom-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background-color: #fee2e2;
+            color: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            
+            svg {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+        }
+
+        p {
+            color: #64748b;
+            font-size: 1rem;
+            margin: 0;
+        }
+    }
+
+    .btn-confirm-custom {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin: 0 8px;
+        box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+
+        &:hover {
+            background: darken(#ef4444, 5%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
+        }
+    }
+
+    .btn-cancel-custom {
+        background: #f1f5f9;
+        color: #64748b;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin: 0 8px;
+
+        &:hover {
+            background: #e2e8f0;
+            color: #334155;
+        }
+    }
+    
+    .swal2-actions {
+        margin-top: 2rem !important;
+    }
 }

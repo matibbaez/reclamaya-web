@@ -1,26 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { FaqComponent } from '../../components/faq/faq';
 
 @Component({
-  selector: 'app-inicio',
+  selector: 'app-faq',
   standalone: true,
-  imports: [CommonModule, RouterModule, FaqComponent],
-  templateUrl: './inicio.html',
-  styleUrl: './inicio.scss'
+  imports: [CommonModule],
+  templateUrl: './faq.html',
+  styleUrls: ['./faq.scss']
 })
-export class InicioComponent {
+export class FaqComponent {
 
-  // Controla qué pregunta está abierta (índice numérico)
   faqOpen: number | null = null;
 
-  toggleFaq(index: number) {
-    // Si toco la misma que está abierta, la cierro (null). Si no, abro la nueva.
-    this.faqOpen = this.faqOpen === index ? null : index;
-  }
-
-  // Datos de las preguntas
   faqs = [
     {
       pregunta: '¿Tengo que pagar algo para iniciar?',
@@ -43,4 +34,8 @@ export class InicioComponent {
       respuesta: 'Sí. Es tu derecho elegir quién te representa. Nosotros nos encargamos de la gestión de revocación de forma ética y profesional para que puedas traer tu caso con nosotros.'
     }
   ];
+
+  toggleFaq(index: number) {
+    this.faqOpen = this.faqOpen === index ? null : index;
+  }
 }

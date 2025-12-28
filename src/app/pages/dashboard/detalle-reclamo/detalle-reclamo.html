@@ -1,187 +1,221 @@
 <div class="dashboard-container fade-in">
 
-  <header class="header-actions">
-    <button (click)="volver()" class="btn-back">
-      ← Volver
-    </button>
-    <div *ngIf="reclamo" class="status-wrapper">
-      <span class="label">Estado Actual:</span>
-      <span class="status-badge" [ngClass]="reclamo.estado">{{ reclamo.estado }}</span>
+  <header class="page-header">
+    <div class="header-left">
+      <button (click)="volver()" class="btn-back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+        Volver
+      </button>
+      <h1>Expediente #{{ reclamo?.codigo_seguimiento || reclamo?.id?.slice(0,8) }}</h1>
+    </div>
+    
+    <div class="header-right" *ngIf="reclamo">
+      <span class="status-label">Estado Actual:</span>
+      <span class="status-pill" [ngClass]="reclamo.estado">{{ reclamo.estado }}</span>
     </div>
   </header>
 
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
-    <p>Cargando expediente...</p>
+    <p>Recuperando legajo...</p>
   </div>
 
-  <div *ngIf="!isLoading && reclamo" class="expediente-grid">
+  <div *ngIf="!isLoading && reclamo" class="detail-grid">
 
-    <div class="info-column">
+    <div class="main-column">
       
-      <section class="card">
-        <h3>👤 Datos del Asegurado</h3>
-        <div class="data-row">
-          <div>
+      <section class="card client-card">
+        <div class="card-header">
+          <h3>👤 Datos del Asegurado</h3>
+          <a *ngIf="reclamo.telefono" [href]="'https://wa.me/549' + reclamo.telefono" target="_blank" class="btn-whatsapp-small">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592z"/></svg>
+            Contactar
+          </a>
+        </div>
+        
+        <div class="info-grid">
+          <div class="info-item">
             <label>Nombre Completo</label>
-            <p class="big-text">{{ reclamo.nombre }}</p>
+            <p class="text-lg font-bold">{{ reclamo.nombre }}</p>
           </div>
-          <div>
+          <div class="info-item">
             <label>DNI</label>
             <p>{{ reclamo.dni }}</p>
           </div>
-        </div>
-        <div class="data-row">
-          <div>
+          <div class="info-item">
             <label>Email</label>
-            <p>{{ reclamo.email }}</p>
+            <p class="text-blue">{{ reclamo.email }}</p>
           </div>
-          <div>
+          <div class="info-item">
             <label>Teléfono</label>
-            <div class="whatsapp-wrapper">
-              <p>{{ reclamo.telefono }}</p>
-              <button (click)="contactarWhatsApp()" class="btn-whatsapp" title="Enviar WhatsApp">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
-                  <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.4 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.4-29.8-17-40.7-4.5-10.7-9.1-9.3-12.4-9.5H145c-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
-                </svg>
-                Chat
-              </button>
+            <p>{{ reclamo.telefono }}</p>
+          </div>
+          <div class="info-item full">
+            <label>Productor Asignado</label>
+            <div class="productor-chip">
+              <div class="avatar">{{ reclamo.usuario_creador?.nombre?.charAt(0) || 'D' }}</div>
+              <span>{{ reclamo.usuario_creador?.nombre || 'Directo (Sin Productor)' }}</span>
             </div>
           </div>
         </div>
-        <div class="data-row">
-            <div>
-                <label>Productor Asignado</label>
-                <p class="highlight-blue">{{ reclamo.usuario_creador?.nombre || 'Sin Asignar (Directo)' }}</p>
-            </div>
-        </div>
       </section>
 
-      <section class="card">
-        <h3>🚗 Detalles del Hecho</h3>
-        <div class="tag-row">
-            <span class="tag">{{ reclamo.rol_victima }}</span>
-            <span class="tag" *ngIf="reclamo.tiene_seguro">Con Seguro</span>
-            <span class="tag warning" *ngIf="!reclamo.tiene_seguro">Sin Seguro</span>
+      <section class="card event-card">
+        <div class="card-header">
+          <h3>🚗 Detalles del Hecho</h3>
+          <div class="badges">
+            <span class="tag role">{{ reclamo.rol_victima }}</span>
+            <span class="tag insurance" [class.no]="!reclamo.tiene_seguro">
+              {{ reclamo.tiene_seguro ? 'Con Seguro' : 'Sin Seguro' }}
+            </span>
+          </div>
         </div>
 
-        <div class="data-grid">
-            <div class="field">
-                <label>Fecha del Hecho</label>
-                <p>{{ reclamo.fecha_hecho | date:'dd/MM/yyyy' }} {{ reclamo.hora_hecho }}</p>
-            </div>
-            <div class="field">
-                <label>Lugar / Localidad</label>
-                <p>{{ reclamo.lugar_hecho }} - {{ reclamo.localidad }}</p>
-            </div>
-            <div class="field">
-                <label>Tercero (Aseguradora)</label>
-                <p><strong>{{ reclamo.aseguradora_tercero }}</strong></p>
-            </div>
-            <div class="field">
-                <label>Patente Tercero</label>
-                <p>{{ reclamo.patente_tercero || '-' }}</p>
-            </div>
-            <div class="field">
-                <label>Patente Propia</label>
-                <p>{{ reclamo.patente_propia || '-' }}</p>
-            </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Fecha y Hora</label>
+            <p>{{ reclamo.fecha_hecho | date:'dd/MM/yyyy' }} - {{ reclamo.hora_hecho }}hs</p>
+          </div>
+          <div class="info-item">
+            <label>Lugar</label>
+            <p>{{ reclamo.lugar_hecho }} ({{ reclamo.localidad }})</p>
+          </div>
+          
+          <div class="divider full"></div>
+
+          <div class="info-item">
+            <label>Aseguradora Tercero</label>
+            <p class="font-bold">{{ reclamo.aseguradora_tercero }}</p>
+          </div>
+          <div class="info-item">
+            <label>Patente Tercero</label>
+            <div class="plate">{{ reclamo.patente_tercero || '---' }}</div>
+          </div>
+          <div class="info-item" *ngIf="reclamo.patente_propia">
+            <label>Patente Asegurado</label>
+            <div class="plate own">{{ reclamo.patente_propia }}</div>
+          </div>
         </div>
 
-        <div class="relato-box" *ngIf="reclamo.relato_hecho">
-            <label>Relato del Siniestro</label>
-            <p>"{{ reclamo.relato_hecho }}"</p>
-        </div>
-      </section>
-
-      <section class="card admin-zone" *ngIf="authService.esAdmin">
-        <h3>⚡ Gestión Administrativa</h3>
-        <p>Cambiar estado del trámite (se notificará al cliente):</p>
-        
-        <div class="action-buttons">
-            <button *ngFor="let est of estadosPosibles" 
-                    (click)="cambiarEstado(est)"
-                    [class.active]="reclamo.estado === est"
-                    class="btn-status">
-                {{ est }}
-            </button>
+        <div class="relato-container" *ngIf="reclamo.relato_hecho">
+          <label>Relato del Siniestro</label>
+          <div class="relato-text">
+            "{{ reclamo.relato_hecho }}"
+          </div>
         </div>
       </section>
 
     </div>
 
-    <div class="docs-column">
-        <section class="card docs-card">
-            <h3>📂 Documentación Adjunta</h3>
-            <p class="subtitle">Click para ver o descargar</p>
+    <div class="side-column">
 
-            <div class="file-list">
-                
-                <div class="file-item" (click)="verArchivo('dni')" *ngIf="reclamo.path_dni">
-                    <div class="icon">🆔</div>
-                    <div class="meta">
-                        <span>DNI / Identificación</span>
-                        <small>Ver documento</small>
-                    </div>
-                    <div class="arrow">→</div>
-                </div>
+      <section class="card admin-card" *ngIf="authService.esAdmin || authService.esTramitador">
+        <div class="admin-header">
+          <h3>⚡ Gestión</h3>
+          <span class="admin-badge">Admin</span>
+        </div>
 
-                <div class="file-item" (click)="verArchivo('licencia')" *ngIf="reclamo.path_licencia">
-                    <div class="icon">🪪</div>
-                    <div class="meta">
-                        <span>Licencia de Conducir</span>
-                        <small>Ver documento</small>
-                    </div>
-                    <div class="arrow">→</div>
-                </div>
+        <div class="assignment-box" *ngIf="authService.esAdmin">
+          <label class="box-label">👮 Asignar Responsable</label>
+          
+          <div class="assign-row">
+            <select [(ngModel)]="tramitadorSeleccionado">
+              <option value="" disabled>Seleccionar Abogado...</option>
+              <option *ngFor="let t of tramitadores" [value]="t.id">
+                {{ t.nombre }}
+              </option>
+            </select>
+            <button (click)="asignarAbogado()" class="btn-save-assign">Guardar</button>
+          </div>
 
-                <div class="file-item" (click)="verArchivo('cedula')" *ngIf="reclamo.path_cedula">
-                    <div class="icon">🚘</div>
-                    <div class="meta">
-                        <span>Cédula Verde/Azul</span>
-                        <small>Ver documento</small>
-                    </div>
-                    <div class="arrow">→</div>
-                </div>
+          <div *ngIf="reclamo.tramitador" class="current-assignee fade-in">
+            <span class="dot-status"></span>
+            Gestionado por: <strong>{{ reclamo.tramitador.nombre }}</strong>
+          </div>
+        </div>
+        <p class="admin-hint">Cambiar estado del trámite:</p>
+        
+        <div class="status-actions">
+          <button *ngFor="let est of estadosPosibles" 
+                  (click)="cambiarEstado(est)"
+                  [class.active]="reclamo.estado === est"
+                  class="btn-status-option">
+            <span class="dot"></span>
+            {{ est }}
+          </button>
+        </div>
+      </section>
 
-                <div class="file-item" (click)="verArchivo('poliza')" *ngIf="reclamo.path_poliza">
-                    <div class="icon">📜</div>
-                    <div class="meta">
-                        <span>Póliza / Cert. Cobertura</span>
-                        <small>Ver PDF</small>
-                    </div>
-                    <div class="arrow">→</div>
-                </div>
+      <section class="card docs-card">
+        <h3>📂 Legajo Digital</h3>
+        <p class="subtitle">Documentación presentada</p>
 
-                <div class="file-item" (click)="verArchivo('denuncia')" *ngIf="reclamo.path_denuncia">
-                    <div class="icon">👮</div>
-                    <div class="meta">
-                        <span>Denuncia Administrativa</span>
-                        <small>Ver documento</small>
-                    </div>
-                    <div class="arrow">→</div>
-                </div>
-
-                <div class="file-item highlight" (click)="verArchivo('fotos')" *ngIf="reclamo.path_fotos">
-                    <div class="icon">📸</div>
-                    <div class="meta">
-                        <span>Fotos del Siniestro</span>
-                        <small>Ver imágenes</small>
-                    </div>
-                    <div class="arrow">→</div>
-                </div>
-
-                <div class="file-item alert" (click)="verArchivo('medicos')" *ngIf="reclamo.path_medicos">
-                    <div class="icon">🏥</div>
-                    <div class="meta">
-                        <span>Certificados Médicos</span>
-                        <small>Historia Clínica</small>
-                    </div>
-                    <div class="arrow">→</div>
-                </div>
-
+        <div class="file-list">
+          <div class="file-row" (click)="verArchivo('dni')" *ngIf="reclamo.path_dni">
+            <div class="file-icon">🆔</div>
+            <div class="file-data">
+              <span>DNI</span>
+              <small>Ver documento</small>
             </div>
-        </section>
+            <div class="action-icon">👁️</div>
+          </div>
+
+          <div class="file-row" (click)="verArchivo('licencia')" *ngIf="reclamo.path_licencia">
+            <div class="file-icon">🪪</div>
+            <div class="file-data">
+              <span>Licencia</span>
+              <small>Ver documento</small>
+            </div>
+            <div class="action-icon">👁️</div>
+          </div>
+
+          <div class="file-row" (click)="verArchivo('cedula')" *ngIf="reclamo.path_cedula">
+            <div class="file-icon">🚙</div>
+            <div class="file-data">
+              <span>Cédula</span>
+              <small>Ver documento</small>
+            </div>
+            <div class="action-icon">👁️</div>
+          </div>
+
+          <div class="file-row" (click)="verArchivo('poliza')" *ngIf="reclamo.path_poliza">
+            <div class="file-icon">📄</div>
+            <div class="file-data">
+              <span>Póliza</span>
+              <small>Ver documento</small>
+            </div>
+            <div class="action-icon">👁️</div>
+          </div>
+
+          <div class="file-row" (click)="verArchivo('denuncia')" *ngIf="reclamo.path_denuncia">
+            <div class="file-icon">⚖️</div>
+            <div class="file-data">
+              <span>Denuncia Admin.</span>
+              <small>Ver documento</small>
+            </div>
+            <div class="action-icon">👁️</div>
+          </div>
+
+          <div class="file-row highlight" (click)="verArchivo('fotos')" *ngIf="reclamo.path_fotos">
+            <div class="file-icon">📸</div>
+            <div class="file-data">
+              <span>Fotos del Hecho</span>
+              <small>Galería de imágenes</small>
+            </div>
+            <div class="action-icon">👁️</div>
+          </div>
+
+          <div class="file-row alert" (click)="verArchivo('medicos')" *ngIf="reclamo.path_medicos">
+            <div class="file-icon">🏥</div>
+            <div class="file-data">
+              <span>Cert. Médicos</span>
+              <small>Historia Clínica</small>
+            </div>
+            <div class="action-icon">👁️</div>
+          </div>
+        </div>
+      </section>
+
     </div>
 
   </div>

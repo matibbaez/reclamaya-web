@@ -1,7 +1,8 @@
-<div class="landing-page">
+<div class="landing-page fade-in">
   
   <section class="hero-section">
-    <div class="hero-bg-glow"></div> <div class="container hero-container">
+    <div class="hero-bg-glow"></div> 
+    <div class="container hero-container">
       <div class="hero-content">
         
         <div class="badge-pill">
@@ -107,24 +108,6 @@
     </div>
   </section>
 
-  <section class="faq-section">
-    <div class="container">
-      <div class="section-header left">
-        <h2>Preguntas Frecuentes</h2>
-      </div>
-
-      <div class="faq-list">
-        <div class="faq-item" *ngFor="let item of faqs; let i = index" [class.active]="item.abierta" (click)="toggleFaq(i)">
-          <div class="faq-head">
-            <span>{{ item.pregunta }}</span>
-            <div class="icon-plus"></div>
-          </div>
-          <div class="faq-body" [class.show]="item.abierta">
-            <p>{{ item.respuesta }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <app-faq></app-faq>
 
 </div>

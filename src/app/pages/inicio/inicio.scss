@@ -11,10 +11,20 @@ $text-light: #f1f5f9;
   overflow-x: hidden;
 }
 
+// Fade in simple
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  margin-top: 2.5rem
 }
 
 /* =========================================
@@ -114,6 +124,7 @@ h1 {
   gap: 8px;
   transition: all 0.3s;
   box-shadow: 0 0 20px rgba($accent, 0.4);
+  cursor: pointer;
 
   svg { width: 20px; height: 20px; }
 
@@ -133,6 +144,7 @@ h1 {
   border-radius: 50px;
   text-decoration: none;
   transition: all 0.3s;
+  cursor: pointer;
 
   &:hover {
     border-color: white;
@@ -229,13 +241,13 @@ h1 {
 .revoca-section-full {
   width: 100%;
   background-color: #0f172a;
-  padding: 4rem 0;
+  padding: 4rem 0; /* Un poco más de aire */
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
 
-  /* Decoración sutil de fondo (opcional) */
+  /* Decoración sutil */
   &::before {
     content: '';
     position: absolute;
@@ -248,7 +260,7 @@ h1 {
 
 .revoca-content {
   display: flex;
-  justify-content: space-between; /* Texto izq, Botón der */
+  justify-content: space-between; 
   align-items: center;
   gap: 3rem;
 }
@@ -269,19 +281,19 @@ h1 {
     margin: 0;
     
     strong {
-      color: var(--color-accent); /* El naranja para resaltar la marca */
+      color: $accent; 
       font-weight: 600;
     }
   }
 }
 
 .revoca-action {
-  flex-shrink: 0; /* Para que el botón no se aplaste */
+  flex-shrink: 0; 
 }
 
 .btn-white-pill {
   background: #ffffff;
-  color: var(--color-bg-dark);
+  color: $bg-dark;
   font-weight: 700;
   padding: 14px 32px;
   border-radius: 50px;
@@ -290,6 +302,7 @@ h1 {
   align-items: center;
   gap: 10px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
   
   svg { 
     width: 20px; 
@@ -298,7 +311,7 @@ h1 {
   }
 
   &:hover {
-    background: var(--color-accent); /* Naranja al hover */
+    background: $accent; 
     color: #ffffff;
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
@@ -307,77 +320,8 @@ h1 {
   }
 }
 
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-  .revoca-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 2rem;
-  }
-  
-  .revoca-action, .btn-white-pill {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
 /* =========================================
-   4. FAQ SECTION
-   ========================================= */
-.faq-section {
-  padding: 5rem 0;
-  background: $bg-light;
-}
-
-.faq-list {
-  max-width: 800px;
-}
-
-.faq-item {
-  background: white;
-  margin-bottom: 1rem;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.05);
-  cursor: pointer;
-  overflow: hidden;
-
-  &.active {
-    border-color: $accent;
-    .icon-plus::after { transform: rotate(0); } /* Signo menos visualmente */
-  }
-}
-
-.faq-head {
-  padding: 1.5rem;
-  display: flex; justify-content: space-between; align-items: center;
-  font-weight: 600; color: $bg-dark;
-}
-
-.icon-plus {
-  width: 20px; height: 20px; position: relative;
-  &::before, &::after {
-    content: ''; position: absolute; background: $bg-dark;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-  }
-  &::before { width: 12px; height: 2px; }
-  &::after { width: 2px; height: 12px; transition: transform 0.3s; }
-}
-
-.faq-body {
-  max-height: 0;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  padding: 0 1.5rem;
-  color: lighten($bg-dark, 30%);
-  
-  &.show {
-    max-height: 300px; /* Suficiente para texto */
-    padding-bottom: 1.5rem;
-  }
-}
-
-
-/* =========================================
-   MÓVIL
+   RESPONSIVE
    ========================================= */
 @media (max-width: 768px) {
   h1 { font-size: 2.2rem; }
@@ -388,6 +332,16 @@ h1 {
   
   .steps-grid { grid-template-columns: 1fr; }
   
-  .revoca-card { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem; }
-  .btn-white-pill { width: 100%; text-align: center; display: block; }
+  .revoca-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .revoca-action, .btn-white-pill {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .faq-list { margin: 0 auto; }
 }

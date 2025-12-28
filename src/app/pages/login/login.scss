@@ -1,217 +1,252 @@
-.login-page {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  /* Fondo coherente con el resto de la web */
-  background-color: #f8fafc; 
-  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
-  padding: 1rem;
+$bg-dark: #0f172a;
+$primary: #3b82f6;
+$accent: #f59e0b;
+$text-dark: #1e293b;
+$text-light: #64748b;
+
+:host {
+  display: block;
+  height: 100vh;
+  /* Importante: Dejamos que el layout maneje el scroll */
 }
 
-.login-container {
+.login-layout {
+  display: flex;
+  height: 100%;
   width: 100%;
-  max-width: 420px; 
+  overflow: hidden; /* Evita scroll doble en desktop */
+}
+
+/* =========================================
+   LADO IZQUIERDO (BRANDING)
+   ========================================= */
+.brand-side {
+  width: 40%;
+  background-color: $bg-dark;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 2; /* Para que la sombra tape al form si se enciman */
+
+  .bg-glow {
+    position: absolute;
+    top: -20%; left: -20%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba($primary, 0.2) 0%, rgba($bg-dark, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .brand-content {
+    position: relative; z-index: 1; margin-top: 2rem;
+    h1 { font-size: 2.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem; }
+    .brand-desc { font-size: 1.1rem; color: rgba(255, 255, 255, 0.7); line-height: 1.6; max-width: 400px; }
+  }
+
+  .brand-footer {
+    position: relative; z-index: 1; font-size: 0.85rem; color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* =========================================
+   LADO DERECHO (FORMULARIO)
+   ========================================= */
+.form-side {
+  width: 60%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto; /* Scroll vertical habilitado */
+  
+  /* Scroll suave */
+  scroll-behavior: smooth;
+}
+
+/* Wrapper interno: La clave para que no se corte arriba */
+.form-wrapper {
+  width: 100%;
+  min-height: 100%; /* Ocupa al menos toda la altura */
   display: flex;
   flex-direction: column;
   align-items: center;
   
-  /* Animación de entrada suave */
-  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  /* CAMBIO CLAVE: Usamos padding en lugar de justify-content: center */
+  /* Esto asegura que siempre haya espacio arriba, incluso si el form crece */
+  padding: 4rem 2rem 2rem 2rem; 
 }
 
-/* --- TARJETA --- */
-.login-card {
-  background-color: white;
-  border-radius: 16px; 
+/* Contenedor que centra verticalmente si sobra espacio */
+.login-container {
   width: 100%;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  border: 1px solid white;
+  max-width: 420px;
+  margin-top: auto;    /* Empuja hacia el centro */
+  margin-bottom: auto; /* Empuja hacia el centro */
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* --- CABECERA AZUL --- */
-.login-header {
-  background-color: var(--color-primario);
-  padding: 3rem 2rem 2.5rem 2rem;
+/* BOTÓN VOLVER */
+.nav-actions {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: flex-end;
+  
+  /* Lo sacamos del flujo normal para que quede fijo arriba a la derecha en el scroll */
+  position: absolute;
+  top: 2rem; 
+  right: 2rem;
+  z-index: 10;
+}
+
+.btn-back {
+  display: flex; align-items: center; gap: 8px;
+  color: $text-light;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+  background: rgba(255,255,255,0.8); /* Fondo por si pasa texto por abajo */
+  padding: 5px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+
+  svg { width: 18px; height: 18px; }
+  &:hover { color: $primary; }
+}
+
+.form-header {
+  margin-bottom: 2rem;
   text-align: center;
-  color: white;
-  cursor: pointer; 
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: var(--color-primario-hover); 
-  }
-  
-  /* ESTILO DEL NUEVO LOGO */
-  .logo-img {
-    height: 60px; /* Tamaño ideal para encabezado de tarjeta */
-    width: auto;
-    display: block;
-    margin: 0 auto 1rem auto; /* Centrado horizontal con margen abajo */
-    object-fit: contain;
-  }
-
-  p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.8rem;
-    margin: 0;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px; 
-  }
+  h2 { font-size: 2rem; font-weight: 800; color: $text-dark; margin-bottom: 0.5rem; }
+  p { color: $text-light; }
 }
 
-/* --- FORMULARIO --- */
-.login-form {
-  padding: 2.5rem 2rem;
+/* =========================================
+   INPUTS Y GRID
+   ========================================= */
+.register-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 100%;
 }
 
-.form-field {
-  margin-bottom: 1.5rem;
+.input-group {
+  margin-bottom: 1.2rem;
   
+  &.full-width { grid-column: span 2; }
+
   label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--color-texto-secundario);
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 0.4rem;
+    .badge-optional { font-weight: 400; color: #94a3b8; font-size: 0.75rem; }
   }
 
   .input-wrapper {
     position: relative;
-  }
-
-  .icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94a3b8; 
-    z-index: 10;
-    display: flex;
-    svg { width: 20px; height: 20px; }
-  }
-
-  input {
-    width: 100%;
-    padding: 0.9rem 1rem 0.9rem 3rem; /* Espacio a la izquierda para el ícono */
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 1rem;
-    color: var(--color-texto-principal);
-    background-color: #f8fafc;
-    transition: all 0.2s ease;
     
-    &::placeholder { color: #cbd5e1; }
-    
-    &:focus {
-      outline: none;
-      background-color: white;
-      border-color: var(--color-primario);
-      box-shadow: 0 0 0 4px rgba(34, 39, 97, 0.1); 
+    .input-icon {
+      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; display: flex; transition: color 0.2s;
+      svg { width: 20px; height: 20px; }
     }
-    
-    /* Al enfocar el input, pintamos el ícono del color primario */
-    &:focus + .icon, &:focus ~ .icon {
-        color: var(--color-primario);
+
+    input {
+      width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem;
+      border: 1px solid #e2e8f0; border-radius: 10px;
+      font-size: 0.95rem; color: $text-dark; transition: all 0.2s; outline: none; background: #f8fafc;
+
+      &:focus {
+        background: white; border-color: $primary;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+      &:focus + .input-icon { color: $primary; }
+      &.error-border { border-color: #ef4444; background: #fff5f5; }
     }
   }
-
-  .error {
-    color: var(--color-error); 
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    
-    &::before {
-        content: '!';
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        background: var(--color-error);
-        color: white;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 14px;
-        font-size: 10px;
-    }
-  }
-}
-
-/* --- BOTÓN --- */
-.btn-login {
-  width: 100%;
-  padding: 1rem;
-  background-color: var(--color-primario);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 54px; 
-  box-shadow: 0 4px 6px -1px rgba(26, 35, 126, 0.2);
-
-  &:hover {
-    background-color: var(--color-primario-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(26, 35, 126, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-    background-color: #cbd5e1; /* Gris desactivado */
-    color: #64748b;
-  }
-}
-
-/* --- FOOTER --- */
-.login-footer {
-  margin-top: 2rem;
-  text-align: center;
-  padding: 0 1rem;
   
-  p {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    line-height: 1.5;
+  /* Mensajes de error */
+  .error-msg { 
+      color: #ef4444; font-size: 0.8rem; margin-top: 0.3rem; margin-left: 0.5rem; display: block;
+      animation: slideDown 0.2s ease-out;
   }
 }
 
-/* --- SPINNER --- */
-.spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* BOTÓN */
+.btn-login-glow {
+  width: 100%; padding: 0.9rem; margin-top: 1.5rem;
+  background: linear-gradient(135deg, $primary 0%, darken($primary, 10%) 100%);
+  color: white; border: none; border-radius: 10px;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: all 0.3s; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+  display: flex; justify-content: center; align-items: center;
+
+  &:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(59, 130, 246, 0.4); }
+  &:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+.form-footer {
+    text-align: center; margin-top: 1.5rem; color: $text-light; font-size: 0.9rem;
+    .link-action { color: $primary; font-weight: 600; cursor: pointer; &:hover { text-decoration: underline; } }
+}
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ANIMACIONES */
+.spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =========================================
+   RESPONSIVE (Móvil) - EL ARREGLO FINAL
+   ========================================= */
+@media (max-width: 900px) {
+  .login-layout { 
+      flex-direction: column; 
+      overflow-y: auto; /* Permitir scroll global en móvil */
+  }
+  
+  /* 1. BRANDING: Más aire arriba para que no pegue con el notch/barra */
+  .brand-side {
+    width: 100%; 
+    padding: 6rem 2rem 2rem 2rem; /* Más padding top */
+    min-height: 220px; 
+    align-items: center; 
+    text-align: center;
+    flex-shrink: 0; /* Que no se achique de más */
+    
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .brand-desc, .brand-footer { display: none; }
+    .bg-glow { opacity: 0.5; }
+  }
+
+  .form-side { 
+      width: 100%; 
+      flex: 1; 
+      overflow: visible; /* Dejar que el layout padre scrollee */
+  }
+
+  /* 2. FORMULARIO: Margen seguro arriba */
+  .form-wrapper {
+      padding: 2rem 1.5rem;
+      justify-content: flex-start; /* Empezar desde arriba, no centrar forzado */
+  }
+
+  .nav-actions {
+      position: static; /* Ya no flota, es parte del flujo */
+      justify-content: flex-start; 
+      margin-bottom: 1.5rem;
+      width: 100%;
+  }
+
+  .btn-back {
+      background: none; /* Sin fondo en móvil */
+      padding: 0;
+  }
+  
+  .register-grid { grid-template-columns: 1fr; }
+  .input-group.full-width { grid-column: span 1; }
 }

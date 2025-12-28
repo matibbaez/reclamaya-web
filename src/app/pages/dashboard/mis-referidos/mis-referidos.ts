@@ -1,11 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; 
+import { jwtDecode } from 'jwt-decode';
+
+// Servicios
 import { ReclamosService, IReclamo } from '../../../services/reclamos.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificacionService } from '../../../services/notificacion';
-import { environment } from '../../../../environments/environment';
-import { jwtDecode } from 'jwt-decode';
-import { RouterModule } from '@angular/router'; 
+import { UsersService, IUser } from '../../../services/users.service'; 
 
 @Component({
   selector: 'app-mis-referidos',
@@ -17,71 +19,83 @@ import { RouterModule } from '@angular/router';
 export class MisReferidosComponent implements OnInit {
 
   private reclamosService = inject(ReclamosService);
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
   private notificacionService = inject(NotificacionService);
+  private usersService = inject(UsersService); 
 
+  // Datos
   listaReclamos: IReclamo[] = [];
+  miEquipo: IUser[] = []; 
   isLoading = true;
-  miLinkReferido = '';
   productorId = '';
 
+  // Links
+  linkAsegurados = '';   
+  linkProductores = ''; 
+
   ngOnInit() {
+    this.generarLinks();
     this.cargarDatos();
-    this.generarLink();
   }
 
-  generarLink() {
-    console.log('--- INTENTANDO GENERAR LINK ---');
-    
-    // 1. Intentamos leer el token directamente del navegador
-    const tokenRaw = localStorage.getItem('token') || localStorage.getItem('access_token');
-
-    if (!tokenRaw) {
-      console.error('❌ NO HAY TOKEN en LocalStorage. El usuario no parece estar logueado.');
-      this.notificacionService.showError('No se encontró sesión activa. Por favor, logueate de nuevo.');
-      return;
-    }
+  generarLinks() {
+    const tokenRaw = localStorage.getItem('access_token') || localStorage.getItem('token');
+    if (!tokenRaw) return;
 
     try {
-      // 2. Decodificamos el token manualmente aquí
       const decoded: any = jwtDecode(tokenRaw);
-      console.log('✅ Token decodificado:', decoded);
-
-      // 3. Buscamos el ID en varios campos posibles
       const userId = decoded.id || decoded.sub || decoded.userId;
 
       if (userId) {
         this.productorId = userId;
-        const baseUrl = window.location.origin; // http://localhost:4200
-        this.miLinkReferido = `${baseUrl}/iniciar-reclamo?ref=${userId}`;
-        console.log('🚀 LINK GENERADO:', this.miLinkReferido);
-      } else {
-        console.warn('⚠️ El token existe pero no tiene campo "id" ni "sub".', decoded);
-      }
-
+        const baseUrl = window.location.origin; 
+        
+        this.linkAsegurados = `${baseUrl}/iniciar-reclamo?ref=${userId}`;
+        
+        if (this.authService.esOrganizador) {
+            this.linkProductores = `${baseUrl}/login?ref=${userId}`;
+        }
+      } 
     } catch (error) {
-      console.error('❌ Error al decodificar el token:', error);
+      console.error(error);
     }
   }
 
-  copiarLink() {
-    navigator.clipboard.writeText(this.miLinkReferido).then(() => {
-      this.notificacionService.showSuccess('¡Link copiado al portapapeles!');
+  copiarLink(url: string) {
+    if (!url) return;
+    navigator.clipboard.writeText(url).then(() => {
+      this.notificacionService.showSuccess('¡Link copiado!');
     });
   }
 
   cargarDatos() {
+    this.isLoading = true;
+
+    // 1. CARGAR SINIESTROS
     this.reclamosService.obtenerMisSiniestros().subscribe({
       next: (data) => {
         this.listaReclamos = data;
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error(err);
-        this.isLoading = false;
-        this.notificacionService.showError('Error al cargar tus siniestros.');
+      error: (err) => { 
+        this.isLoading = false; 
       }
     });
+
+    // 2. CARGAR EQUIPO (Solo si soy Organizador)
+    if (this.authService.esOrganizador) {
+      this.usersService.obtenerMiEquipo().subscribe({
+        next: (users) => {
+          this.miEquipo = users;
+          console.log('Equipo cargado:', users);
+        },
+        error: (err) => console.error('Error cargando equipo', err)
+      });
+    }
+  }
+
+  obtenerCantidadPorEstado(estado: string): number {
+    return this.listaReclamos.filter(r => r.estado === estado).length;
   }
 
   getEstadoClass(estado: string): string {

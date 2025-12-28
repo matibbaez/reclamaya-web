@@ -4,206 +4,294 @@
   (cancelar)="cancelarTerminos()">
 </app-terminos-modal>
 
-<div class="page-container" [class.container-narrow]="isSubmitted" *ngIf="!mostrarTerminos">
-  
-  <app-card [titulo]="isSubmitted ? '¡Reclamo Iniciado!' : 'Nuevo Siniestro'">
+<div class="split-layout" *ngIf="!mostrarTerminos">
 
-    <div class="custom-header" *ngIf="!isSubmitted">
-      <ng-container *ngIf="pasoActual === 0">
-        <h1>¿Cuál fue tu rol en el accidente?</h1>
-        <p>Seleccioná para adaptar los requisitos.</p>
-      </ng-container>
+  <aside class="side-panel">
+    <div class="panel-content">
 
-      <ng-container *ngIf="pasoActual === 1">
-        <h1>Datos del <span class="text-highlight">{{ reclamoForm.get('rol_victima')?.value }}</span></h1>
-        <p>Completá la información para gestionar el reclamo.</p>
-      </ng-container>
+      <h2>{{ pasoActual === 0 ? 'Empecemos' : 'Datos del Siniestro' }}</h2>
+
+      <p class="panel-desc">
+        <span *ngIf="pasoActual === 0">Seleccioná tu rol en el accidente para personalizar los requisitos.</span>
+        <span *ngIf="pasoActual === 1">Completá el formulario. Tus datos están protegidos por secreto profesional.</span>
+      </p>
+
+      <div class="steps-vertical">
+        <div class="step-item" [class.active]="pasoActual === 0" [class.completed]="pasoActual > 0">
+          <div class="step-circle">{{ pasoActual > 0 ? '✓' : '1' }}</div>
+          <div class="step-text">Rol</div>
+        </div>
+        <div class="step-item" [class.active]="pasoActual === 1">
+          <div class="step-circle">2</div>
+          <div class="step-text">Datos y Fotos</div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <div class="step-text">Confirmación</div>
+        </div>
+      </div>
+
+      <div class="trust-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+        <span>Gestión 100% Online y Segura.</span>
+      </div>
     </div>
+  </aside>
 
-    <div class="form-content">
+  <main class="main-content">
+    <div class="content-wrapper">
 
-      <ng-container *ngIf="!isSubmitted && pasoActual === 0">
-        <div class="tramite-grid">
-          
-          <div class="tramite-card" (click)="seleccionarRol('Conductor')">
-            <div class="card-icon">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
+      <div class="role-selection-container" *ngIf="pasoActual === 0">
+        <h3>¿Cuál fue tu rol?</h3>
+        
+        <div class="roles-grid">
+          <div class="role-card" (click)="seleccionarRol('Conductor')">
+            <div class="role-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
             </div>
-            <div class="card-content">
-              <h3>Conductor</h3>
-              <p>Manejabas el vehículo (auto, moto) al momento del choque.</p>
-            </div>
-            <div class="card-action">Elegir</div>
+            <h4>Conductor</h4>
+            <p>Manejabas el vehículo.</p>
           </div>
 
-          <div class="tramite-card" (click)="seleccionarRol('Acompanante')">
-            <div class="card-icon">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+          <div class="role-card" (click)="seleccionarRol('Acompanante')">
+            <div class="role-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
             </div>
-            <div class="card-content">
-              <h3>Acompañante</h3>
-              <p>Ibas en el vehículo pero no manejabas.</p>
-            </div>
-            <div class="card-action">Elegir</div>
+            <h4>Acompañante</h4>
+            <p>Ibas de pasajero.</p>
           </div>
 
-          <div class="tramite-card" (click)="seleccionarRol('Peaton')">
-            <div class="card-icon">
+          <div class="role-card" (click)="seleccionarRol('Peaton')">
+            <div class="role-icon">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
             </div>
-            <div class="card-content">
-              <h3>Peatón</h3>
-              <p>Fuiste embestido circulando a pie o en bicicleta.</p>
-            </div>
-            <div class="card-action">Elegir</div>
+            <h4>Peatón / Bici</h4>
+            <p>Fuiste embestido.</p>
           </div>
         </div>
-      </ng-container>
+      </div>
 
-      <ng-container *ngIf="!isSubmitted && pasoActual === 1">
+      <div class="form-container" *ngIf="pasoActual === 1">
         
-        <button class="btn-back-premium" (click)="volverAStep1()">
-           ⬅ Volver
+        <button class="btn-back-text" (click)="volverAStep1()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+          Cambiar Rol
         </button>
 
-        <form [formGroup]="reclamoForm" (ngSubmit)="onSubmit()" class="reclamo-form mt-4">
+        <form [formGroup]="reclamoForm" (ngSubmit)="onSubmit()">
 
-          <div class="abogado-switch-card mb-6" *ngIf="esConductor">
-            <div class="switch-content">
-              <strong>¿Tenías Seguro Vigente?</strong>
-              <p class="text-sm text-gray-500">Al momento del hecho.</p>
+          <div class="switch-box" *ngIf="esConductor">
+            <div class="switch-info">
+              <span class="label">¿Tenías Seguro Vigente?</span>
+              <span class="sub-label">Al momento del accidente.</span>
             </div>
-            <label class="switch-big">
+            <label class="switch">
               <input type="checkbox" formControlName="tiene_seguro" (change)="toggleSeguro($event.target.checked)">
-              <span class="slider-big round"></span>
+              <span class="slider round"></span>
             </label>
           </div>
 
-          <div *ngIf="esConductor && !tieneSeguro" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-             <p class="text-yellow-700 font-bold">⚠️ Atención: Carta de No Seguro</p>
-             <p class="text-sm text-yellow-600">Al no tener seguro, deberás completar los detalles del hecho para que generemos la "Carta de No Seguro" que te enviaremos por mail para tu firma.</p>
+          <div *ngIf="esConductor && !tieneSeguro" class="alert-box warning">
+            <strong>⚠️ Carta de No Seguro</strong>
+            <p>Se generará automáticamente el documento legal necesario.</p>
           </div>
 
-          <fieldset>
-            <legend>Datos Personales</legend>
-            <div class="form-grid">
-              <div class="form-field">
-                 <label>Nombre Completo</label>
-                 <input type="text" formControlName="nombre" placeholder="Como figura en DNI">
+          <div class="form-section">
+            <h4 class="section-title">Datos Personales</h4>
+            
+            <div class="input-group full">
+              <label>Nombre Completo</label>
+              <input type="text" formControlName="nombre" class="input-modern" placeholder="Tal cual figura en tu DNI">
+            </div>
+
+            <div class="grid-2">
+              <div class="input-group">
+                <label>DNI</label>
+                <input type="text" formControlName="dni" class="input-modern" placeholder="Sin puntos">
               </div>
-              <div class="form-field">
-                 <label>DNI</label>
-                 <input type="text" formControlName="dni" placeholder="Solo números">
-              </div>
-              <div class="form-field">
-                 <label>Email</label>
-                 <input type="email" formControlName="email">
-              </div>
-              <div class="form-field">
-                 <label>Celular</label>
-                 <input type="text" formControlName="telefono" placeholder="Con código de área">
+              <div class="input-group">
+                <label>Celular / WhatsApp</label>
+                <input type="text" formControlName="telefono" class="input-modern" placeholder="Ej: 11 5555 6666">
               </div>
             </div>
-          </fieldset>
 
-          <fieldset *ngIf="esConductor">
-            <legend>Tu Vehículo</legend>
-            <div class="form-grid">
-              <div class="form-field">
-                 <label>Tu Patente *</label>
-                 <input type="text" formControlName="patente_propia" placeholder="Ej: AA123CC" style="text-transform: uppercase;">
-                 <small class="error-text" *ngIf="isSubmitted && reclamoForm.get('patente_propia')?.invalid">
-                    Campo obligatorio
-                 </small>
+            <div class="input-group full">
+              <label>Email</label>
+              <input type="email" formControlName="email" class="input-modern" placeholder="Para recibir notificaciones">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h4 class="section-title">Detalles del Siniestro</h4>
+
+            <div class="grid-2" *ngIf="esConductor">
+              <div class="input-group">
+                <label>Tu Patente</label>
+                <input type="text" formControlName="patente_propia" class="input-modern uppercase" placeholder="AA123BB">
               </div>
             </div>
-          </fieldset>
 
-          <fieldset *ngIf="pideDetallesHecho" class="fade-in-up">
-             <legend>Datos del Siniestro</legend>
-             <div class="form-grid">
-               <div class="form-field"><label>Fecha</label><input type="date" formControlName="fecha_hecho"></div>
-               <div class="form-field"><label>Hora</label><input type="time" formControlName="hora_hecho"></div>
-               <div class="form-field"><label>Lugar (Calle/Altura)</label><input type="text" formControlName="lugar_hecho"></div>
-               <div class="form-field"><label>Localidad</label><input type="text" formControlName="localidad"></div>
-             </div>
-             
-             <div class="form-field full-width mt-3">
-               <label>Relato de los Hechos *</label>
-               <textarea formControlName="relato_hecho" rows="4" class="custom-textarea" placeholder="Describí detalladamente cómo ocurrió el accidente..."></textarea>
-             </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>Datos del Tercero (Quien te chocó)</legend>
-            <div class="form-grid">
-              <div class="form-field">
-                 <label>Aseguradora del Tercero *</label>
-                 <select formControlName="aseguradora_tercero" class="w-full p-2 border rounded">
-                   <option *ngFor="let a of aseguradoras" [value]="a">{{ a }}</option>
-                 </select>
+            <div class="grid-2">
+              <div class="input-group">
+                <label>Fecha</label>
+                <input type="date" formControlName="fecha_hecho" class="input-modern">
               </div>
-              <div class="form-field">
-                 <label>Patente del Tercero *</label>
-                 <input type="text" formControlName="patente_tercero" placeholder="Ej: AA123BB">
+              <div class="input-group">
+                <label>Hora Aprox.</label>
+                <input type="time" formControlName="hora_hecho" class="input-modern">
               </div>
             </div>
-          </fieldset>
 
-          <fieldset>
-            <legend>Documentación</legend>
-            <div class="files-grid">
+            <div class="input-group full">
+              <label>Lugar del Hecho</label>
+              <input type="text" formControlName="lugar_hecho" class="input-modern" placeholder="Calle y Altura o Intersección">
+            </div>
+
+            <div class="input-group full">
+              <label>Relato</label>
+              <textarea formControlName="relato_hecho" rows="3" class="input-modern textarea" placeholder="Describí brevemente cómo ocurrió..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h4 class="section-title">Datos del Tercero (Quien te chocó)</h4>
+            
+            <div class="grid-2">
+              <div class="input-group">
+                <label>Aseguradora Tercero</label>
+                <select formControlName="aseguradora_tercero" class="input-modern">
+                  <option *ngFor="let a of aseguradoras" [value]="a">{{ a }}</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Patente Tercero</label>
+                <input type="text" formControlName="patente_tercero" class="input-modern uppercase" placeholder="AA999ZZ">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h4 class="section-title">Documentación</h4>
+            <p class="helper-text">Podés subir fotos sacadas con el celular. Importante que se lean bien.</p>
+
+            <div class="files-stack">
               
-              <div class="form-field-file">
-                 <label>DNI (Frente y Dorso)</label>
-                 <input type="file" (change)="onFileChange($event, 'fileDNI')">
+              <div class="file-box" [class.uploaded]="reclamoForm.get('fileDNI')?.value">
+                <div class="file-info">
+                  <span class="file-label">DNI (Frente y Dorso)</span>
+                  <span class="file-sub" *ngIf="!reclamoForm.get('fileDNI')?.value">Obligatorio</span>
+                  <span class="file-name-display" *ngIf="reclamoForm.get('fileDNI')?.value">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ getFileName('fileDNI') }}
+                  </span>
+                </div>
+                <label class="btn-upload-small">
+                  {{ reclamoForm.get('fileDNI')?.value ? 'Cambiar' : 'Subir' }}
+                  <input type="file" hidden (change)="onFileChange($event, 'fileDNI')">
+                </label>
               </div>
 
-              <ng-container *ngIf="esConductor">
-                 <div class="form-field-file">
-                    <label>Licencia de Conducir</label>
-                    <input type="file" (change)="onFileChange($event, 'fileLicencia')">
-                 </div>
-                 <div class="form-field-file">
-                    <label>Cédula Verde/Azul</label>
-                    <input type="file" (change)="onFileChange($event, 'fileCedula')">
-                 </div>
-              </ng-container>
+              <div class="file-box" *ngIf="esConductor" [class.uploaded]="reclamoForm.get('fileLicencia')?.value">
+                <div class="file-info">
+                  <span class="file-label">Licencia de Conducir</span>
+                  <span class="file-name-display" *ngIf="reclamoForm.get('fileLicencia')?.value">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ getFileName('fileLicencia') }}
+                  </span>
+                </div>
+                <label class="btn-upload-small">
+                  {{ reclamoForm.get('fileLicencia')?.value ? 'Cambiar' : 'Subir' }}
+                  <input type="file" hidden (change)="onFileChange($event, 'fileLicencia')">
+                </label>
+              </div>
 
-              <ng-container *ngIf="esConductor && tieneSeguro">
-                 <div class="form-field-file">
-                    <label>Certificado de Cobertura</label>
-                    <input type="file" (change)="onFileChange($event, 'fileSeguro')">
-                 </div>
-                 <div class="form-field-file">
-                    <label>Denuncia Administrativa</label>
-                    <input type="file" (change)="onFileChange($event, 'fileDenuncia')">
-                    <small>La que hiciste en tu seguro.</small>
-                 </div>
-              </ng-container>
+              <div class="file-box" *ngIf="esConductor" [class.uploaded]="reclamoForm.get('fileCedula')?.value">
+                <div class="file-info">
+                  <span class="file-label">Cédula Verde/Azul</span>
+                  <span class="file-name-display" *ngIf="reclamoForm.get('fileCedula')?.value">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ getFileName('fileCedula') }}
+                  </span>
+                </div>
+                <label class="btn-upload-small">
+                  {{ reclamoForm.get('fileCedula')?.value ? 'Cambiar' : 'Subir' }}
+                  <input type="file" hidden (change)="onFileChange($event, 'fileCedula')">
+                </label>
+              </div>
 
-              <ng-container *ngIf="!esConductor">
-                 <div class="form-field-file">
-                    <label>Certificados Médicos / Historia Clínica</label>
-                    <input type="file" (change)="onFileChange($event, 'fileMedicos')">
-                 </div>
-              </ng-container>
+              <div class="file-box" *ngIf="esConductor && tieneSeguro" [class.uploaded]="reclamoForm.get('fileSeguro')?.value">
+                <div class="file-info">
+                  <span class="file-label">Certificado de Cobertura</span>
+                  <span class="file-name-display" *ngIf="reclamoForm.get('fileSeguro')?.value">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ getFileName('fileSeguro') }}
+                  </span>
+                </div>
+                <label class="btn-upload-small">
+                  {{ reclamoForm.get('fileSeguro')?.value ? 'Cambiar' : 'Subir' }}
+                  <input type="file" hidden (change)="onFileChange($event, 'fileSeguro')">
+                </label>
+              </div>
 
-              <div class="form-field-file">
-                 <label>Fotos de los daños</label>
-                 <input type="file" (change)="onFileChange($event, 'fileFotos')">
+              <div class="file-box" *ngIf="esConductor && tieneSeguro" [class.uploaded]="reclamoForm.get('fileDenuncia')?.value">
+                <div class="file-info">
+                  <span class="file-label">Denuncia Administrativa</span>
+                  <span class="file-sub" *ngIf="!reclamoForm.get('fileDenuncia')?.value">La constancia de tu seguro</span>
+                  <span class="file-name-display" *ngIf="reclamoForm.get('fileDenuncia')?.value">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ getFileName('fileDenuncia') }}
+                  </span>
+                </div>
+                <label class="btn-upload-small">
+                  {{ reclamoForm.get('fileDenuncia')?.value ? 'Cambiar' : 'Subir' }}
+                  <input type="file" hidden (change)="onFileChange($event, 'fileDenuncia')">
+                </label>
+              </div>
+
+              <div class="file-box" *ngIf="!esConductor" [class.uploaded]="reclamoForm.get('fileMedicos')?.value">
+                <div class="file-info">
+                  <span class="file-label">Certificados Médicos</span>
+                  <span class="file-sub" *ngIf="!reclamoForm.get('fileMedicos')?.value">Historia clínica o alta</span>
+                  <span class="file-name-display" *ngIf="reclamoForm.get('fileMedicos')?.value">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ getFileName('fileMedicos') }}
+                  </span>
+                </div>
+                <label class="btn-upload-small">
+                  {{ reclamoForm.get('fileMedicos')?.value ? 'Cambiar' : 'Subir' }}
+                  <input type="file" hidden (change)="onFileChange($event, 'fileMedicos')">
+                </label>
+              </div>
+
+              <div class="file-box highlight" [class.uploaded]="reclamoForm.get('fileFotos')?.value">
+                <div class="file-info">
+                  <span class="file-label">Fotos de los Daños</span>
+                  <span class="file-sub" *ngIf="!reclamoForm.get('fileFotos')?.value">Del vehículo o lesiones</span>
+                  <span class="file-name-display" *ngIf="reclamoForm.get('fileFotos')?.value">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ getFileName('fileFotos') }}
+                  </span>
+                </div>
+                <label class="btn-upload-small accent">
+                  {{ reclamoForm.get('fileFotos')?.value ? 'Cambiar' : 'Subir Fotos' }}
+                  <input type="file" hidden (change)="onFileChange($event, 'fileFotos')">
+                </label>
               </div>
 
             </div>
-          </fieldset>
+          </div>
 
-          <button type="submit" [disabled]="reclamoForm.invalid || isLoading" class="btn btn-primary btn-largo mt-6">
-            {{ isLoading ? 'Enviando...' : 'Iniciar Reclamo' }}
-          </button>
+          <div class="form-actions">
+            <button type="submit" [disabled]="reclamoForm.invalid || isLoading" class="btn-submit-glow">
+              <span *ngIf="!isLoading">Iniciar Reclamo</span>
+              
+              <div *ngIf="isLoading" class="spinner-loader"></div> 
+            </button>
+          </div>
 
         </form>
-      </ng-container>
+      </div>
 
     </div>
-  </app-card>
+  </main>
 </div>

@@ -4,11 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ReclamosService, IReclamo } from '../../../services/reclamos.service';
 import { NotificacionService } from '../../../services/notificacion';
 import { AuthService } from '../../../services/auth.service';
+import { UsersService, IUser } from '../../../services/users.service';
+import { FormsModule } from '@angular/forms'; 
 
 @Component({
   selector: 'app-detalle-reclamo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './detalle-reclamo.html',
   styleUrls: ['./detalle-reclamo.scss']
 })
@@ -17,20 +19,26 @@ export class DetalleReclamoComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private reclamosService = inject(ReclamosService);
+  private usersService = inject(UsersService); 
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService); 
 
   reclamo: IReclamo | null = null;
   isLoading = true;
+  tramitadores: IUser[] = [];
+  tramitadorSeleccionado: string = '';
   
-  // Lista de estados para el select (Solo si es Admin)
   estadosPosibles = ['Enviado', 'Recepcionado', 'Iniciado', 'Negociacion', 'Indemnizando', 'Indemnizado', 'Rechazado'];
 
   ngOnInit() {
-    // 1. Obtener el ID de la URL
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cargarReclamo(id);
+      
+      // Si es admin, cargamos la lista de abogados
+      if (this.authService.esAdmin) {
+        this.cargarTramitadores();
+      }
     } else {
       this.volver();
     }
@@ -40,14 +48,40 @@ export class DetalleReclamoComponent implements OnInit {
     this.reclamosService.getReclamoPorId(id).subscribe({
       next: (data) => {
         this.reclamo = data;
+        
+        // Si ya tiene uno asignado, lo ponemos en el select
+        if (data.tramitador) {
+          this.tramitadorSeleccionado = data.tramitador.id;
+        }
+        
         this.isLoading = false;
       },
       error: (err) => {
-        console.error(err);
-        this.notificacionService.showError('No se pudo cargar el reclamo.');
+        this.notificacionService.showError('Error al cargar el reclamo');
         this.volver();
       }
     });
+  }
+
+  cargarTramitadores() {
+    this.usersService.getTramitadores().subscribe({
+      next: (users) => this.tramitadores = users,
+      error: () => console.error('Error cargando tramitadores')
+    });
+  }
+
+  asignarAbogado() {
+    if (!this.reclamo || !this.tramitadorSeleccionado) return;
+
+    this.reclamosService.asignarTramitador(this.reclamo.id, this.tramitadorSeleccionado)
+      .subscribe({
+        next: (res) => {
+          this.notificacionService.showSuccess('Tramitador asignado correctamente');
+          // Actualizamos el reclamo localmente para reflejar cambios
+          this.reclamo = res; 
+        },
+        error: () => this.notificacionService.showError('Error al asignar tramitador')
+      });
   }
 
   // Lógica para ver archivos

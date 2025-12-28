@@ -1,4 +1,4 @@
-<nav class="navbar" [class.menu-abierto]="menuAbierto" [class.scrolled]="isScrolled">
+<nav class="navbar" [class.menu-abierto]="menuAbierto" [class.scrolled]="isScrolled" [class.dark-bg]="!isHome">
   <div class="navbar-container">
     
     <a class="brand-logo" routerLink="/" (click)="cerrarMenu()">
@@ -16,12 +16,15 @@
          routerLink="/mis-referidos" 
          routerLinkActive="active" 
          class="btn-productor">
-         Soy Productor
+         <ng-container *ngIf="authService.esTramitador">Soy Tramitador</ng-container>
+         <ng-container *ngIf="authService.esOrganizador">Soy Broker</ng-container>
+         <ng-container *ngIf="authService.esProductor">Soy Productor</ng-container>
       </a>
 
-      <a *ngIf="authService.esAdmin" routerLink="/admin-dashboard" class="nav-link highlight">
-        Panel Admin
-      </a>
+      <ng-container *ngIf="authService.esAdmin">
+        <a routerLink="/admin-dashboard" class="nav-link highlight">Panel Admin</a>
+        <a routerLink="/mi-equipo" class="nav-link highlight">Equipo</a>
+      </ng-container>
 
       <a *ngIf="!authService.isAuthenticated()" routerLink="/login" class="btn-login">
         Ingresar
@@ -29,7 +32,7 @@
 
       <button *ngIf="authService.isAuthenticated()" class="btn-logout" (click)="cerrarSesion()" title="Cerrar Sesión">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
         </svg>
       </button>
 
@@ -48,12 +51,29 @@
     
     <div class="divider" *ngIf="authService.isAuthenticated()"></div>
 
-    <a *ngIf="authService.esProductor" routerLink="/mis-referidos" (click)="cerrarMenu()" class="highlight-mobile">Mi Cartera</a>
+    <a *ngIf="authService.esProductor" routerLink="/mis-referidos" (click)="cerrarMenu()" class="highlight-mobile">
+      Soy Productor
+    </a>
+
+    <a *ngIf="authService.esOrganizador" routerLink="/mis-referidos" (click)="cerrarMenu()" class="highlight-mobile">
+      Soy Broker
+    </a>
+
+    <a *ngIf="authService.esTramitador" routerLink="/mis-referidos" (click)="cerrarMenu()" class="highlight-mobile">
+      Soy Tramitador
+    </a>
+
     <a *ngIf="authService.esAdmin" routerLink="/admin-dashboard" (click)="cerrarMenu()" class="highlight-mobile">Admin Panel</a>
+    <a *ngIf="authService.esAdmin" routerLink="/mi-equipo" (click)="cerrarMenu()" class="highlight-mobile">Equipo</a>
 
     <div class="actions-mobile">
       <a *ngIf="!authService.isAuthenticated()" routerLink="/login" (click)="cerrarMenu()" class="btn-mobile-login">Ingresar</a>
-      <button *ngIf="authService.isAuthenticated()" class="btn-mobile-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
+      <button *ngIf="authService.isAuthenticated()" class="btn-mobile-logout" (click)="cerrarSesion()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+        </svg>
+        Cerrar Sesión
+      </button>
     </div>
   </div>
 </nav>

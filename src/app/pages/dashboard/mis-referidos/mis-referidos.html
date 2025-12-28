@@ -1,42 +1,142 @@
 <div class="dashboard-container fade-in">
+  
   <header class="page-header">
-    <h1>Mis Referidos</h1>
-    <p>Gestioná los siniestros de tus asegurados y compartí tu link.</p>
-  </header>
-
-  <div class="link-card">
-    <div class="link-info">
-      <h3>🚀 Tu Link de Productor</h3>
-      <p>Compartí este enlace con tus asegurados. Los reclamos que carguen aquí se vincularán automáticamente a tu cuenta.</p>
+    <div class="header-content">
+      <h1>
+        Hola, 
+        {{ authService.esTramitador ? 'Tramitador' : (authService.esOrganizador ? 'Broker' : 'Productor') }} 
+        👋
+      </h1>
+      <p *ngIf="!authService.esTramitador">Aquí tenés el control total de tu cartera.</p>
+      <p *ngIf="authService.esTramitador">Aquí tenés tus casos asignados.</p>
     </div>
     
-    <div class="link-action">
-      <div class="input-wrapper">
-        <input type="text" [value]="miLinkReferido" readonly>
-        <button (click)="copiarLink()" class="btn-copy">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" /></svg>
-          Copiar
-        </button>
+    <div class="header-actions">
+      <a routerLink="/iniciar-reclamo" class="btn-new-claim">
+        + Cargar Manualmente
+      </a>
+    </div>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
       </div>
+      <div class="stat-info">
+        <span class="label">Total Casos</span>
+        <span class="value">{{ listaReclamos.length }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon orange">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </div>
+        <div class="stat-info">
+            <span class="label">En Gestión</span>
+            <span class="value">{{ obtenerCantidadPorEstado('En Proceso') }}</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75" /></svg>
+        </div>
+        <div class="stat-info">
+            <span class="label">Finalizados</span>
+            <span class="value">{{ obtenerCantidadPorEstado('Finalizado') }}</span>
+        </div>
     </div>
   </div>
 
-  <div class="table-card">
+  <div *ngIf="!authService.esTramitador" class="links-section">
+    <div class="link-card-premium blue-glow">
+      <div class="card-glow"></div>
+      <div class="content-left">
+        <div class="icon-rocket">🚗</div>
+        <div class="texts">
+          <h3>Link para Clientes</h3>
+          <p>Compartí este enlace para que carguen su siniestro.</p>
+        </div>
+      </div>
+      <div class="content-right">
+        <div class="input-group">
+          <input type="text" [value]="linkAsegurados" readonly>
+          <button (click)="copiarLink(linkAsegurados)" class="btn-copy">Copiar</button>
+        </div>
+        <a [href]="'https://wa.me/?text=Hola!%20Te%20comparto%20el%20link:%20' + linkAsegurados" target="_blank" class="btn-whatsapp">WhatsApp</a>
+      </div>
+    </div>
+
+    <div *ngIf="authService.esOrganizador" class="link-card-premium gold-glow">
+        <div class="card-glow-gold"></div>
+        <div class="content-left">
+          <div class="icon-rocket">💼</div>
+          <div class="texts">
+            <h3>Invitar Productores</h3>
+            <p class="text-warning">Sumá PAS a tu equipo.</p>
+          </div>
+        </div>
+        <div class="content-right">
+          <div class="input-group">
+            <input type="text" [value]="linkProductores" readonly class="input-gold">
+            <button (click)="copiarLink(linkProductores)" class="btn-copy btn-gold">Copiar</button>
+          </div>
+          <a [href]="'https://wa.me/?text=Sumate%20a%20mi%20equipo:%20' + linkProductores" target="_blank" class="btn-whatsapp">Invitar</a>
+        </div>
+    </div>
+  </div>
+
+  <div *ngIf="authService.esOrganizador" class="table-card mt-4">
     <div class="table-header">
-      <h2>Cartera de Siniestros</h2>
-      <span class="count-badge">{{ listaReclamos.length }} Casos</span>
+        <div class="header-title">
+            <h2 class="text-gold">👥 Mi Equipo de Productores</h2>
+            <span class="count-badge gold">{{ miEquipo.length }} Activos</span>
+        </div>
+    </div>
+    
+    <div *ngIf="miEquipo.length > 0" class="table-responsive">
+        <table class="table-hover">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Matrícula</th>
+                    <th>Celular</th>
+                    <th>Ventas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of miEquipo">
+                    <td class="font-bold">{{ p.nombre | titlecase }}</td>
+                    <td class="text-muted">{{ p.email }}</td>
+                    <td>{{ p.matricula || '-' }}</td>
+                    <td>{{ p.telefono || '-' }}</td>
+                    <td>
+                        <span class="badge-blue">{{ p.reclamos_cargados?.length || 0 }}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="miEquipo.length === 0" class="p-4 text-center text-muted">
+        Aún no tenés productores registrados.
+    </div>
+  </div>
+
+  <div class="table-card mt-4">
+    <div class="table-header">
+      <div class="header-title">
+        <h2>Cartera de Siniestros</h2>
+        <span class="count-badge">{{ listaReclamos.length }} Casos</span>
+      </div>
+      
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+        <input type="text" placeholder="Buscar por nombre o DNI...">
+      </div>
     </div>
 
-    <div *ngIf="isLoading" class="loading-state">
-      <div class="spinner"></div>
-      <p>Cargando cartera...</p>
-    </div>
-
-    <div *ngIf="!isLoading && listaReclamos.length === 0" class="empty-state">
-      <div class="icon-empty">📭</div>
-      <h3>Aún no tenés referidos</h3>
-      <p>¡Empezá a compartir tu link para ver actividad!</p>
-    </div>
+    <div *ngIf="isLoading" class="loading-state"><div class="spinner"></div><p>Cargando...</p></div>
 
     <div *ngIf="!isLoading && listaReclamos.length > 0" class="table-responsive">
       <table>
@@ -47,22 +147,33 @@
             <th>DNI</th>
             <th>Código</th>
             <th>Estado</th>
-            <th>Acción</th> </tr>
+            <th class="text-right">Acción</th>
+          </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of listaReclamos">
-            <td>{{ item.fecha_creacion | date:'dd/MM/yyyy' }}</td>
-            <td class="font-bold">{{ item.nombre }}</td>
-            <td>{{ item.dni }}</td>
+            <td>
+              <div class="date-cell">
+                <span class="day">{{ item.fecha_creacion | date:'dd' }}</span>
+                <span class="month">{{ item.fecha_creacion | date:'MMM' }}</span>
+              </div>
+            </td>
+            <td>
+               <div class="user-cell">
+                 <div class="avatar-circle">{{ item.nombre.charAt(0) | uppercase }}</div>
+                 <span class="font-bold">{{ item.nombre | titlecase }}</span>
+               </div>
+            </td>
+            <td class="text-muted">{{ item.dni }}</td>
             <td><span class="code-pill">{{ item.codigo_seguimiento }}</span></td>
             <td>
               <span class="status-badge" [ngClass]="getEstadoClass(item.estado)">
-                {{ item.estado }}
+                <span class="dot"></span> {{ item.estado }}
               </span>
             </td>
-            <td>
-              <a [routerLink]="['/reclamo', item.id]" class="btn-ver-tabla">
-                Ver Detalle
+            <td class="text-right">
+              <a [routerLink]="['/reclamo', item.id]" class="btn-icon-action">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
               </a>
             </td>
           </tr>
@@ -70,4 +181,5 @@
       </table>
     </div>
   </div>
+
 </div>

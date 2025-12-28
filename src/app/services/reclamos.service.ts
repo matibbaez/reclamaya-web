@@ -25,8 +25,15 @@ export interface IReclamo {
   lugar_hecho?: string;
   localidad?: string;
 
-  // Relación con Usuario 
+  // Relación con Usuario (Productor)
   usuario_creador?: {
+    id: string;
+    nombre: string;
+    email: string;
+  };
+
+  // 👇 NUEVO CAMPO: TRAMITADOR (ABOGADO)
+  tramitador?: {
     id: string;
     nombre: string;
     email: string;
@@ -85,8 +92,13 @@ export class ReclamosService {
     return this.http.get<IReclamo[]>(`${this.apiUrl}?estado=${estado}`);
   }
 
-  // 4. ACTUALIZAR
+  // 4. ACTUALIZAR (Para cambios generales)
   update(id: string, body: any): Observable<IReclamo> {
     return this.http.patch<IReclamo>(`${this.apiUrl}/${id}`, body);
+  }
+
+  // 👇 NUEVO MÉTODO: ASIGNAR TRAMITADOR
+  asignarTramitador(reclamoId: string, tramitadorId: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${reclamoId}/asignar`, { tramitadorId });
   }
 }

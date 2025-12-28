@@ -1,410 +1,214 @@
-/* Usamos las variables globales */
-.page-container {
-  max-width: 1670px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
+/* VARIABLES GLOBALES */
+$bg-dark: #0f172a;
+$primary: #3b82f6;
+$accent: #f59e0b;
+$text-main: #1e293b;
+$text-muted: #64748b;
+$border-color: #e2e8f0;
+
+/* LAYOUT PRINCIPAL */
+.dashboard-wrapper {
+  padding-top: 110px; /* Espacio para Navbar Fixed */
+  padding-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: #f8fafc;
 }
 
-/* ---------------------------------- */
-/* 1. BARRA DE HERRAMIENTAS (MEJORADA)
-/* ---------------------------------- */
-.tools-bar {
-  display: flex;
-  flex-direction: column; /* Mobile first: columna */
-  gap: 1rem;
+/* HEADER */
+.dashboard-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
   margin-bottom: 2rem;
-}
 
-/* El botón para abrir filtros (Solo visible en mobile por defecto) */
-.btn-filter-toggle {
-  display: flex; /* Visible en mobile */
-  align-items: center; justify-content: center; gap: 0.5rem;
-  width: 100%;
-  padding: 0.8rem;
-  background-color: white;
-  border: 1px solid var(--color-borde-suave);
-  border-radius: 8px;
-  font-weight: 600;
-  color: var(--color-texto-principal);
-  cursor: pointer;
+  h1 { font-size: 2rem; font-weight: 800; color: $text-main; margin: 0; letter-spacing: -0.5px; }
+  p { color: $text-muted; margin: 5px 0 0 0; }
   
-  svg { width: 20px; height: 20px; }
-}
-
-/* --- FILTROS WRAPPER --- */
-.filters-wrapper {
-  display: none; /* Mobile first: oculto */
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  
-  &.show-mobile {
-    display: flex;
-    animation: slideDown 0.3s ease-out;
-  }
-
-  @media (min-width: 768px) {
-    display: flex !important;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  .date-badge {
+    background: white; border: 1px solid $border-color;
+    padding: 6px 16px; border-radius: 20px;
+    font-size: 0.9rem; font-weight: 600; color: $text-muted;
+    text-transform: capitalize;
   }
 }
 
-/* Grupo de la derecha (Select + Sort) */
-.filters-right {
-  display: flex;
-  gap: 0.8rem;
-  align-items: center;
-  
-  @media(max-width: 600px) {
-    flex-direction: column;
-    width: 100%;
+/* KPIS (TARJETAS MÉTRICAS) */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem; margin-bottom: 2rem;
+}
+
+.kpi-card {
+  background: white; padding: 1.5rem; border-radius: 16px;
+  box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
+  border: 1px solid white;
+  display: flex; align-items: center; gap: 1.5rem;
+  transition: transform 0.2s;
+
+  &:hover { transform: translateY(-3px); }
+
+  .icon-box {
+    width: 50px; height: 50px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    
+    &.blue { background: #eff6ff; color: $primary; }
+    &.orange { background: #fff7ed; color: $accent; }
+    &.green { background: #ecfdf5; color: #10b981; }
+    
+    svg { width: 26px; height: 26px; }
+  }
+
+  .kpi-data {
+    display: flex; flex-direction: column;
+    .value { font-size: 1.8rem; font-weight: 800; color: $text-main; line-height: 1; }
+    .label { font-size: 0.85rem; color: $text-muted; font-weight: 600; margin-top: 4px; }
   }
 }
 
-/* --- 1. CUSTOM SELECT (DISEÑO PREMIUM) --- */
-.custom-select-wrapper {
-  position: relative;
-  min-width: 200px;
+/* TOOLBAR (BUSCADOR Y FILTROS) */
+.toolbar-card {
+  background: white; padding: 1rem; border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid $border-color;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;
+}
+
+.search-wrapper {
+  position: relative; flex: 1; min-width: 300px;
+  svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; width: 20px; }
+  input {
+    width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem;
+    border: 1px solid $border-color; border-radius: 10px;
+    font-size: 0.95rem; outline: none; transition: all 0.2s;
+    &:focus { border-color: $primary; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+  }
+}
+
+.filters-group {
+  display: flex; gap: 10px;
   
-  @media(max-width: 600px) { width: 100%; }
-
-  /* El Select Real (Transparente pero funcional) */
-  .custom-select {
-    width: 100%;
-    appearance: none; /* Oculta flecha default */
-    background-color: white;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 0.6rem 2.5rem 0.6rem 1rem; /* Espacio a la derecha para la flecha */
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #334155;
-    cursor: pointer;
-    transition: all 0.2s;
-    outline: none;
-
-    &:hover { border-color: #94a3b8; }
-    &:focus {
-      border-color: var(--color-primario);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  .select-wrapper {
+    position: relative;
+    select {
+      appearance: none; background: white; border: 1px solid $border-color;
+      padding: 0.8rem 2.5rem 0.8rem 1rem; border-radius: 10px;
+      font-weight: 600; color: $text-main; cursor: pointer; outline: none;
+      &:focus { border-color: $primary; }
     }
+    .arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: #94a3b8; pointer-events: none; }
   }
 
-  /* La Flecha Custom (SVG) */
-  .select-arrow {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none; /* Click pasa a través */
-    color: #64748b;
-    display: flex;
-    svg { width: 16px; height: 16px; }
+  .btn-sort {
+    background: white; border: 1px solid $border-color;
+    width: 42px; display: flex; align-items: center; justify-content: center;
+    border-radius: 10px; cursor: pointer; color: $text-muted;
+    &:hover { background: #f1f5f9; color: $primary; }
+    svg { width: 20px; }
   }
 }
 
-/* --- 2. BOTÓN DE ORDENAR --- */
-.btn-sort {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: #475569;
-  font-weight: 600;
-  font-size: 0.9rem;
-  white-space: nowrap; /* Que no se rompa el texto */
-
-  .sort-icon {
-    display: flex;
-    color: var(--color-primario);
-    svg { width: 18px; height: 18px; }
-  }
-
-  &:hover {
-    background-color: #f8fafc;
-    border-color: #94a3b8;
-    color: #1e293b;
-  }
-  
-  &:active { transform: translateY(1px); }
-
-  @media(max-width: 600px) {
-    width: 100%;
-    justify-content: center;
-  }
+/* TABLA PRO */
+.table-container {
+  background: white; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05); border: 1px solid $border-color;
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Tabs de Estado */
-.status-tabs {
-  display: flex;
-  gap: 0.5rem;
-  background: #f1f5f9;
-  padding: 4px;
-  border-radius: 10px;
-  overflow-x: auto; /* Scroll horizontal si no entran */
-}
-
-/* --- DESKTOP (Mayores a 768px) --- */
-@media (min-width: 768px) {
-  .tools-bar {
-    flex-direction: row; /* Vuelve a fila */
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* Ocultamos el botón toggle en desktop */
-  .btn-filter-toggle { display: none; }
-
-  /* Mostramos siempre los filtros en desktop */
-  .filters-wrapper {
-    display: flex !important;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
-.tab-btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  background: transparent;
-  color: #64748b;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.2s;
-  font-size: 0.9rem;
-
-  &.active {
-    background: white;
-    color: var(--color-primario);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-  
-  &:hover:not(.active) { 
-    color: var(--color-primario); 
-    background-color: rgba(255,255,255,0.5);
-  }
-}
-
-/* Dropdown de Tipo */
-.type-filter {
-  position: relative;
-}
-
-.select-profesional {
-  appearance: none; /* Saca el estilo default del navegador */
-  padding: 0.6rem 2.5rem 0.6rem 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: white;
-  color: #334155;
-  font-weight: 500;
-  cursor: pointer;
-  outline: none;
-  min-width: 200px;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 16px;
-  
-  &:focus { border-color: var(--color-primario); }
-}
-
-/* ---------------------------------- */
-/* 2. TABLA RESPONSIVE
-/* ---------------------------------- */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid var(--color-borde-suave);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  background: white;
-}
+.table-responsive { overflow-x: auto; }
 
 .admin-table {
-  width: 100%;
-  border-collapse: separate; /* Necesario para efectos de borde */
-  border-spacing: 0;
-  min-width: 900px; 
-  font-size: 0.95rem;
+  width: 100%; border-collapse: collapse; min-width: 900px;
 
   thead th {
-    background-color: #f8fafc;
-    color: var(--color-texto-secundario);
-    text-align: left;
-    padding: 1rem 1.5rem;
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--color-borde-suave);
+    text-align: left; padding: 1.2rem 1.5rem;
+    background: #f8fafc; color: $text-muted; font-size: 0.75rem;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid $border-color;
   }
 
   tbody td {
-    padding: 1rem 1.5rem;
+    padding: 1.2rem 1.5rem; border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
-    color: var(--color-texto-principal);
-    border-bottom: 1px solid #f1f5f9;
   }
 
-  /* Efecto Hover en las filas */
-  tbody tr {
-    transition: background-color 0.2s ease;
-    &:hover { background-color: #f8fafc; }
-    &:last-child td { border-bottom: none; }
-  }
+  tbody tr:hover { background: #f8fafc; }
+  tbody tr:last-child td { border-bottom: none; }
+}
 
-  /* --- CÓDIGO MONO --- */
-  .font-mono {
-    font-family: 'Courier New', Courier, monospace;
-    color: var(--color-primario);
-    letter-spacing: -0.5px;
+/* CELDAS ESPECÍFICAS */
+.col-code {
+  display: flex; flex-direction: column;
+  .code { font-family: monospace; font-weight: 700; color: $primary; font-size: 1rem; }
+  .date { font-size: 0.8rem; color: $text-muted; margin-top: 2px; }
+}
+
+.col-client {
+  display: flex; align-items: center; gap: 12px;
+  .avatar {
+    width: 36px; height: 36px; background: linear-gradient(135deg, $primary, darken($primary, 10%));
+    color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+  }
+  .info {
+    display: flex; flex-direction: column;
+    .name { font-weight: 600; color: $text-main; }
+    .dni { font-size: 0.8rem; color: $text-muted; }
   }
 }
 
-/* ---------------------------------- */
-/* 3. FILA URGENTE (REVOCA)
-/* ---------------------------------- */
-.row-urgente {
-  background-color: #fffbfc; /* Fondo apenas rosado */
-
-  td:first-child {
-    /* Truco CSS para borde izquierdo dentro de la celda sin romper la tabla */
-    box-shadow: inset 4px 0 0 #ef4444; 
-  }
+.role-badge {
+  font-size: 0.8rem; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+  &.conductor { background: #eff6ff; color: $primary; }
+  &.acompanante { background: #ecfdf5; color: #059669; }
+  &.peaton { background: #fff7ed; color: $accent; }
 }
 
-/* ---------------------------------- */
-/* 4. CONTENIDO DE CELDAS
-/* ---------------------------------- */
+.col-tercero {
+  display: flex; flex-direction: column;
+  .company { font-weight: 600; color: $text-main; font-size: 0.9rem; }
+  .plate { font-size: 0.8rem; font-family: monospace; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; width: fit-content; margin-top: 4px; }
+}
 
-/* Info del Cliente (Nombre + Email gris abajo) */
-.cliente-info {
-  display: flex; 
-  flex-direction: column;
-  line-height: 1.3;
+.status-indicator {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 600; font-size: 0.9rem;
   
-  .nombre { font-weight: 600; color: #1e293b; }
-  .email-chico { font-size: 0.8rem; color: #94a3b8; }
-}
-
-/* Info del Trámite (Tipo + Badges) */
-.tipo-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
-}
-
-.tipo-main {
-  font-weight: 500;
-  font-size: 0.9rem;
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
   
-  .subtipo {
-    color: #64748b;
-    font-size: 0.8rem;
-  }
+  &.Enviado { color: $primary; }
+  &.Iniciado { color: #0ea5e9; }
+  &.Indemnizado { color: #10b981; }
+  &.Rechazado { color: #ef4444; }
+  &.Negociacion { color: $accent; }
 }
 
-/* Badges Profesionales (Pastillas) */
-.badge-pill {
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 12px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  
-  &.red {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fca5a5;
-  }
-  
-  &.orange {
-    background-color: #ffedd5;
-    color: #9a3412;
-    border: 1px solid #fed7aa;
-  }
-}
-
-/* ---------------------------------- */
-/* 5. ESTADO (PUNTITO DE COLOR)
-/* ---------------------------------- */
-.status-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 6px;
-  
-  &.recibido { background-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
-  &.en-proceso { background-color: #f59e0b; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2); }
-  &.finalizado { background-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); }
-}
-
-/* ---------------------------------- */
-/* 6. BOTONES DE ACCIÓN
-/* ---------------------------------- */
-.btn-icon {
-  background: transparent; 
-  border: none; 
-  cursor: pointer;
-  color: #94a3b8; 
-  padding: 6px; 
-  border-radius: 6px;
+.btn-action {
+  text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+  background: white; border: 1px solid $border-color; color: $text-muted;
+  padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
   transition: all 0.2s;
-  display: flex;
-  align-items: center; justify-content: center;
-
-  svg { width: 20px; height: 20px; }
   
-  &:hover { 
-    background-color: #e2e8f0; 
-    color: var(--color-primario); 
-  }
+  &:hover { border-color: $primary; color: $primary; background: #eff6ff; }
+  svg { width: 16px; }
 }
 
-/* ---------------------------------- */
-/* 7. ESTADOS DE CARGA / VACÍO
-/* ---------------------------------- */
-.loading-box, .empty-state {
-  padding: 4rem;
-  text-align: center;
-  color: #64748b;
-  
-  .spinner {
-    width: 30px; height: 30px;
-    border: 3px solid #e2e8f0; border-top-color: var(--color-primario);
-    border-radius: 50%; margin: 0 auto 1rem;
-    animation: spin 1s linear infinite;
-  }
+/* UTILS */
+.text-right { text-align: right; }
+.fade-in { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .empty-icon {
-    width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5;
-  }
-}
-
+/* LOADING & EMPTY */
+.loading-state, .empty-state { padding: 4rem; text-align: center; color: $text-muted; }
+.empty-state .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+.spinner { width: 30px; height: 30px; border: 3px solid #e2e8f0; border-top-color: $primary; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Responsive móvil */
+/* MOBILE */
 @media (max-width: 768px) {
-  .tools-bar { flex-direction: column; align-items: stretch; }
-  .status-tabs { overflow-x: auto; }
-  .select-profesional { width: 100%; }
+  .dashboard-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .toolbar-card { flex-direction: column; }
+  .search-wrapper { width: 100%; }
+  .filters-group { width: 100%; overflow-x: auto; padding-bottom: 5px; }
 }

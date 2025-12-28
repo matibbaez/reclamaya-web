@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UsuariosService, User } from '../../services/usuarios.service';
+import { UsersService, IUser } from '../../services/users.service';
 import { NotificacionService } from '../../services/notificacion';
 
 @Component({
@@ -13,11 +13,12 @@ import { NotificacionService } from '../../services/notificacion';
 })
 export class MiEquipoComponent implements OnInit {
 
-  private usuariosService = inject(UsuariosService);
+  // 👇 CORRECCIÓN 2: Inyectamos el servicio correcto
+  private usersService = inject(UsersService);
   private notificacionService = inject(NotificacionService);
   private fb = inject(FormBuilder);
 
-  listaUsuarios: User[] = [];
+  listaUsuarios: IUser[] = [];
   isLoading = true;
   mostrarFormulario = false; 
 
@@ -28,8 +29,8 @@ export class MiEquipoComponent implements OnInit {
     password: ['', [Validators.required, Validators.minLength(6)]],
     dni: [''],
     telefono: [''],
-    matricula: [''], // Importante para Productores
-    role: ['Productor', Validators.required] // Por defecto Productor
+    matricula: [''], 
+    role: ['Productor', Validators.required]
   });
 
   ngOnInit() {
@@ -38,7 +39,8 @@ export class MiEquipoComponent implements OnInit {
 
   cargarUsuarios() {
     this.isLoading = true;
-    this.usuariosService.getUsuarios().subscribe({
+    // 👇 CORRECCIÓN 3: Usamos getAll() (sin filtro trae todos, o podrías filtrar)
+    this.usersService.getAll().subscribe({
       next: (data) => {
         this.listaUsuarios = data;
         this.isLoading = false;
@@ -61,16 +63,17 @@ export class MiEquipoComponent implements OnInit {
       return;
     }
 
-    this.usuariosService.crearUsuario(this.userForm.value).subscribe({
+    // 👇 CORRECCIÓN 4: Usamos create()
+    this.usersService.create(this.userForm.value).subscribe({
       next: (nuevoUser) => {
         this.notificacionService.showSuccess(`Usuario ${nuevoUser.nombre} creado!`);
-        this.listaUsuarios.push(nuevoUser); // Lo agrego a la tabla visualmente
+        this.listaUsuarios.push(nuevoUser); // Agregamos a la tabla
         this.mostrarFormulario = false;
-        this.userForm.reset({ role: 'Productor' }); // Reseteo form
+        this.userForm.reset({ role: 'Productor' }); // Reseteamos y dejamos rol por defecto
       },
       error: (err) => {
         console.error(err);
-        this.notificacionService.showError('Error al crear usuario. El email podría estar en uso.');
+        this.notificacionService.showError('Error al crear. Posiblemente el email ya existe.');
       }
     });
   }

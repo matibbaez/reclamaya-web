@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
+import { UsersService } from '../../services/users.service'; 
+import { NotificacionService } from '../../services/notificacion';
 import { environment } from '../../../environments/environment';
 import { IReclamo } from '../../services/reclamos.service';
-import { NotificacionService } from '../../services/notificacion';
+import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs/operators';
 
 // --- TIPOS NUEVOS ---
 type TipoArchivo = 'dni' | 'licencia' | 'cedula' | 'poliza' | 'denuncia' | 'fotos' | 'medicos';

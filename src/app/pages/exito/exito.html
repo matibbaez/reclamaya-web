@@ -1,48 +1,92 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-  
-  <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden text-center p-8 animate-fade-in-up">
-    
-    <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-10 w-10 text-green-600">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-      </svg>
-    </div>
+<div class="split-layout fade-in">
 
-    <h2 class="text-3xl font-bold text-gray-900 mb-2">¡Reclamo Enviado!</h2>
-    <p class="text-gray-500 mb-8">Hemos recibido toda tu documentación correctamente.</p>
+  <aside class="side-panel">
+    <div class="panel-content">
 
-    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
-      <p class="text-xs uppercase tracking-wide text-blue-600 font-bold mb-2">Tu Código de Seguimiento</p>
-      <div class="text-4xl font-mono font-black text-blue-900 tracking-wider select-all">
-        {{ codigo }}
+      <h2>¡Todo listo!</h2>
+
+      <p class="panel-desc">
+        Tu reclamo ha sido registrado con éxito en nuestro sistema seguro.
+      </p>
+
+      <div class="steps-vertical">
+        
+        <div class="step-item completed">
+          <div class="step-circle">✓</div>
+          <div class="step-text">Rol</div>
+        </div>
+
+        <div class="step-item completed">
+          <div class="step-circle">✓</div>
+          <div class="step-text">Datos y Fotos</div>
+        </div>
+
+        <div class="step-item active">
+          <div class="step-circle">✓</div>
+          <div class="step-text">Confirmación</div>
+        </div>
+
       </div>
-      <p class="text-xs text-blue-400 mt-2">(Guardalo, lo vas a necesitar)</p>
-    </div>
 
-    <div class="text-left text-sm text-gray-600 space-y-4 mb-8">
-      <div class="flex gap-3">
-        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs">1</span>
-        <p>Te enviamos un email de confirmación (revisá Spam por las dudas).</p>
+      <div class="trust-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+        <span>Gestión 100% Online y Segura.</span>
       </div>
-      <div class="flex gap-3">
-        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs">2</span>
-        <p>Nuestro equipo legal analizará el caso en las próximas 48hs hábiles.</p>
-      </div>
-      <div class="flex gap-3">
-        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-xs">3</span>
-        <p>Podés ver el estado en "Consultar Trámite" usando tu código.</p>
-      </div>
-    </div>
 
-    <div class="space-y-3">
-      <a routerLink="/" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition">
-        Volver al Inicio
-      </a>
-      <a routerLink="/consultar-tramite" class="block w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-xl hover:bg-gray-50 transition">
-        Consultar mi Trámite
-      </a>
     </div>
+  </aside>
 
-  </div>
+  <main class="main-content">
+    <div class="success-wrapper">
+      
+      <div class="icon-hero">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+
+      <h1 class="title">¡Reclamo Iniciado!</h1>
+      
+      <p class="subtitle">
+        Hola <strong>{{ nombre }}</strong>, ya estamos trabajando en tu caso.
+      </p>
+
+      <div class="ticket-container">
+        <div class="ticket-header">
+          <span>TU CÓDIGO DE SEGUIMIENTO</span>
+        </div>
+        
+        <div class="ticket-body">
+          <div class="code">{{ codigo }}</div>
+          
+          <button class="btn-copy" (click)="copiarCodigo()" title="Copiar">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" /></svg>
+            Copiar
+          </button>
+        </div>
+
+        <div class="ticket-footer">
+          Guardá este código para consultar el avance.
+        </div>
+      </div>
+
+      <div class="next-actions">
+        <p class="info-text">
+          Te enviamos un email con el detalle. <br>
+          El análisis legal demora aprox. <strong>48hs hábiles</strong>.
+        </p>
+
+        <div class="buttons-column">
+          <a routerLink="/consultar-tramite" class="btn-primary">
+            Consultar Estado
+          </a>
+          <a routerLink="/" class="btn-secondary">
+            Volver al Inicio
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
 
 </div>

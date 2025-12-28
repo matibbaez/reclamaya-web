@@ -1,8 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { CardComponent } from '../../components/card/card';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { TerminosModalComponent } from '../../components/terminos-modal/terminos-modal';
 
 // Servicios
@@ -12,7 +11,7 @@ import { NotificacionService } from '../../services/notificacion';
 @Component({
   selector: 'app-iniciar-reclamo',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardComponent, TerminosModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TerminosModalComponent],
   templateUrl: './iniciar-reclamo.html',
   styleUrl: './iniciar-reclamo.scss'
 })
@@ -28,9 +27,8 @@ export class IniciarReclamoComponent implements OnInit {
   // --- VARIABLES DE ESTADO ---
   mostrarTerminos = true; 
   isLoading = false;
-  pasoActual = 0; 
-  isSubmitted = false;
-
+  pasoActual = 0; // 0: Selección de Rol, 1: Formulario
+  
   // Lista de Aseguradoras
   aseguradoras = [
     'Federacion Patronal', 'Allianz', 'Zurich', 'San Cristobal', 'La Caja Seguros',
@@ -40,6 +38,7 @@ export class IniciarReclamoComponent implements OnInit {
     'El Norte', 'La Holando Sudamericana', 'Cooperacion Mutual', 'Otra'
   ];
 
+  // --- CONFIGURACIÓN DEL FORMULARIO ---
   reclamoForm = this.fb.group({
     // Datos Personales
     codigo_ref: [''],
@@ -57,7 +56,7 @@ export class IniciarReclamoComponent implements OnInit {
     hora_hecho: [''],
     lugar_hecho: [''],
     localidad: [''],
-    relato_hecho: [''], // Obligatorio si no hay seguro
+    relato_hecho: [''], 
 
     // Datos del Tercero
     aseguradora_tercero: ['', Validators.required],
@@ -65,25 +64,21 @@ export class IniciarReclamoComponent implements OnInit {
     patente_propia: [''], 
 
     // Archivos (Inicializados en null)
-    fileDNI: [null as File | null, Validators.required],
-    fileLicencia: [null as File | null],
-    fileCedula: [null as File | null],
-    fileSeguro: [null as File | null],
-    fileDenuncia: [null as File | null],
-    fileFotos: [null as File | null, Validators.required], 
-    fileMedicos: [null as File | null],
+    fileDNI: [null],
+    fileLicencia: [null],
+    fileCedula: [null],
+    fileSeguro: [null],
+    fileDenuncia: [null],
+    fileFotos: [null], 
+    fileMedicos: [null],
   });
 
   ngOnInit(): void {
+    // Detectar referidos desde la URL (ej: ?ref=MATIAS123)
     this.route.queryParams.subscribe((params: any) => {
-      console.log('👀 URL PARAMS DETECTADOS:', params);
-
       const referido = params['ref'];
       if (referido) {
-        console.log('🔗 REFERIDO ENCONTRADO:', referido);
         this.reclamoForm.patchValue({ codigo_ref: referido });
-      } else {
-        console.log('⚠️ No hay parámetro "ref" en la URL');
       }
     });
   }
@@ -93,7 +88,6 @@ export class IniciarReclamoComponent implements OnInit {
   // =========================================================
   aceptarTerminos() {
     this.mostrarTerminos = false;
-    this.notificacionService.showSuccess('Mandato aceptado. Podés cargar el reclamo.');
   }
 
   cancelarTerminos() {
@@ -104,23 +98,26 @@ export class IniciarReclamoComponent implements OnInit {
   // 🔄 LÓGICA DE PASOS Y ROLES
   // =========================================================
   seleccionarRol(rol: string) {
-    // Seteamos el rol
+    // 1. Seteamos el rol
     this.reclamoForm.patchValue({ rol_victima: rol });
     
+    // 2. Pre-configuramos el seguro según el rol
     if (rol !== 'Conductor') {
       this.reclamoForm.patchValue({ tiene_seguro: false });
     } else {
       this.reclamoForm.patchValue({ tiene_seguro: true });
     }
 
+    // 3. Actualizamos validadores
     this.actualizarValidaciones(rol);
+    
+    // 4. Avanzamos de paso
     this.pasoActual = 1;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   volverAStep1() {
     this.pasoActual = 0;
-    this.reclamoForm.reset();
   }
 
   toggleSeguro(checked: boolean) {
@@ -129,14 +126,19 @@ export class IniciarReclamoComponent implements OnInit {
   }
 
   // =========================================================
-  // CEREBRO DE VALIDACIONES 
+  // 🧠 CEREBRO DE VALIDACIONES DINÁMICAS
   // =========================================================
   actualizarValidaciones(rol: string) {
     const c = this.reclamoForm.controls;
     const tieneSeguro = this.reclamoForm.get('tiene_seguro')?.value;
 
-    // 1. Limpiamos validadores específicos
-    const camposOpcionales = ['patente_propia', 'patente_tercero', 'relato_hecho', 'fecha_hecho', 'lugar_hecho', 'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 'fileMedicos'];
+    // 1. Limpiamos validadores condicionales para empezar de cero
+    const camposOpcionales = [
+      'patente_propia', 'patente_tercero', 'relato_hecho', 
+      'fecha_hecho', 'lugar_hecho', 'hora_hecho',
+      'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 'fileMedicos'
+    ];
+    
     camposOpcionales.forEach(key => {
         // @ts-ignore
         c[key]?.clearValidators();
@@ -146,7 +148,7 @@ export class IniciarReclamoComponent implements OnInit {
 
     // 2. Aplicamos reglas según el caso
 
-    // CASO A: CONDUCTOR CON SEGURO
+    // --- CASO A: CONDUCTOR CON SEGURO ---
     if (rol === 'Conductor' && tieneSeguro) {
         c.patente_propia.setValidators([Validators.required]);
         c.patente_tercero.setValidators([Validators.required]);
@@ -154,10 +156,9 @@ export class IniciarReclamoComponent implements OnInit {
         c.fileLicencia.setValidators([Validators.required]);
         c.fileCedula.setValidators([Validators.required]);
         c.fileSeguro.setValidators([Validators.required]);
-        c.fileDenuncia.setValidators([Validators.required]);
     }
     
-    // CASO B: CONDUCTOR SIN SEGURO (Genera PDF Carta)
+    // --- CASO B: CONDUCTOR SIN SEGURO (Carta de No Seguro) ---
     else if (rol === 'Conductor' && !tieneSeguro) {
         c.patente_propia.setValidators([Validators.required]);
         c.patente_tercero.setValidators([Validators.required]);
@@ -171,21 +172,24 @@ export class IniciarReclamoComponent implements OnInit {
         c.lugar_hecho.setValidators([Validators.required]);
     }
 
-    // CASO C: PEATÓN O ACOMPAÑANTE
+    // --- CASO C: PEATÓN O ACOMPAÑANTE ---
     else {
         c.patente_tercero.setValidators([Validators.required]);
+        
+        // Necesitamos detalles del hecho sí o sí
         c.relato_hecho.setValidators([Validators.required]);
         c.fecha_hecho.setValidators([Validators.required]);
         c.lugar_hecho.setValidators([Validators.required]);
-        
-        c.fileMedicos.setValidators([Validators.required]); // Fundamental para lesiones
     }
+
+    // Las fotos siempre son obligatorias
+    c.fileFotos.setValidators([Validators.required]);
 
     this.reclamoForm.updateValueAndValidity();
   }
 
   // =========================================================
-  // MANEJO DE ARCHIVOS
+  // 📂 MANEJO DE ARCHIVOS
   // =========================================================
   onFileChange(event: any, controlName: string) {
     const file = event.target.files[0];
@@ -202,14 +206,12 @@ export class IniciarReclamoComponent implements OnInit {
   }
 
   // =========================================================
-  // ENVÍO DEL FORMULARIO
+  // 🚀 ENVÍO DEL FORMULARIO
   // =========================================================
   onSubmit() {
-    this.isSubmitted = true;
-
     if (this.reclamoForm.invalid) {
       this.reclamoForm.markAllAsTouched();
-      this.notificacionService.showError('Faltan datos obligatorios o archivos.');
+      this.notificacionService.showError('Faltan completar campos obligatorios o subir fotos.');
       return;
     }
 
@@ -232,14 +234,14 @@ export class IniciarReclamoComponent implements OnInit {
     if (v.patente_tercero) formData.append('patente_tercero', v.patente_tercero);
     if (v.patente_propia) formData.append('patente_propia', v.patente_propia);
     
-    // Datos del hecho (para carta o registro)
+    // Datos del hecho
     if (v.relato_hecho) formData.append('relato_hecho', v.relato_hecho);
     if (v.fecha_hecho) formData.append('fecha_hecho', v.fecha_hecho);
     if (v.hora_hecho) formData.append('hora_hecho', v.hora_hecho);
     if (v.lugar_hecho) formData.append('lugar_hecho', v.lugar_hecho);
     if (v.localidad) formData.append('localidad', v.localidad);
 
-    // 2. Archivos (Nombres exactos que espera el Controller de NestJS)
+    // 2. Archivos
     if (v.fileDNI) formData.append('fileDNI', v.fileDNI);
     if (v.fileLicencia) formData.append('fileLicencia', v.fileLicencia);
     if (v.fileCedula) formData.append('fileCedula', v.fileCedula);
@@ -253,19 +255,32 @@ export class IniciarReclamoComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
         
-        const codigo = res.codigo_seguimiento;
-        this.router.navigate(['/exito'], { queryParams: { codigo } });
+        // ✨ AQUÍ ESTÁ EL CAMBIO CLAVE ✨
+        // Navegamos a la página de éxito pasando los datos
+        this.router.navigate(['/exito'], { 
+          state: { 
+            codigo: res.codigo_seguimiento, 
+            nombre: this.reclamoForm.value.nombre 
+          } 
+        });
       },
       error: (err) => {
         this.isLoading = false;
         console.error(err);
-        this.notificacionService.showError('Ocurrió un error al enviar el reclamo. Intente nuevamente.');
+        this.notificacionService.showError('Hubo un error al enviar. Verificá tu conexión.');
       }
     });
+  }
+
+  getFileName(controlName: string): string {
+    const file = this.reclamoForm.get(controlName)?.value;
+    if (file && file instanceof File) {
+      return file.name;
+    }
+    return '';
   }
 
   // Getters para el HTML
   get esConductor(): boolean { return this.reclamoForm.get('rol_victima')?.value === 'Conductor'; }
   get tieneSeguro(): boolean { return this.reclamoForm.get('tiene_seguro')?.value === true; }
-  get pideDetallesHecho(): boolean { return !this.tieneSeguro || !this.esConductor; }
 }

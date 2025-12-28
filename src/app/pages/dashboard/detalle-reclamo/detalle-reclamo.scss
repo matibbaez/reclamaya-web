@@ -1,146 +1,258 @@
+// Variables (Coherencia Visual)
+$bg-dark: #0f172a;
+$primary: #3b82f6;
+$accent: #f59e0b;
+$text-main: #1e293b;
+$text-muted: #64748b;
+
 .dashboard-container {
-  padding: 2rem;
-  max-width: 1200px;
+  padding-top: 120px; // Espacio para el navbar fijo
+  padding-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  max-width: 1400px;
   margin: 0 auto;
+  min-height: 100vh;
 }
 
-.header-actions {
-  display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;
-  
-  .btn-back {
-    background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer; font-size: 1rem;
-    &:hover { color: #0f172a; text-decoration: underline; }
+/* HEADER */
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+
+  .header-left {
+    .btn-back-link {
+      background: none; border: none; color: $text-muted;
+      display: flex; align-items: center; gap: 6px;
+      font-weight: 600; cursor: pointer; margin-bottom: 0.5rem;
+      &:hover { color: $primary; }
+      svg { width: 18px; }
+    }
+    h1 { font-size: 2rem; color: $text-main; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
   }
 
-  .status-wrapper {
-    display: flex; align-items: center; gap: 10px;
-    .label { font-weight: 600; color: #64748b; }
-    .status-badge {
-        padding: 6px 14px; border-radius: 20px; font-weight: 700; text-transform: uppercase; font-size: 0.85rem;
-        &.Enviado { background: #eff6ff; color: #1d4ed8; }
-        &.Recepcionado { background: #f3e8ff; color: #7e22ce; }
-        &.Iniciado { background: #e0f2fe; color: #0369a1; }
-        &.Negociacion { background: #ffedd5; color: #c2410c; }
-        &.Indemnizado { background: #dcfce7; color: #15803d; }
-        &.Rechazado { background: #fee2e2; color: #b91c1c; }
+  .header-right {
+    display: flex; align-items: center; gap: 12px;
+    background: white; padding: 8px 16px; border-radius: 50px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+    .status-label { font-size: 0.85rem; font-weight: 600; color: $text-muted; }
+    .status-pill {
+      font-weight: 800; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;
+      &.Enviado { color: #2563eb; }
+      &.Recepcionado { color: #7c3aed; }
+      &.Iniciado { color: #0284c7; }
+      &.Negociacion { color: #d97706; }
+      &.Indemnizado { color: #059669; }
+      &.Rechazado { color: #dc2626; }
     }
   }
 }
 
-/* GRID PRINCIPAL */
-.expediente-grid {
+/* GRID LAYOUT */
+.detail-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Izquierda ancho, Derecha angosto */
+  grid-template-columns: 2fr 1fr; /* Izquierda más ancha */
   gap: 2rem;
-  
-  @media (max-width: 900px) { grid-template-columns: 1fr; }
+  align-items: start;
 }
 
-/* TARJETAS */
+/* ESTILOS DE TARJETAS COMUNES */
 .card {
-  background: white; border-radius: 12px; padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
-  border: 1px solid #f1f5f9;
+  background: white; border-radius: 16px; padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 2rem;
+  border: 1px solid white;
 
-  h3 { margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.8rem; margin-bottom: 1rem; }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;
+    
+    h3 { font-size: 1.25rem; color: $text-main; margin: 0; font-weight: 700; }
+  }
 }
 
-.data-row {
-  display: flex; gap: 2rem; margin-bottom: 1rem;
-  div { flex: 1; }
+/* COLUMNA IZQUIERDA */
+.client-card {
+  .btn-whatsapp-small {
+    background: #ecfdf5; color: #059669; text-decoration: none;
+    padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+    &:hover { background: #d1fae5; }
+  }
 }
 
-label { font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-p { margin: 0; color: #334155; font-size: 1rem; font-weight: 500; }
-.big-text { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
-.highlight-blue { color: #4f46e5; font-weight: 700; }
-
-.tag-row { display: flex; gap: 10px; margin-bottom: 1.5rem; }
-.tag { background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: #475569; }
-.tag.warning { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
-
-.data-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;
+.info-grid {
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); // Desktop: 2 columnas
+  gap: 1.5rem;
+  
+  .info-item {
+    label { display: block; font-size: 0.8rem; color: $text-muted; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+    p { margin: 0; font-size: 1rem; color: $text-main; font-weight: 500; word-break: break-word; } // break-word ayuda si el texto es muy largo
+    
+    .text-lg { font-size: 1.2rem; }
+    .text-blue { color: $primary; }
+    &.full { grid-column: 1 / -1; }
+  }
 }
 
-.relato-box {
-    background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #4f46e5;
-    p { font-style: italic; line-height: 1.6; }
+.productor-chip {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #f8fafc; padding: 6px 12px; border-radius: 50px; border: 1px solid #e2e8f0;
+  
+  .avatar { width: 28px; height: 28px; background: $accent; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+  span { font-weight: 600; font-size: 0.9rem; color: $text-main; }
 }
 
-/* LISTA DE ARCHIVOS */
-.file-list { display: flex; flex-direction: column; gap: 0.8rem; }
+.event-card {
+  .badges {
+    display: flex; gap: 8px; flex-wrap: wrap; // FIX: Permite que los botones bajen si no entran
+    .tag { background: #f1f5f9; color: $text-muted; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; white-space: nowrap; }
+    .tag.role { background: #eff6ff; color: $primary; }
+    .tag.insurance.no { background: #fff1f2; color: #e11d48; }
+  }
 
-.file-item {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 8px;
+  .divider { height: 1px; background: #f1f5f9; margin: 1rem 0; grid-column: 1 / -1; }
+
+  .plate {
+    display: inline-block; background: #e2e8f0; color: $text-main; font-family: monospace; font-weight: 700; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1;
+    &.own { background: #dbeafe; border-color: #bfdbfe; color: #1e40af; }
+  }
+
+  .relato-container {
+    margin-top: 2rem; background: #fffbeb; border: 1px solid #fcd34d; padding: 1.5rem; border-radius: 12px;
+    label { color: #92400e; display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.85rem; }
+    .relato-text { font-style: italic; color: #78350f; line-height: 1.6; }
+  }
+}
+
+/* COLUMNA DERECHA */
+.admin-card {
+  background: $bg-dark; color: white; border: none;
+  
+  .admin-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+    h3 { color: $text-main; border: none; padding: 0; margin: 0; }
+    .admin-badge { background: rgba(255,255,255,0.2); font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 700; }
+    .admin-badge.tramitador { background-color: #4f46e5; }
+  }
+  
+  .admin-hint { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1rem; }
+
+  .status-actions {
+    display: flex; flex-direction: column; gap: 8px;
+    
+    .btn-status-option {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8); padding: 10px; border-radius: 8px;
+      text-align: left; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 10px; font-weight: 600;
+
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+
+      &:hover { background: rgba(255,255,255,0.1); color: white; }
+      
+      &.active {
+        background: $accent; color: $bg-dark; border-color: $accent;
+        .dot { background: $bg-dark; }
+      }
+    }
+  }
+}
+
+/* DOCUMENTACIÓN (ARREGLADO DEFINITIVO) */
+.docs-card {
+  // 👇 AQUÍ ESTÁ EL FIX: Le ponemos color explícito al h3
+  h3 { 
+    margin-top: 0;
+    margin-bottom: 0.5rem; 
+    color: $text-main !important; // Fuerza el color oscuro (#1e293b)
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+
+  .subtitle { 
+    color: $text-muted; 
+    font-size: 0.9rem; 
+    margin-top: 0; 
+    margin-bottom: 1.5rem; 
+    font-weight: 500;
+  }
+  
+  .file-list { display: flex; flex-direction: column; gap: 0.8rem; }
+
+  .file-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px; border-radius: 10px; border: 1px solid #f1f5f9;
     cursor: pointer; transition: all 0.2s;
+    background: white; /* Asegura fondo blanco */
+
+    &:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateX(3px); }
+
+    .file-icon { font-size: 1.5rem; }
     
-    &:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateX(5px); }
-
-    .icon { font-size: 1.5rem; }
-    .meta { 
-        flex: 1; display: flex; flex-direction: column; 
-        span { font-weight: 600; color: #334155; }
-        small { color: #64748b; font-size: 0.8rem; }
+    .file-data {
+      flex: 1; display: flex; flex-direction: column;
+      
+      /* Aseguramos que el texto interno también sea oscuro */
+      span { font-weight: 600; font-size: 0.95rem; color: $text-main; }
+      small { color: $text-muted; font-size: 0.8rem; }
     }
-    .arrow { color: #cbd5e1; font-weight: 700; }
+    .action-icon { opacity: 0.5; color: $text-muted; }
 
-    &.highlight { border-color: #c7d2fe; background: #eef2ff; }
-    &.alert { border-color: #fecaca; background: #fef2f2; }
-}
-
-/* ZONA ADMIN */
-.admin-zone {
-    border: 2px solid #e2e8f0;
-    
-    .action-buttons {
-        display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem;
-    }
-
-    .btn-status {
-        background: white; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px;
-        cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #64748b;
-        transition: all 0.2s;
-
-        &:hover { background: #f1f5f9; }
-        &.active { background: #0f172a; color: white; border-color: #0f172a; }
-    }
-}
-
-.whatsapp-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 4px;
-}
-
-.btn-whatsapp {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #25d366; // El verde oficial de WhatsApp
-  color: white;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  &:hover {
-    background: #128c7e;
-    transform: scale(1.05);
+    &.highlight { background: #eff6ff; border-color: #bfdbfe; }
+    &.alert { background: #fef2f2; border-color: #fecaca; }
   }
 }
 
-.loading-state { text-align: center; padding: 4rem; color: #94a3b8; }
-.spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #4f46e5; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
+/* ASIGNACIÓN */
+.assignment-box {
+  background-color: #f1f5f9;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2e8f0;
+
+  .box-label { display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 0.5rem; }
+
+  .assign-row {
+    display: flex; gap: 0.5rem; margin-bottom: 0.5rem;
+    select { flex: 1; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.9rem; }
+    .btn-save-assign {
+      background-color: #1e293b; color: white; border: none;
+      padding: 0 1rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+      cursor: pointer; transition: background 0.2s;
+      &:hover { background-color: black; }
+    }
+  }
+
+  .current-assignee {
+    font-size: 0.85rem; color: #059669; display: flex; align-items: center; gap: 6px;
+    .dot-status { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; }
+  }
+}
+
+.loading-state, .empty-state { text-align: center; padding: 4rem; color: $text-muted; }
+.spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: $primary; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================================
+   MEDIA QUERIES (FIX MOBILE)
+   ========================================= */
+@media (max-width: 900px) {
+  .dashboard-container {
+    padding-left: 1rem; padding-right: 1rem; // Menos padding lateral
+  }
+
+  .detail-grid { grid-template-columns: 1fr; } // Todo a 1 columna
+
+  // FIX HEADER
+  .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .header-right { width: 100%; justify-content: space-between; }
+
+  // FIX DATOS (FECHA Y HORA)
+  .info-grid {
+    grid-template-columns: 1fr; // Ahora sí, 1 columna en la info
+    gap: 1rem;
+  }
+}
