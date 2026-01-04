@@ -15,6 +15,7 @@ $text-muted: #64748b;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: radial-gradient(circle at 50% -20%, #eff6ff 0%, #f8fafc 60%);
 }
 
 /* --- HERO SEARCH --- */
@@ -207,8 +208,23 @@ $text-muted: #64748b;
   
   /* Timeline Compacto en Móvil */
   .timeline-container { 
-    .step-label { font-size: 0.7rem; }
     .step-icon { width: 30px; height: 30px; font-size: 0.9rem; }
     .line { margin-bottom: 22px; } 
   }
+  
+  .timeline-container {
+      /* Asegura que no se rompa el layout */
+      align-items: flex-start; 
+      
+      .step {
+        width: 25%; /* Fuerza a que ocupen espacio igual */
+      }
+
+      .step-label {
+        font-size: 0.65rem;
+        text-align: center;
+        word-wrap: break-word; /* Si dice "Negociación" que no rompa todo */
+      }
+  }
 }
+

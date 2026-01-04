@@ -1,0 +1,201 @@
+// Variables copiadas de tu styles.scss para consistencia total
+$bg-dark: #0f172a;
+$bg-light: #f8fafc;
+$primary: #3b82f6;
+$accent: #f59e0b;
+$text-muted: #64748b;
+
+.steps-section {
+  padding: 6rem 0; // Mismo padding que tenías en inicio.scss
+  background-color: $bg-light;
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 800px; // Un poco más ancho para que respire
+  margin: 0 auto 4rem auto;
+
+  // Badge estilo "Pill" como el Hero
+  .badge {
+    display: inline-block;
+    background: white;
+    color: $primary;
+    font-weight: 700;
+    font-size: 0.85rem; // Tamaño estándar
+    padding: 6px 16px;
+    border-radius: 50px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  h2 {
+    font-family: 'Montserrat', sans-serif; // Aseguramos la fuente
+    font-size: 2.5rem; // IGUAL que en inicio.scss
+    font-weight: 800;
+    color: $bg-dark;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+
+    span { color: $accent; font-style: italic; } // El toque "Ya"
+  }
+
+  p {
+    font-size: 1.1rem; // IGUAL que en inicio.scss
+    color: $text-muted;
+    line-height: 1.6;
+  }
+}
+
+/* =========================================
+   MOBILE FIRST LAYOUT (Timeline)
+   ========================================= */
+.steps-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+// Línea Naranja conectora (Identidad de marca)
+.mobile-timeline-line {
+  position: absolute;
+  left: 28px; 
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: rgba($accent, 0.3); // Naranja suave
+  z-index: 0;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white; // Icono blanco siempre
+  
+  svg { width: 26px; height: 26px; }
+}
+
+.step-card {
+  flex: 1;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); // Shadow-md de tus variables
+  
+  // Número pequeño dentro de la card
+  .step-number {
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    display: block;
+    opacity: 0.5;
+  }
+
+  // Clases de color para el número
+  .text-blue { color: $primary; }
+  .text-orange { color: $accent; }
+  .text-green { color: #22c55e; }
+
+  h3 {
+    font-size: 1.3rem; // Consistente
+    font-weight: 700;
+    color: $bg-dark;
+    margin-bottom: 0.8rem;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $text-muted;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+/* =========================================
+   DESKTOP (Grid Cards)
+   ========================================= */
+@media (min-width: 900px) {
+  
+  .mobile-timeline-line { display: none; } 
+
+  .steps-wrapper {
+    flex-direction: row;
+    gap: 2rem;
+    align-items: stretch;
+  }
+
+  .step-item {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .step-icon-col {
+    margin-bottom: -28px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); // Sombra más fuerte al icono
+    
+    svg { width: 32px; height: 32px; }
+  }
+
+  .step-card {
+    width: 100%;
+    height: 100%;
+    padding: 3.5rem 2rem 2.5rem 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    h3 { margin-bottom: 1rem; font-size: 1.4rem; }
+  }
+
+  // Hover Effect
+  .step-item:hover .step-card {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); // Shadow-lg
+  }
+}
+
+/* =========================================
+   RESPONSIVE (Ajustes finos para móvil)
+   ========================================= */
+@media (max-width: 768px) {
+  .section-header h2 {
+    font-size: 2rem; // Ajuste proporcional (antes era 2.2rem en h1)
+  }
+  
+  .step-card {
+    padding: 1.5rem; // Un poco menos de padding en móvil
+  }
+}

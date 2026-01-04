@@ -108,7 +108,7 @@
   }
 
   .highlight {
-    color: var(--color-brand);
+    color: var(--color-accent);
     font-weight: 700;
   }
 
@@ -206,83 +206,211 @@
   &:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 }
 
-/* --- MENÚ DESPLEGABLE MÓVIL --- */
+/* =========================================================
+   MENÚ DESPLEGABLE MÓVIL - VERSIÓN FINAL (Hero Blue + Orange Brand)
+   ========================================================= */
 .mobile-menu-dropdown {
-  display: none;
-  position: absolute;
-  top: 70px;
+  position: fixed;
+  top: 0;
   left: 0;
   width: 100%;
-  background: var(--color-bg-dark);
-  border-top: 1px solid rgba(255,255,255,0.1);
+  height: 100vh;
+
+  /* 1. FONDO: Base Dark + Glow Azul (Igual al Hero Section) */
+  background-color: #0f172a; /* $bg-dark */
+  background-image:
+    /* Glow Azul Superior (Para continuidad con el Hero) */
+    radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.25) 0%, transparent 60%),
+    /* Sombra sutil abajo */
+    linear-gradient(to bottom, transparent, #0f172a);
+
+  backdrop-filter: blur(15px);
+  z-index: 999;
+
+  padding: 110px 2rem 2rem 2rem;
+  display: flex;
   flex-direction: column;
-  padding-bottom: 1rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  transform-origin: top;
-  animation: slideDown 0.3s ease-out forwards;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow-y: auto;
 
-  &.abierto { display: flex; }
+  /* Estado Inicial */
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 
-  a {
-    padding: 1rem 2rem;
-    color: rgba(255, 255, 255, 0.8);
+  /* Hijos ocultos */
+  & > * { opacity: 0; transform: translateY(30px); transition: all 0.4s ease-out; }
+
+  /* --- ESTADO ABIERTO --- */
+  &.abierto {
+    opacity: 1;
+    visibility: visible;
+    & > * { opacity: 1; transform: translateY(0); }
+
+    /* Cascada de aparición */
+    a:nth-child(1) { transition-delay: 0.1s; }
+    a:nth-child(2) { transition-delay: 0.15s; }
+    a:nth-child(3) { transition-delay: 0.2s; }
+    .divider       { transition-delay: 0.25s; }
+    a.highlight-mobile:nth-of-type(1) { transition-delay: 0.3s; }
+    a.highlight-mobile:nth-of-type(2) { transition-delay: 0.35s; }
+    a.highlight-mobile:nth-of-type(3) { transition-delay: 0.4s; }
+    .actions-mobile { transition-delay: 0.45s; }
+  }
+
+  /* --- LINKS PRINCIPALES --- */
+  a:not(.highlight-mobile):not(.btn-mobile-login):not(.btn-mobile-logout) {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem; /* Letra Gigante */
+    font-weight: 800;
+    color: white;
     text-decoration: none;
-    border-left: 3px solid transparent;
-    font-size: 1rem;
+    padding: 10px 0;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    transition: all 0.3s;
 
-    &:hover, &:active {
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-      border-left-color: var(--color-accent);
+    /* Línea lateral NARANJA */
+    &::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 0%;
+      width: 4px;
+      background: #f59e0b; /* $accent - NARANJA PURO */
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+
+    /* HOVER / ACTIVE: ESTALLIDO NARANJA */
+    &:hover, &.active {
+      color: #f59e0b; /* Texto Naranja */
+      padding-left: 10px;
+      /* Glow Naranja Intenso */
+      text-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+
+      &::before {
+         height: 60%;
+         opacity: 1;
+         left: -12px;
+      }
     }
   }
 
+  /* --- SEPARADOR (Con toque naranja) --- */
   .divider {
+    width: 100%;
     height: 1px;
-    background: rgba(255,255,255,0.1);
-    margin: 0.5rem 1.5rem;
+    /* Degradado de Naranja a Transparente */
+    background: linear-gradient(to right, rgba(245, 158, 11, 0.5), transparent);
+    margin: 2.5rem 0 2rem 0;
   }
 
+  /* --- LINKS SECUNDARIOS --- */
   .highlight-mobile {
-    color: var(--color-accent);
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s;
+
+    /* Bullet point naranja */
+    &::before {
+        content: '•';
+        color: #f59e0b;
+        margin-right: 10px;
+        font-size: 1.5rem;
+        line-height: 0;
+        opacity: 0.5; /* Siempre visible pero tenue */
+        transform: translateX(0);
+        transition: all 0.3s;
+    }
+
+    &:hover, &.active {
+      color: white;
+      padding-left: 5px;
+      &::before { 
+        opacity: 1; 
+        color: #f59e0b; 
+        text-shadow: 0 0 10px #f59e0b;
+      }
+    }
   }
 
+  /* --- BOTONES --- */
   .actions-mobile {
-    margin-top: 1rem;
-    padding: 0 2rem;
+    margin-top: auto;
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
 
+  /* Botón Login: NARANJA TOTAL */
   .btn-mobile-login {
     text-align: center;
-    background: white;
-    color: var(--color-bg-dark) !important;
-    font-weight: 700;
-    border-radius: 8px;
-    padding: 12px;
+    background: linear-gradient(135deg, #f59e0b, #d97706); /* Gradient Amber */
+    color: white !important;
+    font-weight: 800;
+    font-size: 1.2rem;
+    border-radius: 16px;
+    padding: 16px;
+    text-decoration: none;
+    box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
+    transition: all 0.3s;
+
+    &:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.6);
+        background: linear-gradient(135deg, #fbbf24, #f59e0b); /* Más brillante al hover */
+    }
   }
 
+  /* Botón Logout */
   .btn-mobile-logout {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--color-danger); /* Asegúrate de tener esta variable o usa #ef4444 */
-    border: 1px solid var(--color-danger);
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
+    background: rgba(239, 68, 68, 0.05);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 14px;
+    border-radius: 16px;
+    font-weight: 700;
     width: 100%;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
-    
-    svg { width: 20px; height: 20px; }
+    font-size: 1rem;
+    transition: all 0.2s;
+
+    svg { width: 22px; height: 22px; }
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+    }
   }
 }
 
+/* Landscape Fix */
+@media (max-height: 600px) {
+    .mobile-menu-dropdown {
+        padding-top: 80px;
+        a:not(.highlight-mobile) { font-size: 1.8rem; }
+        .divider { margin: 1.5rem 0; }
+    }
+}
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }

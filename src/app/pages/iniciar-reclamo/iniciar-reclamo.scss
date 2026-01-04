@@ -296,14 +296,45 @@ input:checked + .slider:before { transform: translateX(22px); }
 .btn-primary { padding: 10px 20px; background: $primary; color: white; border-radius: 8px; text-decoration: none; }
 
 /* --- RESPONSIVE MOBILE --- */
+/* --- RESPONSIVE MOBILE --- */
 @media (max-width: 900px) {
-  .split-layout { flex-direction: column; }
-  .side-panel {
-    width: 100%; height: auto; position: relative; padding: 6rem 1.5rem 2rem 1.5rem;
-    .steps-vertical, .trust-badge { display: none; } /* Ocultamos decoracion en móvil */
+  .split-layout { 
+    flex-direction: column; 
   }
-  .main-content { width: 100%; padding: 3rem 1.5rem; }
-  .grid-2 { grid-template-columns: 1fr; }
+
+  .side-panel {
+    width: 100%; 
+    height: auto; 
+    position: relative; 
+    
+    /* CAMBIO CLAVE: Aumentamos de 6rem a 9rem */
+    /* Esto baja el contenido para que no lo tape el navbar */
+    padding: 9rem 1.5rem 3rem 1.5rem; 
+    
+    .steps-vertical, .trust-badge { 
+      display: none; 
+    } 
+
+    /* TIP EXTRA: Centrar los títulos en mobile queda más prolijo */
+    h2 {
+        text-align: center;
+        font-size: 2rem; /* Un pelín más chico para que no rompa en pantallas angostas */
+    }
+    
+    .panel-desc {
+        text-align: center;
+        margin-bottom: 2rem; /* Reducimos margen inferior para que el form suba un poco */
+    }
+  }
+
+  .main-content { 
+    width: 100%; 
+    padding: 2rem 1.5rem 4rem 1.5rem; /* Ajusté el padding top del contenido también */
+  }
+
+  .grid-2 { 
+    grid-template-columns: 1fr; 
+  }
 }
 
 /* ITEM DE ARCHIVO INDIVIDUAL */
@@ -423,4 +454,45 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.input-modern {
+  /* ... tus estilos de base ... */
+  border: 1px solid #cbd5e1;
+  transition: all 0.2s;
+
+  /* ERROR STATE */
+  &.error-border {
+    border-color: #ef4444 !important;
+    background-color: #fff5f5;
+    animation: shake 0.4s ease-in-out;
+  }
+}
+
+/* Para los contenedores de archivos con error */
+.file-box.error-border {
+    border: 1px solid #ef4444 !important;
+    background-color: #fff5f5 !important;
+}
+
+/* MENSAJE DE ERROR TEXTUAL */
+.error-msg {
+  color: #ef4444;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 4px;
+  display: block;
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Animaciones */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
 }

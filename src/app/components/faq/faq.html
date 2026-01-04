@@ -2,9 +2,9 @@
   <div class="container">
     
     <div class="section-header">
-      <div class="pill-label">Dudas Comunes</div>
+      <span class="badge">Dudas Comunes</span>
       <h2>Preguntas Frecuentes</h2>
-      <p>Resolvemos tus inquietudes para que inicies tu reclamo con confianza.</p>
+      <p>Resolvemos tus inquietudes para que inicies tu reclamo con total confianza.</p>
     </div>
 
     <div class="faq-list">
@@ -13,12 +13,19 @@
            (click)="toggleFaq(i)">
         
         <div class="faq-head">
-          <span>{{ item.pregunta }}</span>
-          <div class="icon-plus"></div>
+          <span class="question-text">{{ item.pregunta }}</span>
+          
+          <div class="icon-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
         </div>
         
         <div class="faq-body" [class.show]="faqOpen === i">
-          <p>{{ item.respuesta }}</p>
+          <div class="body-content">
+            <p>{{ item.respuesta }}</p>
+          </div>
         </div>
 
       </div>

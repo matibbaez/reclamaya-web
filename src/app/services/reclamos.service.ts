@@ -8,36 +8,27 @@ export interface IReclamo {
   nombre: string;
   dni: string;
   email: string;
-  telefono: string; 
   codigo_seguimiento: string;
   estado: string;
   fecha_creacion: string;
+  
   rol_victima: string;
-
-  // Siniestro
-  tiene_seguro?: boolean;
+  tiene_seguro: boolean;
+  
   aseguradora_tercero?: string;
   patente_tercero?: string;
   patente_propia?: string;
+  
   relato_hecho?: string;
   fecha_hecho?: string;
-  hora_hecho?: string;
+  
+  hora_hecho?: string;   
+  in_itinere?: boolean;  
+  posee_art?: boolean;   
+
   lugar_hecho?: string;
   localidad?: string;
-
-  // Relación con Usuario (Productor)
-  usuario_creador?: {
-    id: string;
-    nombre: string;
-    email: string;
-  };
-
-  // 👇 NUEVO CAMPO: TRAMITADOR (ABOGADO)
-  tramitador?: {
-    id: string;
-    nombre: string;
-    email: string;
-  };
+  telefono?: string;
 
   // Archivos
   path_dni?: string;
@@ -47,6 +38,10 @@ export interface IReclamo {
   path_denuncia?: string;
   path_fotos?: string;
   path_medicos?: string;
+
+  // Relaciones
+  tramitador?: { id: string; nombre: string; email: string };
+  usuario_creador?: { id: string; nombre: string; email: string };
 }
 
 @Injectable({

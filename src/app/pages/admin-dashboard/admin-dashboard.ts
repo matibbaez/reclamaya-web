@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
@@ -14,108 +14,102 @@ export class AdminDashboardComponent implements OnInit {
 
   private reclamosService = inject(ReclamosService);
 
-  // --- VARIABLES DE ESTADO ---
+  // --- VARIABLES DE ESTADO (SIGNALS) ---
   fechaHoy = new Date();
-  isLoading = true;
+  isLoading = signal(true);
   
-  // Datos
-  reclamosOriginales: IReclamo[] = []; // La "Base de datos" en memoria
-  reclamosFiltrados: IReclamo[] = [];  // Lo que se ve en la tabla
+  // Fuente de verdad
+  reclamos = signal<IReclamo[]>([]);
 
-  // Filtros Activos
-  filtroTexto: string = '';
-  filtroEstado: string = ''; 
-  filtroRol: string = ''; 
-  ordenDescendente = true;
+  // Filtros (Signals reactivos)
+  filtroTexto = signal('');
+  filtroEstado = signal('');
+  filtroRol = signal('');
+  ordenDescendente = signal(true);
+
+  // --- LÓGICA REACTIVA (COMPUTED) ---
+  
+  // 1. Filtrado y Ordenamiento automático
+  // Se recalcula SOLO si cambia 'reclamos' o algún filtro
+  reclamosFiltrados = computed(() => {
+    const rawData = this.reclamos();
+    const texto = this.filtroTexto().toLowerCase();
+    const estado = this.filtroEstado();
+    const rol = this.filtroRol();
+    const descendente = this.ordenDescendente();
+
+    return rawData
+      .filter(r => {
+        const matchEstado = estado ? r.estado === estado : true;
+        const matchRol = rol ? r.rol_victima === rol : true;
+        const matchTexto = texto 
+          ? (r.nombre.toLowerCase().includes(texto) || 
+             r.dni.toString().includes(texto) ||
+             r.codigo_seguimiento.toLowerCase().includes(texto) ||
+             (r.aseguradora_tercero && r.aseguradora_tercero.toLowerCase().includes(texto)))
+          : true;
+        
+        return matchEstado && matchRol && matchTexto;
+      })
+      .sort((a, b) => {
+        const fechaA = new Date(a.fecha_creacion).getTime();
+        const fechaB = new Date(b.fecha_creacion).getTime();
+        return descendente ? fechaB - fechaA : fechaA - fechaB;
+      });
+  });
+
+  // 2. Métricas KPI (Cálculo optimizado)
+  // Calculamos esto una sola vez basado en la data original, no en la vista
+  kpis = computed(() => {
+    const data = this.reclamos();
+    return {
+      total: data.length,
+      // Ahora "Gestión Activa" abarca todo lo que no sea nuevo ni finalizado
+      gestionActiva: data.filter(r => 
+        ['Recepcionado', 'Iniciado', 'Negociacion', 'Indemnizando'].includes(r.estado)
+      ).length,
+      // Finalizados Éxito
+      finalizados: data.filter(r => r.estado === 'Indemnizado').length
+    };
+  });
 
   ngOnInit() {
     this.cargarDatos();
   }
 
-  // 1. CARGA INICIAL (Trae todo para que los KPIs funcionen)
   cargarDatos() {
-    this.isLoading = true;
+    this.isLoading.set(true);
     
-    // Llamamos sin filtros al backend para tener la data completa
     this.reclamosService.findAll().subscribe({
       next: (data) => {
-        this.reclamosOriginales = data as IReclamo[];
-        this.aplicarFiltros(); // Aplica filtros iniciales (o ninguno)
-        this.isLoading = false;
+        this.reclamos.set(data as IReclamo[]);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Error cargando reclamos', err);
-        this.isLoading = false;
+        this.isLoading.set(false);
       }
     });
   }
 
-  // 2. MOTOR DE FILTRADO UNIFICADO
-  aplicarFiltros() {
-    let resultado = [...this.reclamosOriginales];
+  // --- EVENTOS DEL HTML (Setters simples) ---
 
-    // A. Filtro por Estado (Dropdown)
-    if (this.filtroEstado) {
-      resultado = resultado.filter(r => r.estado === this.filtroEstado);
-    }
-
-    // B. Filtro por Rol (Dropdown)
-    if (this.filtroRol) {
-      resultado = resultado.filter(r => r.rol_victima === this.filtroRol);
-    }
-
-    // C. Filtro por Texto (Buscador)
-    if (this.filtroTexto) {
-      const termino = this.filtroTexto.toLowerCase();
-      resultado = resultado.filter(r => 
-        r.nombre.toLowerCase().includes(termino) || 
-        r.dni.toString().includes(termino) ||
-        r.codigo_seguimiento.toLowerCase().includes(termino) ||
-        (r.aseguradora_tercero && r.aseguradora_tercero.toLowerCase().includes(termino))
-      );
-    }
-
-    // D. Ordenamiento
-    resultado.sort((a, b) => {
-      const fechaA = new Date(a.fecha_creacion).getTime();
-      const fechaB = new Date(b.fecha_creacion).getTime();
-      return this.ordenDescendente ? fechaB - fechaA : fechaA - fechaB;
-    });
-
-    this.reclamosFiltrados = resultado;
+  filtrarGlobal(event: Event) {
+    const valor = (event.target as HTMLInputElement).value;
+    this.filtroTexto.set(valor);
   }
 
-  // --- EVENTOS DEL HTML ---
-
-  // Buscador (Input text)
-  filtrarGlobal(event: any) {
-    this.filtroTexto = event.target.value;
-    this.aplicarFiltros();
+  cambiarEstado(event: Event) {
+    const valor = (event.target as HTMLSelectElement).value;
+    this.filtroEstado.set(valor);
   }
 
-  // Select de Estado
-  cambiarEstado(event: any) {
-    this.filtroEstado = event.target.value;
-    this.aplicarFiltros();
+  cambiarRol(event: Event) {
+    const valor = (event.target as HTMLSelectElement).value;
+    this.filtroRol.set(valor);
   }
 
-  // Select de Rol
-  cambiarRol(event: any) {
-    this.filtroRol = event.target.value;
-    this.aplicarFiltros();
-  }
-
-  // Botón de Ordenar
   alternarOrden() {
-    this.ordenDescendente = !this.ordenDescendente;
-    this.aplicarFiltros();
-  }
-
-  // --- HELPERS PARA EL HTML ---
-
-  // Cuenta totales para las tarjetas de arriba (KPIs)
-  contarPorEstado(estado: string): number {
-    // Usamos 'reclamosOriginales' para que el KPI no cambie si filtro la tabla
-    return this.reclamosOriginales.filter(r => r.estado === estado).length;
+    this.ordenDescendente.update(val => !val);
   }
 }

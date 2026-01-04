@@ -1,80 +1,105 @@
-// Importá tus variables globales si es necesario, o usalas directamente si están en styles.scss
-$bg-light: #f8fafc;
+// Variables copiadas para consistencia
 $bg-dark: #0f172a;
+$bg-light: #f8fafc;
 $primary: #3b82f6;
-$accent: #f59e0b;
+$accent: #f59e0b; // NARANJA RECLAMAYA
+$text-muted: #64748b;
 
 .faq-section {
   padding: 6rem 0;
-  background-color: white; // O $bg-light si preferís gris
+  background-color: white; 
 }
 
 .container {
-  max-width: 900px; // Un poco más angosto para lectura cómoda
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
-/* HEADER CENTRADO */
+/* HEADER (Igual que Steps para consistencia) */
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
 
-  .pill-label {
+  .badge {
     display: inline-block;
     background: rgba($primary, 0.1);
     color: $primary;
-    font-size: 0.85rem;
     font-weight: 700;
-    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+    padding: 6px 16px;
     border-radius: 50px;
     margin-bottom: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
 
   h2 {
     font-size: 2.5rem;
+    font-weight: 800;
     color: $bg-dark;
     margin-bottom: 1rem;
-    font-weight: 800;
   }
 
   p {
-    color: #64748b; // Gris intermedio
+    color: $text-muted;
     font-size: 1.1rem;
     max-width: 600px;
     margin: 0 auto;
+    line-height: 1.6;
   }
 }
 
-/* LISTA CENTRADA */
+/* LISTA DE PREGUNTAS */
 .faq-list {
-  margin: 0 auto; // ¡ESTO ES CLAVE PARA CENTRAR!
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem; // Espacio entre tarjetas
 }
 
 .faq-item {
-  background: #ffffff;
+  background: white;
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
+  // Borde sutil por defecto
+  border: 1px solid #e2e8f0; 
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
 
+  /* HOVER: Sombra suave y borde azulito */
   &:hover {
     border-color: rgba($primary, 0.3);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
   }
 
+  /* ESTADO ACTIVO (Abierto) */
   &.active {
-    border-color: $accent;
-    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15); // Sombra naranja suave
-    
-    .faq-head { color: $primary; }
-    .icon-plus::after { transform: rotate(90deg); }
+    border-color: rgba($accent, 0.5); // Borde naranja suave
+    box-shadow: 0 10px 25px -5px rgba($accent, 0.15); // Glow naranja
+    background: #fff;
+
+    // Barra lateral naranja de identidad
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: $accent;
+    }
+
+    .faq-head {
+      background: rgba($accent, 0.03); // Fondo naranja muuuuy sutil en el título
+      
+      .question-text { color: darken($accent, 10%); } // Texto naranja oscuro
+      
+      .icon-wrapper {
+        background: $accent;
+        color: white;
+        transform: rotate(180deg); // Flecha para arriba
+      }
+    }
   }
 }
 
@@ -83,42 +108,62 @@ $accent: #f59e0b;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: 700;
-  color: $bg-dark;
-  font-size: 1.1rem;
-}
+  transition: background 0.3s;
 
-.icon-plus {
-  width: 24px; height: 24px; 
-  position: relative;
-  flex-shrink: 0; // Evita que se aplaste en móvil
-  
-  &::before, &::after {
-    content: ''; position: absolute; background: currentColor;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    border-radius: 2px;
+  .question-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: $bg-dark;
+    transition: color 0.3s;
+    margin-right: 1rem;
   }
-  
-  &::before { width: 14px; height: 2px; }
-  &::after { width: 2px; height: 14px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+  .icon-wrapper {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #f1f5f9; // Gris clarito por defecto
+    color: $text-muted;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); // Efecto rebote suave
+
+    svg { width: 18px; height: 18px; }
+  }
 }
 
 .faq-body {
   max-height: 0;
-  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s;
-  padding: 0 2rem;
-  color: #475569;
-  line-height: 1.6;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+  background: white;
   
+  .body-content {
+    padding: 0 2rem 2rem 2rem; // Espacio interno
+    
+    p {
+      color: #475569;
+      line-height: 1.7;
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+
   &.show {
-    max-height: 500px; // Generoso por las dudas
-    padding-bottom: 2rem;
+    max-height: 300px; // Altura máxima esperada
   }
 }
 
 // RESPONSIVE
 @media (max-width: 768px) {
   .section-header h2 { font-size: 2rem; }
-  .faq-head { padding: 1.2rem; font-size: 1rem; }
-  .faq-body { padding: 0 1.2rem; }
+  
+  .faq-head { 
+    padding: 1.25rem 1.5rem; 
+    
+    .question-text { font-size: 1rem; }
+  }
+  
+  .faq-body .body-content { padding: 0 1.5rem 1.5rem 1.5rem; }
 }

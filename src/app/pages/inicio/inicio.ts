@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FaqComponent } from '../../components/faq/faq';
+import { StepsSectionComponent } from '../../components/steps-section/steps-section'; // <--- IMPORTANTE
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, RouterModule, FaqComponent],
+  imports: [CommonModule, RouterModule, FaqComponent, StepsSectionComponent],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })

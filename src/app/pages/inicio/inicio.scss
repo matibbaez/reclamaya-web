@@ -27,6 +27,12 @@ $text-light: #f1f5f9;
   margin-top: 2.5rem
 }
 
+.container-revoca {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
 /* =========================================
    1. HERO SECTION (DARK MODE)
    ========================================= */
@@ -174,65 +180,140 @@ h1 {
 }
 
 /* =========================================
-   2. STEPS SECTION
+   2. STEPS SECTION (RENOVADO)
    ========================================= */
 .steps-section {
-  padding: 6rem 0;
+  padding: 8rem 0;
   background-color: $bg-light;
+  position: relative;
+  overflow: hidden; // Para decoraciones que salgan
 }
 
 .section-header {
-  margin-bottom: 4rem;
-  h2 { font-size: 2.5rem; font-weight: 700; color: $bg-dark; margin-bottom: 0.5rem; }
-  p { font-size: 1.1rem; color: lighten($bg-dark, 40%); }
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: 2;
   
-  .brand-text { font-weight: 700; }
-  .accent { color: $accent; font-style: italic; }
-  &.center { text-align: center; }
-  &.left { text-align: left; }
+  h2 { 
+    font-size: 2.8rem; 
+    font-weight: 800; 
+    color: $bg-dark; 
+    margin-bottom: 1rem; 
+    letter-spacing: -1px;
+  }
+  
+  // Una pequeña línea decorativa bajo el título
+  &::after {
+    content: ''; display: block; width: 60px; height: 4px;
+    background: $accent; margin: 1.5rem auto 0 auto; border-radius: 2px;
+  }
 }
 
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
+  position: relative; // Para la línea conectora
+  
+  /* LÍNEA CONECTORA (Desktop) */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 30%; // A la altura de los iconos
+    left: 15%;
+    right: 15%;
+    height: 2px;
+    background: repeating-linear-gradient(to right, #e2e8f0 0, #e2e8f0 10px, transparent 10px, transparent 20px);
+    z-index: 0;
+  }
 }
 
 .step-card {
   background: white;
-  padding: 2.5rem 2rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  padding: 3rem 2rem;
+  border-radius: 24px; // Más redondeado
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); // Sombra inicial sutil
+  border: 1px solid white; // Para el efecto hover
   position: relative;
-  transition: transform 0.3s;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
+  z-index: 1; // Sobre la línea
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Centrar todo
+  text-align: center;
 
-  &:hover { transform: translateY(-5px); }
-
+  /* Número gigante de fondo (más sutil) */
   .step-number {
     position: absolute;
-    top: -10px; right: -10px;
-    font-size: 5rem;
+    top: -15px; 
+    right: -10px;
+    font-size: 6rem;
     font-weight: 900;
-    color: rgba($bg-dark, 0.03);
-    pointer-events: none;
+    color: #f1f5f9; // Casi invisible
+    z-index: -1;
+    transition: transform 0.4s, color 0.4s;
   }
 
+  /* ICONO: Ahora con un "glow" */
   .card-icon {
-    width: 60px; height: 60px;
-    border-radius: 16px;
+    width: 80px; height: 80px;
+    border-radius: 50%; // Totalmente redondo
     display: flex; align-items: center; justify-content: center;
-    margin-bottom: 1.5rem;
-    
-    svg { width: 30px; height: 30px; }
+    margin-bottom: 2rem;
+    position: relative;
+    background: white;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); // Sombra propia para tapar la línea
+    z-index: 2;
 
-    &.blue { background: rgba($primary, 0.1); color: $primary; }
-    &.orange { background: rgba($accent, 0.1); color: darken($accent, 5%); }
-    &.green { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+    svg { width: 35px; height: 35px; transition: transform 0.3s; }
+
+    /* Colores específicos */
+    &.blue { color: $primary; border: 2px solid lighten($primary, 30%); }
+    &.orange { color: $accent; border: 2px solid lighten($accent, 30%); }
+    &.green { color: #10b981; border: 2px solid lighten(#10b981, 30%); }
   }
 
-  h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: $bg-dark; }
-  p { font-size: 0.95rem; color: lighten($bg-dark, 30%); line-height: 1.6; }
+  h3 { 
+    font-size: 1.4rem; 
+    font-weight: 800; 
+    margin-bottom: 1rem; 
+    color: $bg-dark; 
+  }
+  
+  p { 
+    font-size: 1rem; 
+    color: #64748b; 
+    line-height: 1.7; 
+  }
+
+  /* HOVER EFFECT: Elevación y Borde de color */
+  &:hover { 
+    transform: translateY(-10px); 
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+    border-color: rgba($primary, 0.1); // Borde azulito sutil
+
+    .step-number {
+      transform: scale(1.1) rotate(-5deg);
+      color: #e2e8f0; // Se oscurece un poco
+    }
+
+    .card-icon svg {
+      transform: scale(1.1);
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .steps-grid { 
+    grid-template-columns: 1fr; 
+    &::before { display: none; } // Sin línea en móvil
+  }
+  .step-card { 
+    margin-bottom: 1rem; 
+    align-items: flex-start; text-align: left;
+    .card-icon { margin-left: 0; }
+  }
 }
 
 /* =========================================

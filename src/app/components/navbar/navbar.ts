@@ -51,8 +51,13 @@ export class NavbarComponent implements OnInit {
       html: `
         <div class="swal-custom-content">
             <div class="icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 3h6a2 2 0 012 2v4" />
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16 17v4H8a2 2 0 01-2-2V5a2 2 0 012-2" />
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 12h9m0 0l-3-3m3 3l-3 3" />
                 </svg>
             </div>
             <h3>¿Cerrar Sesión?</h3>
