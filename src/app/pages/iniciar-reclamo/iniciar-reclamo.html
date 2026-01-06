@@ -198,6 +198,14 @@
                  <small class="error-msg">Formato de email incorrecto.</small>
               </div>
             </div>
+            
+            <div class="input-group full">
+              <label>CBU / CVU (Opcional)</label>
+              <input type="text" formControlName="cbu" class="input-modern" placeholder="Para depositar tu indemnización (22 dígitos)">
+              <div *ngIf="f['cbu'].invalid && (f['cbu'].dirty || f['cbu'].touched)">
+                 <small class="error-msg">Debe tener 22 números.</small>
+              </div>
+            </div>
           </div>
 
           <div class="form-section">

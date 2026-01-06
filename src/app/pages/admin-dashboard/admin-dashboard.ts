@@ -1,99 +1,85 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-// Importamos iconos para la UI
-import { LucideAngularModule, CheckCircle, Clock, Users, FileText, LayoutDashboard } from 'lucide-angular';
+import { Router, RouterModule } from '@angular/router';
+import { LucideAngularModule, Users, FileText, TrendingUp, ArrowRight, AlertCircle, Search, ArrowUpDown, Filter,} from 'lucide-angular';
 
-// Servicios e Interfaces
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
-import { UsersService, IUser } from '../../services/users.service';
-import { NotificacionService } from '../../services/notificacion';
+import { UsersService } from '../../services/users.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule, LucideAngularModule],
   templateUrl: './admin-dashboard.html',
-  styleUrl: './admin-dashboard.scss'
+  styleUrls: ['./admin-dashboard.scss']
 })
 export class AdminDashboardComponent implements OnInit {
 
   private reclamosService = inject(ReclamosService);
   private usersService = inject(UsersService);
-  private notificacionService = inject(NotificacionService);
+  public authService = inject(AuthService);
+  private router = inject(Router);
 
-  // --- VARIABLES DE ESTADO (SIGNALS) ---
-  fechaHoy = new Date();
+  // Iconos
+  readonly icons = { Users, FileText, TrendingUp, ArrowRight, AlertCircle, Search, Filter, arrowUp: ArrowUpDown };
+ 
+  ordenDescendente = signal(true);
+
+  // Estado UI
   isLoading = signal(true);
-  
-  // Control de Vistas (Tabs)
-  vistaActual = signal<'reclamos' | 'usuarios'>('reclamos');
+  fechaHoy = new Date();
 
-  // --- DATOS: RECLAMOS ---
-  reclamos = signal<IReclamo[]>([]);
+  // --- FILTROS Y BÚSQUEDA ---
   filtroTexto = signal('');
   filtroEstado = signal('');
   filtroRol = signal('');
-  ordenDescendente = signal(true);
 
-  // --- DATOS: USUARIOS PENDIENTES ---
-  usuariosPendientes = signal<IUser[]>([]);
+  // Datos Crudos
+  private reclamos = signal<IReclamo[]>([]);
+  private usuariosTotal = signal(0);
+  private usuariosPendientes = signal(0);
 
-  // --- ICONOS ---
-  icons = {
-    check: CheckCircle,
-    clock: Clock,
-    users: Users,
-    file: FileText,
-    dashboard: LayoutDashboard
-  };
+  // --- LÓGICA COMPUTADA ---
 
-  // --- LÓGICA REACTIVA (COMPUTED) ---
-  
-  // 1. Filtrado y Ordenamiento de Reclamos
+  // 1. KPI Metrics
+  stats = computed(() => {
+    const total = this.reclamos().length;
+    const nuevos = this.reclamos().filter(r => ['Enviado', 'Recepcionado'].includes(r.estado)).length;
+    
+    return {
+      reclamosTotales: total,
+      reclamosNuevos: nuevos,
+      usuariosTotales: this.usuariosTotal(),
+      pendientesAprobacion: this.usuariosPendientes()
+    };
+  });
+
+  // 2. LISTA FILTRADA (El corazón de la gestión)
   reclamosFiltrados = computed(() => {
-    const rawData = this.reclamos();
-    const texto = this.filtroTexto().toLowerCase();
+    const data = this.reclamos();
+    const txt = this.filtroTexto().toLowerCase();
     const estado = this.filtroEstado();
     const rol = this.filtroRol();
-    const descendente = this.ordenDescendente();
 
-    return rawData
+    return data
       .filter(r => {
-        const matchEstado = estado ? r.estado === estado : true;
-        const matchRol = rol ? r.rol_victima === rol : true;
-        const matchTexto = texto 
-          ? (r.nombre.toLowerCase().includes(texto) || 
-             r.dni.toString().includes(texto) ||
-             r.codigo_seguimiento.toLowerCase().includes(texto) ||
-             (r.aseguradora_tercero && r.aseguradora_tercero.toLowerCase().includes(texto)))
+        const matchesText = txt 
+          ? (r.nombre.toLowerCase().includes(txt) || 
+             r.dni.includes(txt) || 
+             r.codigo_seguimiento.toLowerCase().includes(txt))
           : true;
         
-        return matchEstado && matchRol && matchTexto;
+        const matchesEstado = estado ? r.estado === estado : true;
+        const matchesRol = rol ? r.rol_victima === rol : true;
+
+        return matchesText && matchesEstado && matchesRol;
       })
       .sort((a, b) => {
         const fechaA = new Date(a.fecha_creacion).getTime();
         const fechaB = new Date(b.fecha_creacion).getTime();
-        return descendente ? fechaB - fechaA : fechaA - fechaB;
+        return this.ordenDescendente() ? fechaB - fechaA : fechaA - fechaB;
       });
-  });
-
-  // 2. Métricas KPI (Incluye contador de solicitudes)
-  kpis = computed(() => {
-    const data = this.reclamos();
-    const solicitudes = this.usuariosPendientes().length;
-    
-    return {
-      total: data.length,
-      // "Gestión Activa": todo lo que no sea nuevo ni finalizado
-      gestionActiva: data.filter(r => 
-        ['Recepcionado', 'Iniciado', 'Negociacion', 'Indemnizando'].includes(r.estado)
-      ).length,
-      // Finalizados Éxito
-      finalizados: data.filter(r => r.estado === 'Indemnizado').length,
-      // Solicitudes de acceso pendientes
-      pendientes: solicitudes
-    };
   });
 
   ngOnInit() {
@@ -102,75 +88,40 @@ export class AdminDashboardComponent implements OnInit {
 
   cargarDatos() {
     this.isLoading.set(true);
-    
-    // Carga paralela de Reclamos y Usuarios
+
     const p1 = new Promise<void>((resolve) => {
       this.reclamosService.findAll().subscribe({
         next: (data) => {
           this.reclamos.set(data as IReclamo[]);
           resolve();
         },
-        error: (err) => {
-          console.error('Error cargando reclamos', err);
-          resolve();
-        }
+        error: () => resolve()
       });
     });
 
     const p2 = new Promise<void>((resolve) => {
-      this.usersService.getPendientes().subscribe({
-        next: (data) => {
-          this.usuariosPendientes.set(data);
+      this.usersService.getAll().subscribe({
+        next: (users) => {
+          this.usuariosTotal.set(users.length);
+          this.usuariosPendientes.set(users.filter(u => !u.isApproved).length);
           resolve();
         },
-        error: (err) => {
-          console.error('Error cargando usuarios', err);
-          resolve();
-        }
+        error: () => resolve()
       });
     });
 
-    // Cuando ambos terminen, quitamos el loading
     Promise.all([p1, p2]).then(() => this.isLoading.set(false));
   }
 
-  // --- ACCIONES DE USUARIOS ---
-
-  aprobarUsuario(user: IUser) {
-    if (!confirm(`¿Confirmas la aprobación de acceso para ${user.nombre}?`)) return;
-
-    this.usersService.aprobarUsuario(user.id).subscribe({
-      next: () => {
-        this.notificacionService.showSuccess(`Usuario ${user.nombre} aprobado.`);
-        // Recargar solo la lista de pendientes
-        this.usersService.getPendientes().subscribe(data => this.usuariosPendientes.set(data));
-      },
-      error: () => this.notificacionService.showError('Error al aprobar el usuario.')
-    });
-  }
-
-  // --- EVENTOS DEL HTML ---
-
-  cambiarVista(vista: 'reclamos' | 'usuarios') {
-    this.vistaActual.set(vista);
-  }
-
-  filtrarGlobal(event: Event) {
-    const valor = (event.target as HTMLInputElement).value;
-    this.filtroTexto.set(valor);
-  }
-
-  cambiarEstado(event: Event) {
-    const valor = (event.target as HTMLSelectElement).value;
-    this.filtroEstado.set(valor);
-  }
-
-  cambiarRol(event: Event) {
-    const valor = (event.target as HTMLSelectElement).value;
-    this.filtroRol.set(valor);
-  }
-
+  // --- ACCIONES ---
   alternarOrden() {
     this.ordenDescendente.update(val => !val);
   }
+  irAEquipo() { this.router.navigate(['/mi-equipo']); }
+  verDetalle(id: string) { this.router.navigate(['/reclamo', id]); }
+
+  // --- EVENTOS FILTROS ---
+  aplicarBusqueda(e: Event) { this.filtroTexto.set((e.target as HTMLInputElement).value); }
+  cambiarEstado(e: Event) { this.filtroEstado.set((e.target as HTMLSelectElement).value); }
+  cambiarRol(e: Event) { this.filtroRol.set((e.target as HTMLSelectElement).value); }
 }

@@ -1,573 +1,224 @@
-// =========================================
-// VARIABLES & THEME
-// =========================================
-$bg-dark: #0f172a;
+// VARIABLES
 $primary: #3b82f6;
-$accent: #f59e0b;
+$text-dark: #1e293b;
+$text-muted: #64748b;
+$bg-page: #f8fafc;
 $success: #10b981;
 $danger: #ef4444;
-$text-main: #1e293b;
-$text-muted: #64748b;
-$border-light: #e2e8f0;
+$border: #e2e8f0;
+$dark-panel: #1e293b; // Azul oscuro corporativo
 
 .dashboard-container {
-  padding: 100px 2rem 3rem 2rem; 
-  max-width: 1400px;
-  margin: 0 auto;
-  min-height: 100vh;
-  // font-family: 'Inter', system-ui, sans-serif;
+  padding: 100px 1rem 3rem 1rem;
+  max-width: 1200px; margin: 0 auto; min-height: 100vh;
+  background-color: $bg-page;
+  @media (min-width: 1024px) { padding: 120px 2rem 3rem 2rem; }
 }
 
-// =========================================
-// HEADER SECCION
-// =========================================
-.page-header {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1.5rem;
+/* HERO HEADER */
+.hero-header {
+  background: white; border-radius: 20px; padding: 2rem;
+  border: 1px solid $border; margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
 
-  .header-left {
-    display: flex; flex-direction: column; gap: 6px;
-
-    .btn-back-link {
-      background: none; border: none; 
-      color: #94a3b8; 
-      display: inline-flex; align-items: center; gap: 6px;
-      font-weight: 600; font-size: 0.85rem;
-      cursor: pointer; padding: 0; width: fit-content;
-      transition: color 0.2s;
-      
-      &:hover { color: $primary; transform: translateX(-3px); }
-      svg { width: 16px; }
+  .top-nav {
+    display: flex; justify-content: space-between; margin-bottom: 1.5rem;
+    .btn-back {
+      background: none; border: none; color: $text-muted; cursor: pointer;
+      display: flex; align-items: center; gap: 5px; font-weight: 600;
+      &:hover { color: $text-dark; }
     }
-    
-    h1 { 
-      margin: 0; line-height: 1;
-      margin-top: 1rem;
-      display: flex; flex-direction: column;
-      
-      .label-muted {
-        font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; 
-        font-weight: 700; letter-spacing: 1.5px; margin-bottom: 4px;
-      }
-      
-      .id-code {
-        font-size: 2.5rem; color: $text-main; font-weight: 800; 
-        letter-spacing: -1.5px; font-variant-numeric: tabular-nums;
-      }
+    .date-badge {
+      display: flex; align-items: center; gap: 6px; font-size: 0.85rem;
+      color: $text-muted; background: #f1f5f9; padding: 4px 12px; border-radius: 20px;
     }
   }
 
-  .header-right {
-    display: flex; align-items: center; gap: 12px;
-    background: white; padding: 8px 16px; border-radius: 50px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    border: 1px solid $border-light;
-
-    .status-label { font-size: 0.8rem; font-weight: 600; color: $text-muted; }
+  .hero-content {
+    display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;
+    h1 { font-size: 2rem; color: $text-dark; margin: 0 0 0.5rem 0; letter-spacing: -1px; }
     
-    .status-pill {
-      padding: 4px 10px; border-radius: 6px;
-      font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;
-      
-      &.Enviado       { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-      &.Recepcionado  { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
-      &.Iniciado      { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
-      &.Negociacion   { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
-      &.Indemnizando  { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-      &.Indemnizado   { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-      &.Rechazado     { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .meta-row {
+      display: flex; gap: 10px; align-items: center;
+      .id-badge { font-family: monospace; font-size: 1.1rem; color: $text-muted; font-weight: 600; }
+      .role-badge {
+        font-size: 0.75rem; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+        &.conductor { background: #eff6ff; color: $primary; }
+        &.peaton { background: #fff7ed; color: #f59e0b; }
+        &.acompanante { background: #ecfdf5; color: $success; }
+      }
+    }
+
+    .btn-whatsapp {
+      background: #25D366; color: white; border: none; padding: 10px 20px;
+      border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+      cursor: pointer; transition: transform 0.2s;
+      &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); }
     }
   }
 }
 
-@media (max-width: 600px) {
-  // Mantenemos el padding 2rem (32px) como pediste
-  .dashboard-container {
-    padding-left: 2rem; 
-    padding-right: 2rem;
+/* TIMELINE */
+.timeline-wrapper {
+  margin-top: 3rem; position: relative; padding: 0 10px;
+  .progress-bar {
+    position: absolute; top: 12px; left: 0; right: 0; height: 4px;
+    background: #e2e8f0; border-radius: 4px; z-index: 0;
+    .progress-fill { height: 100%; background: $primary; transition: width 0.5s ease; border-radius: 4px; }
   }
-
-  .page-header {
-    flex-direction: column; 
-    align-items: flex-start; // Todo alineado a la izquierda
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    
-    .header-left {
-      width: 100%;
-      
-      h1 .id-code {
-        // ACHICAMOS EL TEXTO PARA QUE ENTRE EN LOS MARGENES
-        font-size: 1.8rem; 
-        word-break: break-all; // Si el código es muy largo, que baje de línea
+  .steps-container {
+    display: flex; justify-content: space-between; position: relative; z-index: 1;
+    .step-item {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0.5; transition: all 0.3s; 
+      .step-dot {
+        width: 28px; height: 28px; border-radius: 50%; background: white;
+        border: 2px solid #cbd5e1; color: #cbd5e1;
+        display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;
+        transition: all 0.3s;
       }
-    }
-
-    .header-right {
-      width: 100%;
-      justify-content: space-between; // Pill a la derecha, label a la izquierda
-      padding: 10px 15px; // Un poco más cómodo al tacto
-    }
-  }
-}
-
-// =========================================
-// LAYOUT PRINCIPAL (GRID)
-// =========================================
-.detail-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px; 
-  gap: 2.5rem;
-  align-items: start;
-  position: relative;
-
-  .main-column {
-    display: flex; flex-direction: column; gap: 2rem;
-    position: relative; z-index: 1; min-width: 0;
-  }
-
-  .side-column {
-    display: flex; flex-direction: column; gap: 2rem;
-    position: relative; z-index: 10; min-width: 0;
-
-    @media (min-width: 1100px) {
-      position: sticky; top: 2rem;
-    }
-  }
-}
-
-// =========================================
-// TARJETA BASE (Diseño limpio)
-// =========================================
-.card {
-  background: white;
-  border-radius: 24px; // Bordes más redondeados
-  padding: 2.5rem;     // Más aire interno
-  border: 1px solid $border-light; // Borde sutil
-  box-shadow: 
-    0 10px 15px -3px rgba(0, 0, 0, 0.03),
-    0 4px 6px -2px rgba(0, 0, 0, 0.01);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  .card-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 2rem; border-bottom: 1px solid $border-light; padding-bottom: 1rem;
-    
-    h3 { 
-      font-size: 1.4rem; color: $text-main; margin: 0; 
-      font-weight: 800; letter-spacing: -0.5px;
-    }
-  }
-}
-
-// =========================================
-// SECCIÓN 1: CLIENTE
-// =========================================
-.client-card {
-  .btn-whatsapp-small {
-    background: #ecfdf5; color: #059669; border: none; cursor: pointer;
-    padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
-    display: flex; align-items: center; gap: 8px; transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
-
-    &:hover { 
-      background: #d1fae5; transform: translateY(-2px); 
-      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
-    }
-  }
-}
-
-.info-grid {
-  display: grid; 
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 2rem;
-  
-  .info-item {
-    label { 
-      display: block; font-size: 0.75rem; color: $text-muted; 
-      font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;
-    }
-    p { 
-      margin: 0; font-size: 1.05rem; color: $text-main; 
-      font-weight: 500; word-break: break-word; line-height: 1.4;
-    }
-    
-    .text-lg { font-size: 1.25rem; }
-    .text-blue { color: $primary; font-weight: 600; }
-    &.full { grid-column: 1 / -1; }
-  }
-}
-
-.productor-chip {
-  display: inline-flex; align-items: center; gap: 12px;
-  background: #f8fafc; padding: 8px 16px; border-radius: 50px; border: 1px solid $border-light;
-  
-  .avatar { 
-    width: 32px; height: 32px; background: $accent; color: white; border-radius: 50%; 
-    display: flex; align-items: center; justify-content: center; 
-    font-weight: 700; font-size: 0.9rem; 
-    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
-  }
-  span { font-weight: 600; font-size: 0.95rem; color: $text-main; }
-}
-
-// =========================================
-// SECCIÓN 2: HECHO
-// =========================================
-.event-card {
-  .badges {
-    display: flex; gap: 10px; flex-wrap: wrap; 
-    .tag { 
-      background: #f1f5f9; color: $text-muted; padding: 6px 12px; border-radius: 8px; 
-      font-weight: 600; font-size: 0.85rem; white-space: nowrap; border: 1px solid $border-light;
-    }
-    .tag.role { background: #eff6ff; color: $primary; border-color: #dbeafe; }
-    .tag.insurance.no { background: #fef2f2; color: $danger; border-color: #fee2e2; }
-  }
-
-  .divider { height: 1px; background: $border-light; margin: 0.5rem 0; grid-column: 1 / -1; }
-
-  .plate {
-    display: inline-block; background: #e2e8f0; color: $text-main; 
-    font-family: 'Roboto Mono', monospace; font-weight: 700; 
-    padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;
-    letter-spacing: 1px;
-    
-    &.own { background: #dbeafe; border-color: #bfdbfe; color: #1e40af; }
-  }
-
-  .relato-container {
-    margin-top: 2.5rem; background: #fffbeb; 
-    border: 1px solid #fcd34d; padding: 1.5rem; border-radius: 16px;
-    position: relative;
-    
-    label { 
-      color: #92400e; display: block; font-weight: 800; 
-      margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;
-    }
-    .relato-text { 
-      font-style: italic; color: #78350f; line-height: 1.6; font-size: 1rem;
-    }
-  }
-}
-
-// =========================================
-// SECCIÓN 3: LEGAJO (GRID SYSTEM)
-// =========================================
-.docs-card {
-  // Nota: Ya no se necesita margin-top porque usamos gap en .main-column
-  
-  .card-header {
-    border-bottom: none; padding-bottom: 0; margin-bottom: 0.5rem;
-    
-    h3 { margin: 0; }
-    .file-count { 
-      background: #f1f5f9; color: #64748b; 
-      padding: 6px 12px; border-radius: 20px; 
-      font-size: 0.8rem; font-weight: 700; border: 1px solid $border-light;
-    }
-  }
-
-  .subtitle { 
-    color: #94a3b8; font-size: 0.95rem; margin-bottom: 2rem; display: block; font-weight: 500;
-  }
-
-  .file-list-grid {
-    display: grid;
-    // Columnas responsive inteligentes
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
-    
-    .file-item {
-      display: flex; align-items: center; gap: 14px;
-      background: white;
-      border: 1px solid $border-light;
-      padding: 1.25rem;
-      border-radius: 16px;
-      cursor: pointer;
-      position: relative; 
-      transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-      
-      // Importante: Pointer events en los hijos desactivados para evitar el bug del getter (aunque ya lo arreglamos en TS, esto es buena práctica)
-      & > * { pointer-events: none; }
-
-      // Efecto Hover
-      &:hover {
-        border-color: $primary;
-        box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15); // Sombra azulada suave
-        transform: translateY(-4px);
-        
-        .file-icon { background: #eff6ff; color: $primary; }
-        .file-action { opacity: 1; color: $primary; transform: scale(1.1); }
-      }
-
-      .file-icon {
-        width: 48px; height: 48px;
-        background: #f8fafc; color: #64748b;
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        transition: all 0.2s;
-        flex-shrink: 0;
-      }
-
-      .file-info {
-        display: flex; flex-direction: column; flex: 1; overflow: hidden;
-        .file-name { 
-          font-weight: 700; font-size: 1rem; color: $text-main; 
-          white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-          margin-bottom: 2px;
-        }
-        .file-type { font-size: 0.8rem; color: #94a3b8; font-weight: 500;}
-      }
-
-      .file-action {
-        opacity: 0.3; color: #94a3b8; transition: all 0.2s;
-      }
-
-      // Estados condicionales
-      &.highlight {
-        background: #f0f9ff; border-color: #bae6fd;
-        .file-icon { background: #e0f2fe; color: #0284c7; }
-        &:hover { border-color: #0284c7; }
-      }
-      &.alert {
-        background: #fef2f2; border-color: #fecaca;
-        .file-icon { background: #fee2e2; color: $danger; }
-        &:hover { border-color: $danger; }
-      }
-    }
-
-    .empty-docs {
-      grid-column: 1 / -1;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 4rem; border: 2px dashed $border-light; border-radius: 16px; color: #94a3b8; gap: 1rem;
-      background: #f9fafb;
-    }
-  }
-}
-
-// =========================================
-// SECCIÓN LATERAL: ADMIN & GESTIÓN
-// =========================================
-.admin-card {
-  // Un degradado más sutil y moderno
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
-  color: white; border: none;
-  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.3);
-  
-  .admin-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
-    h3 { color: white; padding: 0; margin: 0; font-size: 1.3rem;}
-    .admin-badge { 
-      background: rgba(255,255,255,0.15); color: #60a5fa;
-      font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; 
-      text-transform: uppercase; font-weight: 800; letter-spacing: 1px;
-    }
-  }
-  
-  .admin-hint { color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.2rem; }
-
-  .status-actions {
-    display: flex; flex-direction: column; gap: 12px;
-    
-    .btn-status-option {
-      background: rgba(255,255,255,0.03); 
-      border: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.7); 
-      padding: 14px 18px; 
-      border-radius: 14px; 
-      text-align: left; cursor: pointer; transition: all 0.2s ease;
-      display: flex; align-items: center; gap: 14px; font-weight: 600; font-size: 0.95rem;
-
-      .dot { 
-        width: 10px; height: 10px; border-radius: 50%; 
-        background: rgba(255,255,255,0.2); transition: all 0.3s;
-        box-shadow: 0 0 0 2px rgba(255,255,255,0.05);
-      }
-
-      &:hover { 
-        background: rgba(255,255,255,0.1); 
-        color: white; 
-        border-color: rgba(255,255,255,0.3);
-        transform: translateX(4px);
-      }
-      
+      .step-label { font-size: 0.8rem; font-weight: 600; text-align: center; }
       &.active {
-        background: $accent; color: #000; border-color: $accent;
-        font-weight: 800;
-        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-        .dot { background: black; box-shadow: none; }
+        opacity: 1;
+        .step-dot { border-color: $primary; background: $primary; color: white; }
+        .step-label { color: $primary; }
+      }
+      &.current {
+        transform: scale(1.1);
+        .step-dot { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
       }
     }
   }
 }
 
-// ASIGNACIÓN DE ABOGADO
-.assignment-box {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;
-  padding: 1.25rem; margin-bottom: 2rem;
-
-  .box-label { display: block; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; letter-spacing: 0.5px; }
+/* GRID LAYOUT */
+.content-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 2rem; align-items: start;
+  @media (max-width: 1024px) { grid-template-columns: 1fr; }
 }
 
-.assigned-view {
-  display: flex; justify-content: space-between; align-items: center;
-  background: rgba(255,255,255,0.1); padding: 0.8rem 1rem; border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
+.card {
+  background: white; border-radius: 16px; border: 1px solid $border;
+  padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+    h3 { font-size: 1.1rem; color: $text-dark; margin: 0; display: flex; align-items: center; gap: 10px; }
+    .count-badge { background: #f1f5f9; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; color: $text-muted; font-weight: 700; }
+  }
+}
 
-  .tramitador-info {
+/* DETALLES */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+.field-box {
+  label { display: block; font-size: 0.75rem; color: $text-muted; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+  p { margin: 0; font-weight: 600; color: $text-dark; font-size: 0.95rem; }
+  .highlight { color: $primary; }
+  .plate { font-family: monospace; background: #e2e8f0; display: inline-block; padding: 4px 8px; border-radius: 6px; }
+}
+
+.divider { height: 1px; background: $border; margin: 1.5rem 0; }
+
+.relato-box {
+  background: #fffbeb; padding: 1rem; border-radius: 12px; border: 1px solid #fcd34d;
+  label { font-size: 0.75rem; color: #d97706; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 0.5rem; }
+  p { font-style: italic; color: #92400e; margin: 0; line-height: 1.5; }
+}
+
+.cbu-highlight {
+  margin-top: 1.5rem; background: #ecfdf5; border: 1px solid #6ee7b7;
+  padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem;
+  .icon-bank { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; }
+  .cbu-data { display: flex; flex-direction: column; label { font-size: 0.75rem; color: #047857; font-weight: 700; } span { font-family: monospace; font-size: 1.1rem; color: #064e3b; font-weight: 600; } }
+}
+
+/* FILES */
+.files-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;
+  .file-item {
+    border: 1px solid $border; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s;
+    &:hover { border-color: $primary; background: #eff6ff; .eye-icon { opacity: 1; color: $primary; } }
+    .icon-wrap { width: 36px; height: 36px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: $text-muted; }
+    .file-meta { flex: 1; display: flex; flex-direction: column; .name { font-size: 0.9rem; font-weight: 600; color: $text-dark; } .sub { font-size: 0.75rem; color: $text-muted; } }
+    .eye-icon { opacity: 0; transition: opacity 0.2s; }
+    &.active { border-color: $primary; background: #eff6ff; .icon-wrap { background: $primary; color: white; } }
+  }
+}
+
+/* ========================================= */
+/* PANEL DE GESTIÓN (MEJORADO)               */
+/* ========================================= */
+.admin-panel {
+  background: $dark-panel; color: white; border: none;
+  .panel-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1.5rem;
+    h3 { color: white; display: flex; gap: 10px; align-items: center; font-size: 1.1rem; }
+  }
+  
+  .section-label { display: block; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 0.8rem; }
+  
+  /* ESTADO 1: Tarjeta de Tramitador */
+  .tramitador-card {
+    background: rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;
+    display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.1);
+    
+    .tramitador-avatar { width: 40px; height: 40px; background: $primary; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .tramitador-info { flex: 1; display: flex; flex-direction: column; .name { font-weight: 600; font-size: 0.95rem; } .badge { font-size: 0.75rem; color: #94a3b8; } }
+    .btn-icon-edit { background: transparent; border: none; color: #60a5fa; cursor: pointer; padding: 5px; &:hover { color: white; background: rgba(255,255,255,0.1); border-radius: 6px; } }
+  }
+
+  /* ESTADO 2: Botón Pulse (Sin Asignar) */
+  .btn-assign-pulse {
+    width: 100%; padding: 12px; border-radius: 12px; background: rgba($primary, 0.15); 
+    border: 1px dashed $primary; color: #60a5fa; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s;
+    &:hover { background: $primary; color: white; border-style: solid; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+  }
+
+  /* ESTADO 3: Edición (Select) */
+  .edit-mode-box {
+    .custom-select {
+      width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom: 10px;
+      font-size: 0.9rem; color: $text-dark;
+    }
+    .actions-row {
+      display: flex; gap: 10px;
+      .btn-action {
+        flex: 1; padding: 8px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem;
+        &.cancel { background: rgba(255,255,255,0.1); color: white; &:hover { background: rgba(255,255,255,0.2); } }
+        &.save { background: $success; color: white; &:hover { background: darken($success, 5%); } }
+      }
+    }
+  }
+
+  .status-list {
+    display: flex; flex-direction: column; gap: 8px;
+    .status-opt {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1;
+      padding: 10px; border-radius: 10px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 0.9rem;
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; }
+      &:hover { background: rgba(255,255,255,0.1); color: white; }
+      &.active { background: $primary; border-color: $primary; color: white; .dot { background: white; } }
+      &.reject.active { background: $danger; border-color: $danger; }
+    }
+  }
+}
+
+.producer-card {
+  display: flex; flex-direction: column; gap: 10px; background: white; border: 1px solid $border; border-radius: 16px; padding: 1.2rem;
+  label { font-size: 0.75rem; color: $text-muted; font-weight: 700; text-transform: uppercase; }
+  .producer-row {
     display: flex; align-items: center; gap: 10px;
-    .avatar-small { 
-      width: 34px; height: 34px; background: $primary; color: white; 
-      border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-      font-size: 0.9rem; font-weight: 700; 
-    }
-    .name { font-weight: 600; color: white; font-size: 0.95rem; }
-  }
-  .btn-change-assign { 
-    background: none; border: none; color: #60a5fa; 
-    font-size: 0.85rem; font-weight: 600; cursor: pointer; 
-    &:hover { color: white; text-decoration: underline; } 
+    .avatar-prod { width: 36px; height: 36px; background: #f59e0b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .prod-info { display: flex; flex-direction: column; .name { font-weight: 700; color: $text-dark; font-size: 0.9rem; } .role { font-size: 0.75rem; color: $text-muted; } }
   }
 }
 
-.assign-row {
-  display: flex; gap: 8px; align-items: center;
-  
-  select {
-    flex: 1; padding: 0.75rem 1rem; 
-    border: 2px solid $border-light; border-radius: 10px; 
-    font-size: 0.95rem; font-weight: 500; color: #334155;
-    background-color: white; cursor: pointer; transition: all 0.2s;
-    appearance: none; 
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.5rem center;
-    background-repeat: no-repeat;
-    background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
-
-    &:hover { border-color: #cbd5e1; }
-    &:focus { border-color: $primary; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); }
-  }
-  
-  .actions-mini { display: flex; gap: 6px; }
-  .btn-save-icon, .btn-cancel-icon { 
-    width: 42px; height: 42px; border-radius: 10px; border: none; 
-    display: flex; align-items: center; justify-content: center; cursor: pointer; 
-    svg { width: 20px; } 
-    transition: transform 0.1s;
-    &:active { transform: scale(0.95); }
-  }
-  .btn-save-icon { background: $success; color: white; &:hover { background: darken($success, 5%); } }
-  .btn-cancel-icon { background: $danger; color: white; &:hover { background: darken($danger, 5%); } }
-}
-
-// =========================================
-// UTILIDADES & RESPONSIVE
-// =========================================
-.loading-state { text-align: center; padding: 6rem; color: $text-muted; }
-.spinner { 
-  width: 48px; height: 48px; border: 4px solid $border-light; 
-  border-top-color: $primary; border-radius: 50%; 
-  animation: spin 1s infinite linear; margin: 0 auto 1.5rem; 
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
+/* UTILS */
+.divider-dark { height: 1px; background: rgba(255,255,255,0.1); margin: 1.5rem 0; }
 .fade-in { animation: fadeIn 0.4s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-.badge-bool {
-  display: inline-block; padding: 4px 12px; border-radius: 6px;
-  font-size: 0.85rem; font-weight: 700; background: #f1f5f9; color: #94a3b8;
-  &.yes { background: #dbeafe; color: #1e40af; }
-}
-
-/* BREAKPOINTS */
-@media (max-width: 900px) {
-  // .dashboard-container { padding-left: 1rem; padding-right: 1rem; }  
-  .detail-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .page-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-  .header-right { width: 100%; justify-content: space-between; }
-  .info-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-}
-
-@media (max-width: 600px) {
-  .docs-card .file-list-grid { grid-template-columns: 1fr; }
-}
-
-// =========================================
-// SWEETALERT PERSONALIZADO
-// =========================================
-::ng-deep {
-  .mi-alert-popup {
-    background: #ffffff !important;
-    border-radius: 24px !important;
-    padding: 2.5rem !important;
-    border: none !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-    font-family: inherit !important;
-  }
-
-  .mi-alert-title {
-    color: #1e293b !important;
-    font-size: 1.6rem !important;
-    font-weight: 800 !important;
-    padding-top: 0.5rem !important;
-  }
-  
-  .swal2-icon {
-    font-size: 14px !important; 
-    margin: 0 auto 1.5rem auto !important;
-    border-width: 0.25em !important; 
-    
-    .swal2-icon-content { font-size: 3.5em !important; }
-  }
-
-  .swal2-actions {
-    width: 100% !important;
-    gap: 16px !important;
-    padding: 0 !important;
-    margin-top: 2rem !important;
-  }
-
-  .mi-alert-btn-confirm, 
-  .mi-alert-btn-cancel {
-    padding: 14px 28px !important;
-    border-radius: 14px !important;
-    font-weight: 700 !important;
-    font-size: 1rem !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease-in-out;
-    outline: none !important;
-    box-shadow: none !important;
-    
-    &:hover { transform: translateY(-2px); }
-  }
-
-  .mi-alert-btn-confirm {
-    background-color: $primary !important;
-    color: white !important;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
-    
-    &:hover {
-      background-color: darken($primary, 5%) !important;
-      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5) !important;
-    }
-  }
-
-  .mi-alert-btn-cancel {
-    background-color: transparent !important;
-    color: $text-muted !important;
-    border: 2px solid $border-light !important;
-    
-    &:hover {
-      background-color: #f8fafc !important;
-      border-color: #cbd5e1 !important;
-      color: $text-main !important;
-    }
-  }
-
-  .swal2-footer { display: none; }
-}
+.slide-down { animation: slideDown 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }

@@ -1,24 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
-/* Lucide */
+/* Lucide Icons */
 import {
-  LucideAngularModule,
-  Eye,
-  FileText,
-  Camera,
-  Shield,
-  CreditCard,
-  Car,
-  AlertTriangle,
-  Stethoscope
+  LucideAngularModule, Eye, FileText, Camera, Shield, CreditCard,
+  Car, AlertTriangle, Stethoscope, ChevronLeft, Calendar, MapPin, 
+  Phone, Mail, CheckCircle2, AlertCircle, Clock, UserCog, UserPlus,
+  Save, X, Check
 } from 'lucide-angular';
 
-/* Services & Interfaces */
+/* Services */
 import { ReclamosService, IReclamo } from '../../../services/reclamos.service';
 import { NotificacionService } from '../../../services/notificacion';
 import { AuthService } from '../../../services/auth.service';
@@ -33,14 +28,14 @@ import { UsersService, IUser } from '../../../services/users.service';
 })
 export class DetalleReclamoComponent implements OnInit {
 
-  /* =======================
-     ICONOS
-  ======================== */
-  readonly EyeIcon = Eye;
+  // --- ICONOS PARA EL NUEVO DISEÑO ---
+  readonly icons = { 
+    Eye, FileText, Camera, Shield, CreditCard, Car, AlertTriangle, 
+    Stethoscope, ChevronLeft, Calendar, MapPin, Phone, Mail, 
+    Check: CheckCircle2, Alert: AlertCircle, Clock, 
+    UserCog, UserPlus, Save, X, Tick: Check
+  };
 
-  /* =======================
-     INYECCIONES
-  ======================== */
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private reclamosService = inject(ReclamosService);
@@ -48,69 +43,52 @@ export class DetalleReclamoComponent implements OnInit {
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService);
 
-  /* =======================
-     ESTADO
-  ======================== */
-  reclamo: IReclamo | null = null;
-  isLoading = true;
-
-  // SOLUCIÓN CLAVE: Variable normal, NO es un getter.
-  // Esto evita que Angular redibuje los botones al mover el mouse.
-  archivosDisponibles: any[] = []; 
-
-  /* =======================
-     TRAMITADORES
-  ======================== */
+  // --- ESTADO (USANDO SIGNALS) ---
+  reclamo = signal<IReclamo | null>(null);
+  isLoading = signal(true);
+  editandoTramitador = signal(false);
+  
+  // Datos Auxiliares
+  archivosDisponibles: any[] = [];
   tramitadores: IUser[] = [];
   tramitadorSeleccionado = '';
-  editandoTramitador = false;
 
-  /* =======================
-     ESTADOS POSIBLES
-  ======================== */
-  estadosPosibles = [
-    'Enviado',
-    'Recepcionado',
-    'Iniciado',
-    'Negociacion',
-    'Indemnizando',
-    'Indemnizado',
-    'Rechazado'
+  // --- LÓGICA DE LA LÍNEA DE TIEMPO ---
+  pasosTimeline = [
+    { id: 'Enviado', label: 'Enviado' },
+    { id: 'Recepcionado', label: 'Recepcionado' },
+    { id: 'Iniciado', label: 'Iniciado' },
+    { id: 'Negociacion', label: 'Negociación' },
+    { id: 'Indemnizando', label: 'Cobro' },
+    { id: 'Indemnizado', label: 'Finalizado' }
   ];
 
-  /* =======================
-     CICLO DE VIDA
-  ======================== */
+  // Calculamos dinámicamente en qué paso estamos
+  indiceProgreso = computed(() => {
+    const r = this.reclamo();
+    if (!r) return 0;
+    if (r.estado === 'Rechazado') return -1; // Caso especial para mostrar alerta roja
+    return this.pasosTimeline.findIndex(p => p.id === r.estado);
+  });
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-
-    if (!id) {
-      this.volver();
-      return;
-    }
+    if (!id) { this.volver(); return; }
 
     this.cargarReclamo(id);
-
-    if (this.authService.esAdmin) {
-      this.cargarTramitadores();
-    }
+    if (this.authService.esAdmin) this.cargarTramitadores();
   }
 
-  /* =======================
-     CARGA DE DATOS
-  ======================== */
+  // --- CARGA DE DATOS ---
   private cargarReclamo(id: string): void {
-    this.isLoading = true;
-
+    this.isLoading.set(true);
     this.reclamosService.getReclamoPorId(id)
-      .pipe(finalize(() => this.isLoading = false))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (data) => {
-          this.reclamo = data;
+          this.reclamo.set(data);
           this.syncTramitador(data);
-          
-          // GENERAMOS LA LISTA UNA ÚNICA VEZ AQUÍ
-          this.generarLegajo();
+          this.generarLegajo(data);
         },
         error: () => {
           this.notificacionService.showError('Error al recuperar el expediente.');
@@ -119,305 +97,154 @@ export class DetalleReclamoComponent implements OnInit {
       });
   }
 
-  /* =======================
-     LÓGICA DEL LEGAJO (FIX)
-  ======================== */
-  private generarLegajo(): void {
-    if (!this.reclamo) return;
-
+  private generarLegajo(r: IReclamo): void {
     const iconMap: Record<string, any> = {
-      dni: CreditCard,
-      licencia: Car,
-      cedula: FileText,
-      poliza: Shield,
-      denuncia: AlertTriangle,
-      fotos: Camera,
-      medicos: Stethoscope
+      dni: CreditCard, licencia: Car, cedula: FileText, poliza: Shield,
+      denuncia: AlertTriangle, fotos: Camera, medicos: Stethoscope,
+      representacion: FileText, honorarios: FileText
     };
 
     const docs = [
-      { key: 'dni',      label: 'DNI',             sub: 'Documento identidad', path: this.reclamo.path_dni },
-      { key: 'licencia', label: 'Licencia',        sub: 'Licencia conducir',   path: this.reclamo.path_licencia },
-      { key: 'cedula',   label: 'Cédula',          sub: 'Cédula verde/azul',   path: this.reclamo.path_cedula },
-      { key: 'poliza',   label: 'Póliza',          sub: 'Póliza vigente',      path: this.reclamo.path_poliza },
-      { key: 'denuncia', label: 'Denuncia Admin.', sub: 'Denuncia seguro',     path: this.reclamo.path_denuncia },
-      { key: 'fotos',    label: 'Fotos del Hecho', sub: 'Galería imágenes',    path: this.reclamo.path_fotos, highlight: true },
-      { key: 'medicos',  label: 'Cert. Médicos',   sub: 'Historia Clínica',    path: this.reclamo.path_medicos, alert: true },
+      { key: 'dni', label: 'DNI', sub: 'Identidad', path: r.path_dni },
+      { key: 'licencia', label: 'Licencia', sub: 'Conductor', path: r.path_licencia },
+      { key: 'cedula', label: 'Cédula', sub: 'Vehículo', path: r.path_cedula },
+      { key: 'poliza', label: 'Póliza', sub: 'Seguro', path: r.path_poliza },
+      { key: 'denuncia', label: 'Denuncia', sub: 'Administrativa', path: r.path_denuncia },
+      { key: 'fotos', label: 'Fotos', sub: 'Daños/Lugar', path: r.path_fotos, highlight: true },
+      { key: 'medicos', label: 'Médicos', sub: 'Certificados', path: r.path_medicos, alert: true },
+      { key: 'representacion', label: 'Poder', sub: 'Legal', path: r.path_representacion, highlight: true },
+      { key: 'honorarios', label: 'Honorarios', sub: 'Convenio', path: r.path_honorarios }
     ];
 
-    // Asignamos el array una sola vez. Ahora es estable en memoria.
-    this.archivosDisponibles = docs
-      .filter(d => d.path)
-      .map(d => ({
-        ...d,
-        icon: iconMap[d.key] || FileText
-      }));
+    this.archivosDisponibles = docs.filter(d => d.path).map(d => ({
+      ...d, icon: iconMap[d.key] || FileText
+    }));
   }
 
-  /* =======================
-     RESTO DE LÓGICA
-  ======================== */
   private cargarTramitadores(): void {
-    this.usersService.getTramitadores().subscribe({
-      next: users => this.tramitadores = users,
-      error: () => console.error('Error cargando tramitadores')
-    });
+    this.usersService.getTramitadores().subscribe(u => this.tramitadores = u);
   }
 
   private syncTramitador(data: IReclamo): void {
     if (data.tramitador) {
       this.tramitadorSeleccionado = data.tramitador.id;
-      this.editandoTramitador = false;
+      this.editandoTramitador.set(false);
     } else {
-      this.editandoTramitador = true;
+      // Si no hay tramitador, dejamos que el UI muestre el botón de asignar
+      this.tramitadorSeleccionado = '';
+      this.editandoTramitador.set(false);
     }
   }
 
-  activarEdicion(): void {
-    this.editandoTramitador = true;
-  }
-
-  cancelarEdicion(): void {
-    if (this.reclamo?.tramitador) {
-      this.tramitadorSeleccionado = this.reclamo.tramitador.id;
-      this.editandoTramitador = false;
+  // --- ACCIONES UI ---
+  activarEdicion() { this.editandoTramitador.set(true); }
+  
+  cancelarEdicion() {
+    this.editandoTramitador.set(false);
+    const r = this.reclamo();
+    // Restauramos la selección al valor actual (o vacío)
+    if (r?.tramitador) {
+      this.tramitadorSeleccionado = r.tramitador.id;
     } else {
       this.tramitadorSeleccionado = '';
     }
   }
 
-  asignarAbogado(): void {
-    if (!this.reclamo || !this.tramitadorSeleccionado) return;
+  asignarAbogado() {
+    const r = this.reclamo();
+    if (!r || !this.tramitadorSeleccionado) return;
 
-    this.reclamosService
-      .asignarTramitador(this.reclamo.id, this.tramitadorSeleccionado)
-      .subscribe({
-        next: res => {
-          this.reclamo = res;
-          this.editandoTramitador = false;
-          this.notificacionService.showSuccess('Responsable asignado correctamente');
-        },
-        error: () =>
-          this.notificacionService.showError('No se pudo asignar el responsable.')
-      });
-  }
-
-  cambiarEstado(nuevoEstado: string): void {
-    if (!this.reclamo || this.reclamo.estado === nuevoEstado) return;
-
-    Swal.fire({
-      title: '¿Confirmar cambio?',
-      html: `Vas a cambiar el estado a <b style="color:#3b82f6">${nuevoEstado}</b>.`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cambiar estado',
-      cancelButtonText: 'Cancelar',
-      reverseButtons: true,
-      buttonsStyling: false,
-      customClass: {
-        popup: 'mi-alert-popup',
-        confirmButton: 'mi-alert-btn-confirm',
-        cancelButton: 'mi-alert-btn-cancel'
-      }
-    }).then(result => {
-      if (!result.isConfirmed || !this.reclamo) return;
-
-      const tramitadorActual = this.reclamo.tramitador;
-      this.isLoading = true;
-
-      Swal.fire({
-        title: 'Actualizando...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-      });
-
-      this.reclamosService
-        .actualizarEstado(this.reclamo.id, nuevoEstado)
-        .pipe(finalize(() => this.isLoading = false))
-        .subscribe({
-          next: res => {
-            this.reclamo = res;
-
-            if (!this.reclamo.tramitador && tramitadorActual) {
-              this.reclamo.tramitador = tramitadorActual;
-            }
-
-            Swal.fire({
-              title: 'Actualizado',
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false,
-              buttonsStyling: false,
-              customClass: { popup: 'mi-alert-popup' }
-            });
-          },
-          error: () =>
-            Swal.fire({
-              title: 'Error',
-              text: 'No se pudo actualizar el estado.',
-              icon: 'error',
-              buttonsStyling: false,
-              confirmButtonText: 'Cerrar',
-              customClass: {
-                popup: 'mi-alert-popup',
-                confirmButton: 'mi-alert-btn-confirm'
-              }
-            })
-        });
+    this.reclamosService.asignarTramitador(r.id, this.tramitadorSeleccionado).subscribe({
+      next: res => {
+        this.reclamo.set(res);
+        this.editandoTramitador.set(false);
+        this.notificacionService.showSuccess('Tramitador asignado.');
+      },
+      error: () => this.notificacionService.showError('Error al asignar.')
     });
   }
 
-  verArchivo(tipo: string): void {
-    if (!this.reclamo) return;
+  cambiarEstado(nuevoEstado: string) {
+    const r = this.reclamo();
+    if (!r || r.estado === nuevoEstado) return;
 
-    // 1. ABRIR VENTANA INMEDIATAMENTE
+    Swal.fire({
+      title: '¿Cambiar Estado?',
+      text: `El trámite pasará a: ${nuevoEstado}`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cambiar',
+      confirmButtonColor: '#3b82f6'
+    }).then(res => {
+      if (res.isConfirmed) {
+        
+        // 1. GUARDAMOS EL TRAMITADOR ACTUAL ANTES DE ENVIAR
+        const tramitadorActual = r.tramitador; 
+
+        this.reclamosService.actualizarEstado(r.id, nuevoEstado).subscribe({
+          next: (updated) => {
+            
+            // 2. TRUCO: Si el backend no devolvió el tramitador, se lo pegamos nosotros
+            // para que no desaparezca de la vista.
+            if (!updated.tramitador && tramitadorActual) {
+              updated.tramitador = tramitadorActual;
+            }
+
+            // 3. Ahora sí actualizamos la señal
+            this.reclamo.set(updated);
+            
+            this.notificacionService.showSuccess(`Estado actualizado a ${nuevoEstado}`);
+          },
+          error: () => this.notificacionService.showError('Error al actualizar estado.')
+        });
+      }
+    });
+  }
+
+  contactarWhatsApp() {
+    const r = this.reclamo();
+    if (!r?.telefono) return;
+    
+    // Limpiamos el número para que sea formato internacional válido
+    const tel = r.telefono.replace(/\D/g, '');
+    const msg = `Hola ${r.nombre}, te contacto de ReclamaYa por el caso #${r.codigo_seguimiento}.`;
+    
+    window.open(`https://wa.me/549${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  verArchivo(tipo: string) {
+    const r = this.reclamo();
+    if (!r) return;
+    
+    // Abrimos ventana inmediatamente para evitar bloqueo de popups
     const nuevaVentana = window.open('', '_blank');
-
-    // 2. DISEÑO DE LA PANTALLA DE CARGA
-    // Usamos estilos en línea e inyectados porque esta ventana no ve tu styles.scss
+    
+    // Loader visual mientras el backend firma la URL
     const htmlCarga = `
-      <!DOCTYPE html>
-      <html lang="es">
-      <head>
-        <title>Procesando | ReclamaYa</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-          body {
-            margin: 0;
-            padding: 20px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: #f8fafc; /* Fondo gris muy suave */
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #1e293b; /* Texto oscuro */
-            box-sizing: border-box;
-          }
-          
-          .container {
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            max-width: 400px;
-            width: 100%;
-            border: 1px solid #e2e8f0;
-          }
-
-          .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #e2e8f0;
-            border-top: 4px solid #3b82f6; /* Tu color primario azul */
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-          }
-
-          h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.25rem;
-            font-weight: 700;
-          }
-
-          p {
-            margin: 0;
-            color: #64748b;
-            font-size: 0.95rem;
-          }
-
-          .brand {
-            font-weight: 900;
-            color: #0f172a;
-            margin-bottom: 30px;
-            display: block;
-            font-size: 1.5rem;
-            letter-spacing: -1px;
-          }
-          
-          .brand span { color: #f59e0b; } /* Acento naranja */
-
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="brand">Reclama<span>Ya</span>.</div>
-          
-          <div class="spinner"></div>
-          
-          <h2>Recuperando documento</h2>
-          <p>Estamos validando el acceso y descargando el archivo del legajo...</p>
-        </div>
-      </body>
-      </html>
-    `;
-
-    if (nuevaVentana) {
-      nuevaVentana.document.write(htmlCarga);
-      nuevaVentana.document.close(); // Importante para que el navegador deje de "cargar" el HTML estático
+      <!DOCTYPE html><html lang="es"><head><title>Cargando...</title>
+      <style>body{margin:0;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#f8fafc;font-family:sans-serif;color:#1e293b}
+      .spinner{width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:s 1s infinite linear;margin-bottom:20px}
+      @keyframes s{to{transform:rotate(360deg)}}</style></head>
+      <body><div class="spinner"></div><p>Accediendo al documento...</p></body></html>`;
+    
+    if (nuevaVentana) { 
+      nuevaVentana.document.write(htmlCarga); 
+      nuevaVentana.document.close(); 
     }
 
-    // 3. LLAMAR AL BACKEND
-    this.reclamosService.getArchivoUrl(this.reclamo.id, tipo).subscribe({
-      next: res => {
-        if (nuevaVentana) {
-          // Redirección final
-          nuevaVentana.location.href = res.url;
-        }
+    this.reclamosService.getArchivoUrl(r.id, tipo).subscribe({
+      next: res => { 
+        if (nuevaVentana) nuevaVentana.location.href = res.url; 
       },
-      error: () => {
+      error: () => { 
         if (nuevaVentana) {
-          // Opcional: Mostrar error en la misma ventana en vez de cerrarla
-          nuevaVentana.document.body.innerHTML = `
-            <div style="display:flex;height:100vh;justify-content:center;align-items:center;font-family:sans-serif;text-align:center;">
-              <div>
-                <h2 style="color:#ef4444">Error</h2>
-                <p>No se pudo recuperar el archivo.</p>
-                <button onclick="window.close()" style="margin-top:20px;padding:10px 20px;cursor:pointer;">Cerrar</button>
-              </div>
-            </div>
-          `;
+          // Mostramos error en la ventana en vez de cerrarla bruscamente
+          nuevaVentana.document.body.innerHTML = '<h3 style="color:red;text-align:center;margin-top:50px">No se pudo cargar el archivo.</h3>';
         }
         this.notificacionService.showError('No se pudo abrir el archivo.');
       }
     });
   }
 
-  contactarWhatsApp(): void {
-    if (!this.reclamo?.telefono) {
-      Swal.fire({
-        title: 'Sin teléfono',
-        text: 'Este usuario no tiene un número registrado.',
-        icon: 'info',
-        confirmButtonText: 'Entendido',
-        buttonsStyling: false,
-        customClass: {
-          popup: 'mi-alert-popup',
-          confirmButton: 'mi-alert-btn-confirm'
-        }
-      });
-      return;
-    }
-
-    const telefono = this.reclamo.telefono.replace(/\D/g, '');
-    const nombre = this.reclamo.nombre || 'Cliente';
-    const codigo = this.reclamo.codigo_seguimiento || this.reclamo.id.slice(0, 8);
-
-    const mensaje = `Hola ${nombre}, te contacto de ReclamaYa por tu trámite #${codigo}.`;
-    window.open(
-      `https://wa.me/549${telefono}?text=${encodeURIComponent(mensaje)}`,
-      '_blank'
-    );
-  }
-
-  volver(): void {
-    this.location.back();
-  }
+  volver() { this.location.back(); }
 }

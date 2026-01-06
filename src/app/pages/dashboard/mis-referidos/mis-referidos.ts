@@ -1,9 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router'; 
 import { jwtDecode } from 'jwt-decode';
 
-// Servicios
+/* Lucide Icons */
+import { 
+  LucideAngularModule, Users, FileText, CheckCircle2, 
+  Clock, Share2, Copy, Search, ExternalLink, MessageCircle,
+  Filter, ArrowUpDown
+} from 'lucide-angular';
+
+/* Servicios */
 import { ReclamosService, IReclamo } from '../../../services/reclamos.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificacionService } from '../../../services/notificacion';
@@ -12,26 +19,84 @@ import { UsersService, IUser } from '../../../services/users.service';
 @Component({
   selector: 'app-mis-referidos',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LucideAngularModule],
   templateUrl: './mis-referidos.html',
   styleUrls: ['./mis-referidos.scss']
 })
 export class MisReferidosComponent implements OnInit {
 
   private reclamosService = inject(ReclamosService);
-  public authService = inject(AuthService);
+  public authService = inject(AuthService); // Public para usar en HTML
   private notificacionService = inject(NotificacionService);
   private usersService = inject(UsersService); 
 
-  // Datos
-  listaReclamos: IReclamo[] = [];
-  miEquipo: IUser[] = []; 
-  isLoading = true;
+  // Iconos
+  readonly icons = { 
+    Users, FileText, CheckCircle2, Clock, Share2, Copy, 
+    Search, ExternalLink, MessageCircle, Filter, ArrowUpDown 
+  };
+
   productorId = '';
+
+  // --- SIGNALS DE ESTADO ---
+  isLoading = signal(true);
+  reclamos = signal<IReclamo[]>([]);
+  equipo = signal<IUser[]>([]);
+  
+  // --- FILTROS ---
+  filtroBusqueda = signal('');
+  filtroEstado = signal('');
+  ordenDescendente = signal(true);
 
   // Links
   linkAsegurados = '';   
   linkProductores = ''; 
+
+  // --- COMPUTED: FILTRADO Y ORDENAMIENTO ---
+  reclamosFiltrados = computed(() => {
+    let data = this.reclamos();
+    const term = this.filtroBusqueda().toLowerCase();
+    const estado = this.filtroEstado();
+    const desc = this.ordenDescendente();
+
+    // 1. Filtrar por Texto
+    if (term) {
+      data = data.filter(r => 
+        r.nombre.toLowerCase().includes(term) || 
+        r.dni.includes(term) ||
+        r.codigo_seguimiento.toLowerCase().includes(term)
+      );
+    }
+
+    // 2. Filtrar por Estado
+    if (estado) {
+      data = data.filter(r => r.estado === estado);
+    }
+
+    // 3. Ordenar por Fecha
+    return data.sort((a, b) => {
+      const dateA = new Date(a.fecha_creacion).getTime();
+      const dateB = new Date(b.fecha_creacion).getTime();
+      return desc ? dateB - dateA : dateA - dateB;
+    });
+  });
+
+  // --- COMPUTED: KPIS ---
+  stats = computed(() => {
+    const data = this.reclamos();
+    return {
+      total: data.length,
+      enGestion: data.filter(r => ['Recepcionado', 'Iniciado', 'Negociacion', 'Indemnizando'].includes(r.estado)).length,
+      finalizados: data.filter(r => r.estado === 'Indemnizado').length
+    };
+  });
+
+  // --- GETTER: ETIQUETA DE ROL ---
+  get rolLabel(): string {
+    if (this.authService.esTramitador) return 'Tramitador';
+    if (this.authService.esOrganizador) return 'Broker';
+    return 'Productor';
+  }
 
   ngOnInit() {
     this.generarLinks();
@@ -39,17 +104,17 @@ export class MisReferidosComponent implements OnInit {
   }
 
   generarLinks() {
-    const tokenRaw = localStorage.getItem('access_token') || localStorage.getItem('token');
+    const tokenRaw = localStorage.getItem('access_token');
     if (!tokenRaw) return;
 
     try {
       const decoded: any = jwtDecode(tokenRaw);
-      const userId = decoded.id || decoded.sub || decoded.userId;
+      const userId = decoded.id || decoded.sub; 
 
       if (userId) {
-        this.productorId = userId;
+        this.productorId = userId; 
+
         const baseUrl = window.location.origin; 
-        
         this.linkAsegurados = `${baseUrl}/iniciar-reclamo?ref=${userId}`;
         
         if (this.authService.esOrganizador) {
@@ -57,57 +122,33 @@ export class MisReferidosComponent implements OnInit {
         }
       } 
     } catch (error) {
-      console.error(error);
+      console.error('Error decodificando token:', error);
     }
-  }
-
-  copiarLink(url: string) {
-    if (!url) return;
-    navigator.clipboard.writeText(url).then(() => {
-      this.notificacionService.showSuccess('¡Link copiado!');
-    });
   }
 
   cargarDatos() {
-    this.isLoading = true;
-
-    // 1. CARGAR SINIESTROS
+    this.isLoading.set(true);
+    // 1. Cargar Reclamos
     this.reclamosService.obtenerMisSiniestros().subscribe({
       next: (data) => {
-        this.listaReclamos = data;
-        this.isLoading = false;
+        this.reclamos.set(data);
+        this.isLoading.set(false);
       },
-      error: (err) => { 
-        this.isLoading = false; 
-      }
+      error: () => this.isLoading.set(false)
     });
 
-    // 2. CARGAR EQUIPO (Solo si soy Organizador)
+    // 2. Cargar Equipo (Solo si es Organizador)
     if (this.authService.esOrganizador) {
-      this.usersService.obtenerMiEquipo().subscribe({
-        next: (users) => {
-          this.miEquipo = users;
-          console.log('Equipo cargado:', users);
-        },
-        error: (err) => console.error('Error cargando equipo', err)
-      });
+      this.usersService.obtenerMiEquipo().subscribe(u => this.equipo.set(u));
     }
   }
 
-  obtenerCantidadPorEstado(estado: string): number {
-    return this.listaReclamos.filter(r => r.estado === estado).length;
-  }
+  // --- EVENTOS UI ---
+  aplicarFiltro(event: Event) { this.filtroBusqueda.set((event.target as HTMLInputElement).value); }
+  cambiarEstado(event: Event) { this.filtroEstado.set((event.target as HTMLSelectElement).value); }
+  alternarOrden() { this.ordenDescendente.update(v => !v); }
 
-  getEstadoClass(estado: string): string {
-    switch (estado) {
-      case 'Enviado': return 'badge-blue';
-      case 'Recepcionado': return 'badge-purple';
-      case 'Iniciado': return 'badge-info';
-      case 'Negociacion': return 'badge-orange';
-      case 'Indemnizando': return 'badge-yellow';
-      case 'Indemnizado': return 'badge-green';
-      case 'Rechazado': return 'badge-red';
-      default: return 'badge-gray';
-    }
+  copiarLink(url: string) {
+    navigator.clipboard.writeText(url).then(() => this.notificacionService.showSuccess('Link copiado!'));
   }
 }

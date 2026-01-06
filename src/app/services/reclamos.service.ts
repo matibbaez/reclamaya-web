@@ -7,6 +7,7 @@ export interface IReclamo {
   id: string;
   nombre: string;
   dni: string;
+  cbu?: string;
   email: string;
   codigo_seguimiento: string;
   estado: string;
@@ -39,6 +40,8 @@ export interface IReclamo {
   path_denuncia?: string;
   path_fotos?: string;
   path_medicos?: string;
+  path_representacion?: string;
+  path_honorarios?: string;
 
   // Relaciones
   tramitador?: { id: string; nombre: string; email: string };

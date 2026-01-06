@@ -1,251 +1,236 @@
 <div class="dashboard-container fade-in">
 
-  <header class="page-header">
-    <div class="header-left">
-      <button (click)="volver()" class="btn-back-link">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-        </svg>
-        Volver
+  <header class="hero-header" *ngIf="reclamo() as r">
+    <div class="top-nav">
+      <button (click)="volver()" class="btn-back">
+        <lucide-icon [img]="icons.ChevronLeft" size="20"></lucide-icon> Volver
       </button>
-
-      <h1>
-        <span class="label-muted">Expediente</span>
-        <span class="id-code">#{{ reclamo?.codigo_seguimiento || reclamo?.id?.slice(0,8) }}</span>
-      </h1>
+      <span class="date-badge">
+        <lucide-icon [img]="icons.Calendar" size="14"></lucide-icon>
+        {{ r.fecha_creacion | date:'dd MMM yyyy' }}
+      </span>
     </div>
 
-    <div class="header-right" *ngIf="reclamo">
-      <span class="status-label">Estado:</span>
-      <span class="status-pill" [ngClass]="reclamo.estado">
-        {{ reclamo.estado }}
-      </span>
+    <div class="hero-content">
+      <div class="title-group">
+        <h1>{{ r.nombre }}</h1>
+        <div class="meta-row">
+          <span class="id-badge">#{{ r.codigo_seguimiento }}</span>
+          <span class="role-badge" [ngClass]="r.rol_victima.toLowerCase()">{{ r.rol_victima }}</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn-whatsapp" *ngIf="r.telefono" (click)="contactarWhatsApp()">
+          <lucide-icon [img]="icons.Phone" size="18"></lucide-icon> Contactar
+        </button>
+      </div>
+    </div>
+
+    <div class="timeline-wrapper" *ngIf="r.estado !== 'Rechazado'">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="(indiceProgreso() / (pasosTimeline.length - 1)) * 100"></div>
+      </div>
+      
+      <div class="steps-container">
+        <div *ngFor="let paso of pasosTimeline; let i = index" 
+             class="step-item"
+             [class.active]="i <= indiceProgreso()"
+             [class.current]="i === indiceProgreso()">
+          <div class="step-dot">
+            <lucide-icon *ngIf="i < indiceProgreso()" [img]="icons.Tick" size="14"></lucide-icon>
+            <span *ngIf="i >= indiceProgreso()">{{ i + 1 }}</span>
+          </div>
+          <span class="step-label">{{ paso.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rejected-banner" *ngIf="r.estado === 'Rechazado'">
+      <lucide-icon [img]="icons.Alert" size="24"></lucide-icon>
+      <div>
+        <strong>Expediente Rechazado</strong>
+        <p>Este reclamo ha sido cerrado sin indemnización.</p>
+      </div>
     </div>
   </header>
 
-  <div *ngIf="isLoading" class="loading-state">
+  <div *ngIf="isLoading()" class="loading-state">
     <div class="spinner"></div>
-    <p>Recuperando legajo...</p>
+    <p>Cargando expediente...</p>
   </div>
 
-  <div *ngIf="!isLoading && reclamo" class="detail-grid">
+  <div *ngIf="!isLoading() && reclamo() as r" class="content-grid">
 
     <div class="main-column">
-
-      <section class="card client-card">
+      
+      <section class="card detail-card">
         <div class="card-header">
-          <h3>Datos del Asegurado</h3>
-
-          <button *ngIf="reclamo.telefono"
-                  (click)="contactarWhatsApp()"
-                  class="btn-whatsapp-small">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                 viewBox="0 0 16 16">
-              <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326z"/>
-            </svg>
-            Contactar
-          </button>
+          <h3><lucide-icon [img]="icons.Car" size="20"></lucide-icon> Detalles del Siniestro</h3>
+        </div>
+        
+        <div class="grid-2">
+          <div class="field-box">
+            <label>Lugar</label>
+            <p>{{ r.lugar_hecho }} <small>({{ r.localidad }})</small></p>
+          </div>
+          <div class="field-box">
+            <label>Fecha y Hora</label>
+            <p>{{ r.fecha_hecho | date:'shortDate' }} - {{ r.hora_hecho || '--:--' }}hs</p>
+          </div>
+          <div class="field-box">
+            <label>Tercero (Aseguradora)</label>
+            <p class="highlight">{{ r.aseguradora_tercero }}</p>
+          </div>
+          <div class="field-box">
+            <label>Patente Tercero</label>
+            <div class="plate">{{ r.patente_tercero || 'S/D' }}</div>
+          </div>
         </div>
 
-        <div class="info-grid">
-          <div class="info-item">
-            <label>Nombre Completo</label>
-            <p class="text-lg font-bold">{{ reclamo.nombre }}</p>
-          </div>
+        <div class="divider"></div>
 
-          <div class="info-item">
-            <label>DNI</label>
-            <p>{{ reclamo.dni }}</p>
-          </div>
-
-          <div class="info-item">
-            <label>Email</label>
-            <p class="text-blue">{{ reclamo.email }}</p>
-          </div>
-
-          <div class="info-item">
-            <label>Teléfono</label>
-            <p>{{ reclamo.telefono }}</p>
-          </div>
-
-          <div class="info-item full">
-            <label>Productor Asignado</label>
-            <div class="productor-chip">
-              <div class="avatar">
-                {{ reclamo.usuario_creador?.nombre?.charAt(0) || 'D' }}
-              </div>
-              <span>
-                {{ reclamo.usuario_creador?.nombre || 'Directo (Sin Productor)' }}
-              </span>
-            </div>
-          </div>
+        <div class="relato-box" *ngIf="r.relato_hecho">
+          <label>Relato del Hecho</label>
+          <p>"{{ r.relato_hecho }}"</p>
         </div>
       </section>
 
-      <section class="card event-card">
+      <section class="card detail-card">
         <div class="card-header">
-          <h3>🚗 Detalles del Hecho</h3>
-
-          <div class="badges">
-            <span class="tag role">{{ reclamo.rol_victima }}</span>
-            <span class="tag insurance" [class.no]="!reclamo.tiene_seguro">
-              {{ reclamo.tiene_seguro ? 'Con Seguro' : 'Sin Seguro' }}
-            </span>
+          <h3><lucide-icon [img]="icons.CreditCard" size="20"></lucide-icon> Datos Personales</h3>
+        </div>
+        <div class="grid-3">
+          <div class="field-box">
+            <label>DNI</label>
+            <p>{{ r.dni }}</p>
+          </div>
+          <div class="field-box">
+            <label>Email</label>
+            <p class="email-text">{{ r.email }}</p>
+          </div>
+          <div class="field-box">
+            <label>Teléfono</label>
+            <p>{{ r.telefono }}</p>
           </div>
         </div>
-
-        <div class="info-grid">
-          <div class="info-item">
-            <label>Fecha y Hora</label>
-            <p>
-              {{ reclamo.fecha_hecho | date:'dd/MM/yyyy' }}
-              <span *ngIf="reclamo.hora_hecho"> - {{ reclamo.hora_hecho }}hs</span>
-            </p>
+        
+        <div class="cbu-highlight" *ngIf="r.cbu">
+          <div class="icon-bank">$</div>
+          <div class="cbu-data">
+            <label>CBU / CVU para Cobro</label>
+            <span>{{ r.cbu }}</span>
           </div>
-
-          <div class="info-item">
-            <label>Lugar</label>
-            <p>{{ reclamo.lugar_hecho }} ({{ reclamo.localidad }})</p>
-          </div>
-
-          <ng-container *ngIf="reclamo.rol_victima === 'Conductor'">
-            <div class="divider full"></div>
-
-            <div class="info-item">
-              <label>¿In Itinere?</label>
-              <span class="badge-bool" [class.yes]="reclamo.in_itinere">
-                {{ reclamo.in_itinere ? 'SI' : 'NO' }}
-              </span>
-            </div>
-
-            <div class="info-item" *ngIf="reclamo.in_itinere">
-              <label>¿Tiene ART?</label>
-              <span class="badge-bool" [class.yes]="reclamo.posee_art">
-                {{ reclamo.posee_art ? 'SI' : 'NO' }}
-              </span>
-            </div>
-          </ng-container>
-
-          <div class="divider full"></div>
-
-          <div class="info-item">
-            <label>Aseguradora Tercero</label>
-            <p class="font-bold">{{ reclamo.aseguradora_tercero }}</p>
-          </div>
-
-          <div class="info-item">
-            <label>Patente Tercero</label>
-            <div class="plate">{{ reclamo.patente_tercero || '---' }}</div>
-          </div>
-
-          <div class="info-item" *ngIf="reclamo.patente_propia">
-            <label>Patente Asegurado</label>
-            <div class="plate own">{{ reclamo.patente_propia }}</div>
-          </div>
-        </div>
-
-        <div class="relato-container" *ngIf="reclamo.relato_hecho">
-          <label>Relato del Siniestro</label>
-          <div class="relato-text">"{{ reclamo.relato_hecho }}"</div>
         </div>
       </section>
 
       <section class="card docs-card">
         <div class="card-header">
-          <h3>📂 Legajo Digital</h3>
-          <span class="file-count">{{ archivosDisponibles.length }} archivos</span>
+          <h3><lucide-icon [img]="icons.FileText" size="20"></lucide-icon> Legajo Digital</h3>
+          <span class="count-badge">{{ archivosDisponibles.length }} Archivos</span>
         </div>
-        
-        <p class="subtitle">Documentación presentada y validada</p>
-  
-        <div class="file-list-grid">
-          <div *ngFor="let doc of archivosDisponibles"
+
+        <div class="files-grid">
+          <div *ngFor="let doc of archivosDisponibles" 
                class="file-item"
-               [class.highlight]="doc.highlight"
-               [class.alert]="doc.alert"
+               [class.active]="doc.highlight"
                (click)="verArchivo(doc.key)">
-  
-            <div class="file-icon">
-              <lucide-icon [img]="doc.icon" size="24"></lucide-icon>
+            <div class="icon-wrap">
+              <lucide-icon [img]="doc.icon" size="20"></lucide-icon>
             </div>
-  
-            <div class="file-info">
-              <span class="file-name">{{ doc.label }}</span>
-              <small class="file-type">{{ doc.sub }}</small>
+            <div class="file-meta">
+              <span class="name">{{ doc.label }}</span>
+              <span class="sub">{{ doc.sub }}</span>
             </div>
-  
-            <div class="file-action">
-              <lucide-icon [img]="EyeIcon" size="20"></lucide-icon>
-            </div>
+            <lucide-icon [img]="icons.Eye" size="16" class="eye-icon"></lucide-icon>
           </div>
-  
-          <div *ngIf="archivosDisponibles.length === 0" class="empty-docs">
-            <lucide-icon name="folder-open" size="40"></lucide-icon>
-            <small>No hay documentación cargada aún.</small>
-          </div>
-        </div>
-      </section>
-
-    </div> <div class="side-column">
-
-      <section class="card admin-card"
-               *ngIf="authService.esAdmin || authService.esTramitador">
-
-        <div class="admin-header">
-          <h3>⚡ Gestión</h3>
-          <span class="admin-badge">Admin</span>
-        </div>
-
-        <div class="assignment-box" *ngIf="authService.esAdmin">
-          <label class="box-label">👮 Responsable Asignado</label>
-
-          <div *ngIf="!editandoTramitador && reclamo.tramitador"
-               class="assigned-view fade-in">
-            <div class="tramitador-info">
-              <div class="avatar-small">
-                {{ reclamo.tramitador.nombre.charAt(0) }}
-              </div>
-              <span class="name">{{ reclamo.tramitador.nombre }}</span>
-            </div>
-            <button (click)="activarEdicion()" class="btn-change-assign">
-              Cambiar
-            </button>
-          </div>
-
-          <div *ngIf="editandoTramitador" class="assign-row fade-in">
-            <select [(ngModel)]="tramitadorSeleccionado">
-              <option value="" disabled>Seleccionar...</option>
-              <option *ngFor="let t of tramitadores" [value]="t.id">
-                {{ t.nombre }}
-              </option>
-            </select>
-
-            <div class="actions-mini">
-              <button (click)="asignarAbogado()" class="btn-save-icon">
-                ✔
-              </button>
-              <button *ngIf="reclamo.tramitador"
-                      (click)="cancelarEdicion()"
-                      class="btn-cancel-icon">
-                ✕
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <p class="admin-hint">Cambiar estado del trámite:</p>
-
-        <div class="status-actions">
-          <button *ngFor="let est of estadosPosibles"
-                  (click)="cambiarEstado(est)"
-                  [class.active]="reclamo.estado === est"
-                  class="btn-status-option">
-            <span class="dot"></span>
-            {{ est }}
-          </button>
         </div>
       </section>
 
     </div>
+
+    <div class="side-column">
+      
+      <section class="card admin-panel" *ngIf="authService.esAdmin || authService.esTramitador">
+        <div class="panel-header">
+          <h3>
+            <lucide-icon [img]="icons.UserCog" size="20"></lucide-icon>
+            Gestión del Caso
+          </h3>
+        </div>
+
+        <div class="control-section">
+          <label class="section-label">Responsable</label>
+          
+          <div class="tramitador-card fade-in" *ngIf="!editandoTramitador() && r.tramitador">
+            <div class="tramitador-avatar">
+              {{ r.tramitador.nombre.charAt(0) }}
+            </div>
+            <div class="tramitador-info">
+              <span class="name">{{ r.tramitador.nombre }}</span>
+              <span class="badge">Tramitador</span>
+            </div>
+            <button class="btn-icon-edit" *ngIf="authService.esAdmin" (click)="activarEdicion()" title="Cambiar responsable">
+              <lucide-icon [img]="icons.UserCog" size="16"></lucide-icon>
+            </button>
+          </div>
+
+          <button class="btn-assign-pulse fade-in" 
+                  *ngIf="!editandoTramitador() && !r.tramitador"
+                  (click)="activarEdicion()">
+            <lucide-icon [img]="icons.UserPlus" size="18"></lucide-icon>
+            Asignar Tramitador
+          </button>
+
+          <div class="edit-mode-box slide-down" *ngIf="editandoTramitador()">
+            <select [(ngModel)]="tramitadorSeleccionado" class="custom-select">
+              <option value="" disabled selected>Seleccionar abogado...</option>
+              <option *ngFor="let t of tramitadores" [value]="t.id">{{ t.nombre }}</option>
+            </select>
+            <div class="actions-row">
+              <button class="btn-action cancel" (click)="cancelarEdicion()">
+                Cancelar
+              </button>
+              <button class="btn-action save" (click)="asignarAbogado()">
+                Asignar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider-dark"></div>
+
+        <div class="control-section">
+          <label class="section-label">Progreso</label>
+          <div class="status-list">
+            <button *ngFor="let p of pasosTimeline"
+                    class="status-opt"
+                    [class.active]="r.estado === p.id"
+                    (click)="cambiarEstado(p.id)">
+              <div class="dot"></div> {{ p.label }}
+            </button>
+            <button class="status-opt reject" 
+                    [class.active]="r.estado === 'Rechazado'"
+                    (click)="cambiarEstado('Rechazado')">
+              <div class="dot"></div> Rechazar
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="card producer-card">
+        <label>Origen del Trámite</label>
+        <div class="producer-row">
+          <div class="avatar-prod">{{ r.usuario_creador?.nombre?.charAt(0) || 'R' }}</div>
+          <div class="prod-info">
+            <span class="name">{{ r.usuario_creador?.nombre || 'ReclamaYa Directo' }}</span>
+            <span class="role">{{ r.usuario_creador ? 'Productor / Broker' : 'Canal Web' }}</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
   </div>
 </div>

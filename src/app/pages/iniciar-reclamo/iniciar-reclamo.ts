@@ -38,14 +38,15 @@ export class IniciarReclamoComponent implements OnInit {
   private dniPattern = /^[0-9]{7,8}$/;
   private telPattern = /^[0-9]{10,13}$/;
   private patentePattern = /^[a-zA-Z0-9]{6,7}$/;
+  private cbuPattern = /^[0-9]{22}$/;
 
   reclamoForm = this.fb.group({
     codigo_ref: [''],
     
-    // 👇 APLICAMOS EL VALIDADOR DE ESPACIOS
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.nombrePattern), this.noWhitespaceValidator]],
     
     dni: ['', [Validators.required, Validators.pattern(this.dniPattern)]],
+    cbu: ['', [Validators.pattern(this.cbuPattern)]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.pattern(this.telPattern)]],
 
@@ -57,11 +58,10 @@ export class IniciarReclamoComponent implements OnInit {
     fecha_hecho: ['', [Validators.required, this.fechaValidator]], 
     hora_hecho: [''],
     
-    // 👇 TAMBIÉN ACÁ
     lugar_hecho: ['', [Validators.required, Validators.minLength(5), this.noWhitespaceValidator]],
     localidad: ['', [Validators.required, Validators.minLength(4), this.noWhitespaceValidator]],
     
-    relato_hecho: [''], // Se valida dinámicamente
+    relato_hecho: [''], 
 
     aseguradora_tercero: ['', Validators.required],
     patente_tercero: ['', [Validators.pattern(this.patentePattern)]],
@@ -83,7 +83,7 @@ export class IniciarReclamoComponent implements OnInit {
     });
   }
 
-  // --- ⛔ VALIDADOR ANTI-ESPACIOS ---
+  // --- VALIDADOR ANTI-ESPACIOS ---
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
@@ -159,12 +159,10 @@ export class IniciarReclamoComponent implements OnInit {
         c.fileLicencia.setValidators([Validators.required]);
         c.fileCedula.setValidators([Validators.required]);
         
-        // 👇 AQUÍ AGREGAMOS EL VALIDADOR AL RELATO
         c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
     }
     else { 
         c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
-        // 👇 Y AQUÍ TAMBIÉN
         c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
     }
 

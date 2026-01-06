@@ -1,82 +1,78 @@
-<div class="dashboard-wrapper fade-in">
+<div class="dashboard-container fade-in">
 
-  <header class="dashboard-header">
-    <div class="header-left">
-      <div>
-        <h1>Panel de Control</h1>
-        <p>Vista general de expedientes y métricas.</p>
-      </div>
-
-      <div class="view-tabs">
-        <button 
-          class="tab-btn" 
-          [class.active]="vistaActual() === 'reclamos'" 
-          (click)="cambiarVista('reclamos')">
-          <lucide-icon [img]="icons.dashboard" class="tab-icon"></lucide-icon>
-          Expedientes
-        </button>
-        
-        <button 
-          class="tab-btn" 
-          [class.active]="vistaActual() === 'usuarios'" 
-          (click)="cambiarVista('usuarios')">
-          <lucide-icon [img]="icons.users" class="tab-icon"></lucide-icon>
-          Solicitudes
-          <span class="badge-count" *ngIf="kpis().pendientes > 0">
-            {{ kpis().pendientes }}
-          </span>
-        </button>
-      </div>
+  <header class="page-header">
+    <div class="welcome-box">
+      <h1>Panel de Control</h1>
+      <p>Bienvenido, {{ authService.currentUserValue?.nombre }}</p>
     </div>
-
     <div class="date-badge">
-      {{ fechaHoy | date:'EEEE, d MMMM' }}
+      {{ fechaHoy | date:'fullDate' }}
     </div>
   </header>
 
-  @if (vistaActual() === 'reclamos') {
-    
-    <div class="kpi-grid fade-in">
-      <div class="kpi-card">
-        <div class="icon-box blue">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+  <div class="kpi-grid" *ngIf="!isLoading()">
+    <div class="stat-card users-card" 
+         [class.alert-mode]="stats().pendientesAprobacion > 0"
+         (click)="irAEquipo()">
+      <div class="icon-box user">
+        <lucide-icon [img]="icons.Users" size="24"></lucide-icon>
+      </div>
+      <div class="stat-info">
+        <span class="label">Gestión de Equipo</span>
+        <div class="value-group">
+          <span class="number">{{ stats().usuariosTotales }}</span>
+          <span class="unit">Usuarios</span>
         </div>
-        <div class="kpi-data">
-          <span class="value">{{ kpis().total }}</span>
-          <span class="label">Expedientes Totales</span>
+        <div class="pending-pill" *ngIf="stats().pendientesAprobacion > 0">
+          <lucide-icon [img]="icons.AlertCircle" size="14"></lucide-icon>
+          {{ stats().pendientesAprobacion }} Solicitudes
         </div>
       </div>
+      <div class="action-arrow"><lucide-icon [img]="icons.ArrowRight" size="20"></lucide-icon></div>
+    </div>
 
-      <div class="kpi-card">
-        <div class="icon-box orange">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        </div>
-        <div class="kpi-data">
-          <span class="value">{{ kpis().gestionActiva }}</span>
-          <span class="label">En Gestión Activa</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="icon-box green">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 0121 12z" /></svg>
-        </div>
-        <div class="kpi-data">
-          <span class="value">{{ kpis().finalizados }}</span>
-          <span class="label">Finalizados Éxito</span>
-        </div>
+    <div class="stat-card">
+      <div class="icon-box blue"><lucide-icon [img]="icons.FileText" size="24"></lucide-icon></div>
+      <div class="stat-info">
+        <span class="label">Nuevos Ingresos</span>
+        <span class="number">{{ stats().reclamosNuevos }}</span>
+        <span class="sub-text">Requieren gestión</span>
       </div>
     </div>
 
-    <div class="toolbar-card fade-in">
-      
+    <div class="stat-card">
+      <div class="icon-box green"><lucide-icon [img]="icons.TrendingUp" size="24"></lucide-icon></div>
+      <div class="stat-info">
+        <span class="label">Total Expedientes</span>
+        <span class="number">{{ stats().reclamosTotales }}</span>
+        <span class="sub-text">Procesados</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="management-section fade-in" *ngIf="!isLoading()">
+    
+    <div class="section-header">
+      <h3>Expedientes</h3>
+      <span class="badge-count">{{ reclamosFiltrados().length }}</span>
+    </div>
+
+    <div class="toolbar-card">
       <div class="search-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-        <input type="text" placeholder="Buscar por Nombre, DNI o Código..." (keyup)="filtrarGlobal($event)">
+        <lucide-icon [img]="icons.Search" size="18" class="search-icon"></lucide-icon>
+        <input type="text" placeholder="Buscar por Nombre, DNI o Código..." (keyup)="aplicarBusqueda($event)">
       </div>
 
       <div class="filters-group">
-        
+         <button class="btn-icon-sort" 
+                  (click)="alternarOrden()" 
+                  [title]="ordenDescendente() ? 'Ver más antiguos' : 'Ver más recientes'">
+            <lucide-icon [img]="icons.arrowUp" size="18"></lucide-icon>
+            <span class="sort-label">
+              {{ ordenDescendente() ? 'Recientes' : 'Antiguos' }}
+            </span>
+        </button>
+
         <div class="select-wrapper">
           <select (change)="cambiarEstado($event)">
             <option value="">Estado: Todos</option>
@@ -94,7 +90,6 @@
               <option value="Rechazado">🔴 Rechazado</option>
             </optgroup>
           </select>
-          <span class="arrow">▼</span>
         </div>
 
         <div class="select-wrapper">
@@ -104,155 +99,71 @@
             <option value="Acompanante">👥 Acompañante</option>
             <option value="Peaton">🚶 Peatón</option>
           </select>
-          <span class="arrow">▼</span>
         </div>
-
-        <button class="btn-sort" (click)="alternarOrden()" title="Cambiar Orden">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg>
-        </button>
       </div>
     </div>
 
-    <div class="table-container fade-in" *ngIf="!isLoading(); else loadingTemplate">
-      
-      <div class="table-responsive" *ngIf="reclamosFiltrados().length > 0; else noData">
-        <table class="admin-table">
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="modern-table">
           <thead>
             <tr>
-              <th>Expediente</th>
+              <th>Código</th>
               <th>Cliente</th>
               <th>Rol</th>
-              <th>Siniestro</th>
+              <th>Tercero</th>
               <th>Estado</th>
-              <th class="text-right">Acciones</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let r of reclamosFiltrados()" class="fade-in-item">
-              
+            <tr *ngFor="let r of reclamosFiltrados()" (click)="verDetalle(r.id)" class="clickable-row">
               <td>
-                <div class="col-code">
-                  <span class="code">{{ r.codigo_seguimiento }}</span>
-                  <span class="date">{{ r.fecha_creacion | date:'dd MMM yyyy' }}</span>
+                <span class="code-badge">#{{ r.codigo_seguimiento }}</span>
+                <div class="date-sub">{{ r.fecha_creacion | date:'dd/MM/yyyy' }}</div>
+              </td>
+              <td>
+                <div class="client-mini">
+                  <span class="font-bold">{{ r.nombre }}</span>
+                  <small class="dni-muted">{{ r.dni }}</small>
                 </div>
               </td>
-
               <td>
-                <div class="col-client">
-                  <div class="avatar">{{ r.nombre.charAt(0) }}</div>
-                  <div class="info">
-                    <span class="name">{{ r.nombre }}</span>
-                    <span class="dni">{{ r.dni }}</span>
-                  </div>
-                </div>
-              </td>
-
-              <td>
-                <span class="role-badge" [ngClass]="r.rol_victima.toLowerCase()">
-                  <ng-container *ngIf="r.rol_victima === 'Conductor'">🚗 Conductor</ng-container>
-                  <ng-container *ngIf="r.rol_victima === 'Acompanante'">👥 Acompañante</ng-container>
-                  <ng-container *ngIf="r.rol_victima === 'Peaton'">🚶 Peatón</ng-container>
+                <span class="role-pill" [ngClass]="r.rol_victima.toLowerCase()">
+                  {{ r.rol_victima }}
                 </span>
               </td>
-
               <td>
-                <div class="col-tercero">
-                  <span class="company">{{ r.aseguradora_tercero || 'Sin datos' }}</span>
+                <div class="tercero-info">
+                  <span class="company">{{ r.aseguradora_tercero || '-' }}</span>
                   <span class="plate" *ngIf="r.patente_tercero">{{ r.patente_tercero }}</span>
                 </div>
               </td>
-
               <td>
-                <span class="status-indicator" [ngClass]="r.estado">
-                  <span class="dot"></span>
+                <span class="status-pill" [ngClass]="r.estado">
                   {{ r.estado }}
                 </span>
               </td>
-
               <td class="text-right">
-                <a [routerLink]="['/reclamo', r.id]" class="btn-action">
-                  Ver
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-                </a>
+                <lucide-icon [img]="icons.ArrowRight" size="16" class="arrow-icon"></lucide-icon>
               </td>
-
             </tr>
           </tbody>
         </table>
-      </div>
 
-      <ng-template #noData>
-        <div class="empty-state">
-          <div class="icon">📂</div>
-          <h3>No se encontraron expedientes</h3>
-          <p>Intentá cambiar los filtros de búsqueda.</p>
-        </div>
-      </ng-template>
-
-    </div>
-  }
-
-  @if (vistaActual() === 'usuarios') {
-    <section class="section-pendientes fade-in">
-      
-      <div class="pendientes-header">
-        <h2>Solicitudes de Acceso</h2>
-        <p>Productores que se registraron y esperan aprobación.</p>
-      </div>
-
-      <div *ngIf="!isLoading() && usuariosPendientes().length === 0" class="empty-state">
-        <div class="icon">✅</div>
-        <h3>Todo al día</h3>
-        <p>No hay solicitudes pendientes de aprobación.</p>
-      </div>
-
-      <div class="grid-users" *ngIf="!isLoading() && usuariosPendientes().length > 0">
-        <div class="user-card fade-in-item" *ngFor="let user of usuariosPendientes()">
-          
-          <div class="card-header">
-            <div class="user-avatar">{{ user.nombre.charAt(0) }}</div>
-            <div class="user-meta">
-              <h3>{{ user.nombre }}</h3>
-              <span class="user-email">{{ user.email }}</span>
-            </div>
-          </div>
-
-          <div class="card-body">
-            <div class="data-row">
-              <span class="label">DNI:</span>
-              <span class="value">{{ user.dni || '-' }}</span>
-            </div>
-            <div class="data-row">
-              <span class="label">Teléfono:</span>
-              <span class="value">{{ user.telefono || '-' }}</span>
-            </div>
-            <div class="data-row">
-              <span class="label">Matrícula:</span>
-              <span class="value">{{ user.matricula || '-' }}</span>
-            </div>
-            <div class="data-row">
-              <span class="label">Registrado:</span>
-              <span class="value">{{ user.createdAt | date:'shortDate' }}</span>
-            </div>
-          </div>
-
-          <div class="card-footer">
-            <button class="btn-aprobar" (click)="aprobarUsuario(user)">
-              <lucide-icon [img]="icons.check"></lucide-icon> Aprobar Acceso
-            </button>
-          </div>
-
+        <div *ngIf="reclamosFiltrados().length === 0" class="empty-state">
+          <lucide-icon [img]="icons.Filter" size="40"></lucide-icon>
+          <h3>Sin resultados</h3>
+          <p>No se encontraron expedientes con los filtros actuales.</p>
         </div>
       </div>
-
-    </section>
-  }
-
-  <ng-template #loadingTemplate>
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Sincronizando datos...</p>
     </div>
-  </ng-template>
+
+  </section>
+
+  <div *ngIf="isLoading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Sincronizando sistema...</p>
+  </div>
 
 </div>

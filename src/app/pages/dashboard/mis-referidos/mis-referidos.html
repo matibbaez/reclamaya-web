@@ -3,47 +3,41 @@
   <header class="page-header">
     <div class="header-content">
       <h1>
-        Hola, 
-        {{ authService.esTramitador ? 'Tramitador' : (authService.esOrganizador ? 'Broker' : 'Productor') }} 
-        👋
+        Hola, {{ rolLabel }} {{ authService.currentUserValue?.nombre }} 👋
       </h1>
-      <p *ngIf="!authService.esTramitador">Aquí tenés el control total de tu cartera.</p>
-      <p *ngIf="authService.esTramitador">Aquí tenés tus casos asignados.</p>
+      <p *ngIf="!authService.esTramitador">Panel de control de tu cartera de clientes.</p>
+      <p *ngIf="authService.esTramitador">Gestioná tus casos asignados desde aquí.</p>
     </div>
     
-    <div class="header-actions">
-      <a routerLink="/iniciar-reclamo" class="btn-new-claim">
-        + Cargar Manualmente
+    <div class="header-actions" *ngIf="!authService.esTramitador">
+      <a [routerLink]="['/iniciar-reclamo']" 
+         [queryParams]="{ ref: productorId }" 
+         class="btn-new-claim">
+        <span>+</span> Cargar Caso
       </a>
     </div>
   </header>
 
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon blue">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-      </div>
+      <div class="stat-icon blue"><lucide-icon [img]="icons.FileText" size="24"></lucide-icon></div>
       <div class="stat-info">
-        <span class="label">Total Casos</span>
-        <span class="value">{{ listaReclamos.length }}</span>
+        <span class="label">Total Cartera</span>
+        <span class="value">{{ stats().total }}</span>
       </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon orange">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        </div>
+        <div class="stat-icon orange"><lucide-icon [img]="icons.Clock" size="24"></lucide-icon></div>
         <div class="stat-info">
             <span class="label">En Gestión</span>
-            <span class="value">{{ obtenerCantidadPorEstado('En Proceso') }}</span>
+            <span class="value">{{ stats().enGestion }}</span>
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon green">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75" /></svg>
-        </div>
+        <div class="stat-icon green"><lucide-icon [img]="icons.CheckCircle2" size="24"></lucide-icon></div>
         <div class="stat-info">
             <span class="label">Finalizados</span>
-            <span class="value">{{ obtenerCantidadPorEstado('Finalizado') }}</span>
+            <span class="value">{{ stats().finalizados }}</span>
         </div>
     </div>
   </div>
@@ -55,15 +49,17 @@
         <div class="icon-rocket">🚗</div>
         <div class="texts">
           <h3>Link para Clientes</h3>
-          <p>Compartí este enlace para que carguen su siniestro.</p>
+          <p>Envialo para que carguen su siniestro.</p>
         </div>
       </div>
       <div class="content-right">
         <div class="input-group">
           <input type="text" [value]="linkAsegurados" readonly>
-          <button (click)="copiarLink(linkAsegurados)" class="btn-copy">Copiar</button>
+          <button (click)="copiarLink(linkAsegurados)" class="btn-copy"><lucide-icon [img]="icons.Copy" size="16"></lucide-icon></button>
         </div>
-        <a [href]="'https://wa.me/?text=Hola!%20Te%20comparto%20el%20link:%20' + linkAsegurados" target="_blank" class="btn-whatsapp">WhatsApp</a>
+        <a [href]="'https://wa.me/?text=Hola!%20Te%20comparto%20el%20link:%20' + linkAsegurados" target="_blank" class="btn-whatsapp">
+           <lucide-icon [img]="icons.MessageCircle" size="18"></lucide-icon> WhatsApp
+        </a>
       </div>
     </div>
 
@@ -72,86 +68,99 @@
         <div class="content-left">
           <div class="icon-rocket">💼</div>
           <div class="texts">
-            <h3>Invitar Productores</h3>
-            <p class="text-warning">Sumá PAS a tu equipo.</p>
+            <h3>Reclutar Productores</h3>
+            <p class="text-warning">Expandí tu red de PAS.</p>
           </div>
         </div>
         <div class="content-right">
           <div class="input-group">
             <input type="text" [value]="linkProductores" readonly class="input-gold">
-            <button (click)="copiarLink(linkProductores)" class="btn-copy btn-gold">Copiar</button>
+            <button (click)="copiarLink(linkProductores)" class="btn-copy btn-gold"><lucide-icon [img]="icons.Copy" size="16"></lucide-icon></button>
           </div>
-          <a [href]="'https://wa.me/?text=Sumate%20a%20mi%20equipo:%20' + linkProductores" target="_blank" class="btn-whatsapp">Invitar</a>
+          <a [href]="'https://wa.me/?text=Sumate%20a%20mi%20equipo:%20' + linkProductores" target="_blank" class="btn-whatsapp">
+             <lucide-icon [img]="icons.Share2" size="18"></lucide-icon> Invitar
+          </a>
         </div>
     </div>
   </div>
 
-  <div *ngIf="authService.esOrganizador" class="table-card mt-4">
-    <div class="table-header">
-        <div class="header-title">
-            <h2 class="text-gold">👥 Mi Equipo de Productores</h2>
-            <span class="count-badge gold">{{ miEquipo.length }} Activos</span>
-        </div>
+  <div *ngIf="authService.esOrganizador && equipo().length > 0" class="section-card team-section">
+    <div class="card-header-simple">
+      <div class="header-title">
+        <h2>Mi Equipo</h2>
+        <span class="count-badge">{{ equipo().length }} PAS</span>
+      </div>
     </div>
     
-    <div *ngIf="miEquipo.length > 0" class="table-responsive">
-        <table class="table-hover">
+    <div class="table-responsive">
+        <table class="modern-table">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Email</th>
                     <th>Matrícula</th>
-                    <th>Celular</th>
                     <th>Ventas</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let p of miEquipo">
-                    <td class="font-bold">{{ p.nombre | titlecase }}</td>
+                <tr *ngFor="let p of equipo()">
+                    <td class="font-bold">
+                      <div class="avatar-sm gold">{{ p.nombre.charAt(0) }}</div>
+                      {{ p.nombre }}
+                    </td>
                     <td class="text-muted">{{ p.email }}</td>
                     <td>{{ p.matricula || '-' }}</td>
-                    <td>{{ p.telefono || '-' }}</td>
-                    <td>
-                        <span class="badge-blue">{{ p.reclamos_cargados?.length || 0 }}</span>
-                    </td>
+                    <td><span class="badge-blue">{{ p.reclamos_cargados?.length || 0 }}</span></td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <div *ngIf="miEquipo.length === 0" class="p-4 text-center text-muted">
-        Aún no tenés productores registrados.
-    </div>
   </div>
 
-  <div class="table-card mt-4">
-    <div class="table-header">
-      <div class="header-title">
-        <h2>Cartera de Siniestros</h2>
-        <span class="count-badge">{{ listaReclamos.length }} Casos</span>
-      </div>
-      
+  <div class="section-card mt-4">
+    <div class="card-header-simple">
+      <h2>Cartera de Siniestros</h2>
+      <span class="count-badge">{{ reclamosFiltrados().length }}</span>
+    </div>
+
+    <div class="toolbar-wrapper">
       <div class="search-box">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-        <input type="text" placeholder="Buscar por nombre o DNI...">
+        <lucide-icon [img]="icons.Search" size="18" class="icon"></lucide-icon>
+        <input type="text" placeholder="Buscar..." (keyup)="aplicarFiltro($event)">
+      </div>
+
+      <div class="filters-group">
+        <div class="select-wrapper">
+          <select (change)="cambiarEstado($event)">
+            <option value="">Estado: Todos</option>
+            <option value="Enviado">🔵 Enviado</option>
+            <option value="Iniciado">🔵 Iniciado</option>
+            <option value="Negociacion">🟠 Negociación</option>
+            <option value="Indemnizando">💲 Indemnizando</option>
+            <option value="Indemnizado">🟢 Finalizado</option>
+            <option value="Rechazado">🔴 Rechazado</option>
+          </select>
+        </div>
+
+        <button class="btn-sort" (click)="alternarOrden()" [title]="ordenDescendente() ? 'Más recientes' : 'Más antiguos'">
+          <lucide-icon [img]="icons.ArrowUpDown" size="18"></lucide-icon>
+        </button>
       </div>
     </div>
 
-    <div *ngIf="isLoading" class="loading-state"><div class="spinner"></div><p>Cargando...</p></div>
-
-    <div *ngIf="!isLoading && listaReclamos.length > 0" class="table-responsive">
-      <table>
+    <div *ngIf="!isLoading()" class="table-responsive">
+      <table class="modern-table">
         <thead>
           <tr>
             <th>Fecha</th>
             <th>Asegurado</th>
-            <th>DNI</th>
             <th>Código</th>
             <th>Estado</th>
-            <th class="text-right">Acción</th>
+            <th class="text-right"></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of listaReclamos">
+          <tr *ngFor="let item of reclamosFiltrados()" class="fade-in-item">
             <td>
               <div class="date-cell">
                 <span class="day">{{ item.fecha_creacion | date:'dd' }}</span>
@@ -161,24 +170,28 @@
             <td>
                <div class="user-cell">
                  <div class="avatar-circle">{{ item.nombre.charAt(0) | uppercase }}</div>
-                 <span class="font-bold">{{ item.nombre | titlecase }}</span>
+                 <div class="user-data">
+                   <span class="font-bold">{{ item.nombre }}</span>
+                   <small class="text-muted">{{ item.dni }}</small>
+                 </div>
                </div>
             </td>
-            <td class="text-muted">{{ item.dni }}</td>
             <td><span class="code-pill">{{ item.codigo_seguimiento }}</span></td>
             <td>
-              <span class="status-badge" [ngClass]="getEstadoClass(item.estado)">
-                <span class="dot"></span> {{ item.estado }}
-              </span>
+              <span class="status-badge" [ngClass]="item.estado">{{ item.estado }}</span>
             </td>
             <td class="text-right">
               <a [routerLink]="['/reclamo', item.id]" class="btn-icon-action">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                <lucide-icon [img]="icons.ExternalLink" size="18"></lucide-icon>
               </a>
             </td>
           </tr>
         </tbody>
       </table>
+      
+      <div *ngIf="reclamosFiltrados().length === 0" class="empty-state">
+        <p>No se encontraron casos.</p>
+      </div>
     </div>
   </div>
 

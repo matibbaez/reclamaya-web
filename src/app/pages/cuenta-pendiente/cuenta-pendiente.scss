@@ -159,23 +159,34 @@ h2 {
   display: flex; justify-content: center;
 }
 
-.btn-outline {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 24px;
-  border: 2px solid $text-dark;
-  color: $text-dark;
-  border-radius: 12px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s;
+.btn-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre ícono y texto */
+  
   background: transparent;
+  border: none;
+  padding: 0; /* Sin relleno extra, como un link puro */
+  
+  color: #64748b; /* Color gris suave (Slate-500) */
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
-  svg { width: 18px; height: 18px; }
+  svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s;
+  }
 
   &:hover {
-    background-color: $text-dark;
-    color: white;
-    transform: translateY(-2px);
+    color: $primary; /* Se oscurece al pasar el mouse (Slate-900) */
+    
+    svg {
+      transform: translateX(-3px); /* Pequeño movimiento a la izquierda */
+    }
   }
 }
 
@@ -214,7 +225,7 @@ h2 {
 
   .main-content {
     width: 100%;
-    padding: 3rem 1.5rem 5rem 1.5rem;
+    padding: 5rem 1.5rem 5rem 1.5rem;
   }
   
   /* Ajuste para la tarjeta de estado en pantallas chicas */

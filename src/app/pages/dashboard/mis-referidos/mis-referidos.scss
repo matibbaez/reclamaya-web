@@ -3,59 +3,65 @@ $bg-dark: #0f172a;
 $bg-light: #f8fafc;
 $primary: #3b82f6;
 $accent: #f59e0b;
-$gold: #d97706; // <--- NUEVO COLOR DORADO OSCURO (Legible)
+$gold: #d97706; 
 $text-main: #1e293b;
 $text-muted: #64748b;
+$border: #e2e8f0;
+$danger: #ef4444;
 
 .dashboard-container {
-  padding-top: 110px;
-  padding-bottom: 4rem; // Un poco más de aire abajo
+  padding-top: 120px;
+  padding-bottom: 4rem;
   padding-left: 2rem;
   padding-right: 2rem;
   max-width: 1400px; 
-  width: 98%; 
   margin: 0 auto; 
   min-height: 100vh;
+  background-color: $bg-light;
+
+  @media (max-width: 768px) {
+    padding: 110px 1rem 2rem 1rem;
+  }
 }
 
 /* HEADER */
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;
   
   .header-content {
-    h1 { font-size: 1.8rem; color: $text-main; font-weight: 800; margin: 0; }
-    p { color: $text-muted; margin-top: 5px; }
+    h1 { font-size: 1.8rem; color: $text-main; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+    p { color: $text-muted; margin-top: 5px; font-size: 1rem; }
   }
 
   .btn-new-claim {
-    background: white; border: 1px solid #cbd5e1; color: $text-main;
-    padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 700;
+    background: $text-main; color: white;
+    padding: 0.8rem 1.5rem; border-radius: 12px; font-weight: 600;
     text-decoration: none; transition: all 0.2s; white-space: nowrap;
-    &:hover { border-color: $primary; color: $primary; background: #eff6ff; }
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    
+    span { color: $primary; font-weight: 800; margin-right: 4px; }
+    &:hover { transform: translateY(-2px); background: black; }
   }
 }
 
 /* STATS GRID */
 .stats-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem; margin-bottom: 3rem; /* Más separación con los links */
+  gap: 1.5rem; margin-bottom: 3rem;
 }
 
 .stat-card {
   background: white; padding: 1.5rem; border-radius: 16px;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
   display: flex; align-items: center; gap: 1.5rem;
-  border: 1px solid white; transition: transform 0.2s;
+  border: 1px solid $border; transition: transform 0.2s;
 
   &:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08); }
 
   .stat-icon {
-    width: 50px; height: 50px; border-radius: 12px;
+    width: 56px; height: 56px; border-radius: 14px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    svg { width: 28px; height: 28px; }
     &.blue { background: #eff6ff; color: $primary; }
     &.orange { background: #fff7ed; color: $accent; }
     &.green { background: #ecfdf5; color: #10b981; }
@@ -63,30 +69,26 @@ $text-muted: #64748b;
 
   .stat-info {
     display: flex; flex-direction: column;
-    .label { font-size: 0.85rem; color: $text-muted; font-weight: 600; text-transform: uppercase; }
-    .value { font-size: 1.8rem; font-weight: 800; color: $text-main; line-height: 1.1; }
+    .label { font-size: 0.8rem; color: $text-muted; font-weight: 700; text-transform: uppercase; }
+    .value { font-size: 2rem; font-weight: 800; color: $text-main; line-height: 1; }
   }
 }
 
 /* LINKS SECTION */
-.links-section {
-    margin-bottom: 3rem; /* Separación fuerte antes de las tablas */
-}
+.links-section { margin-bottom: 3rem; }
 
-/* LINK CARD PREMIUM */
 .link-card-premium {
-  background-color: $bg-dark; border-radius: 20px; padding: 2.5rem;
+  background-color: $bg-dark; border-radius: 20px; padding: 2rem;
   position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: space-between;
-  gap: 3rem; margin-bottom: 1.5rem; /* Separación entre cards si hay 2 */
+  gap: 2rem; margin-bottom: 1.5rem;
   box-shadow: 0 20px 40px -5px rgba(15, 23, 42, 0.3);
 
-  /* Estilo Dorado específico para la card de Productores */
   &.gold-glow {
       border: 1px solid rgba($accent, 0.3);
       .card-glow-gold {
           position: absolute; top: -50%; right: -10%; width: 500px; height: 500px;
-          background: radial-gradient(circle, rgba($accent, 0.2) 0%, rgba(0,0,0,0) 70%); pointer-events: none;
+          background: radial-gradient(circle, rgba($accent, 0.15) 0%, rgba(0,0,0,0) 70%); pointer-events: none;
       }
       .input-gold { color: $accent; font-weight: 700; }
       .btn-gold { background: $accent; color: #fff; &:hover { background: lighten($accent, 10%); } }
@@ -99,11 +101,11 @@ $text-muted: #64748b;
 
   .content-left {
     flex: 1; position: relative; z-index: 1;
-    display: flex; gap: 1.5rem; align-items: flex-start;
-    .icon-rocket { font-size: 3rem; }
+    display: flex; gap: 1.5rem; align-items: center;
+    .icon-rocket { font-size: 2.5rem; }
     .texts {
-      h3 { color: white; font-size: 1.6rem; margin: 0 0 0.5rem 0; font-weight: 700; }
-      p { color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5; font-size: 1rem; }
+      h3 { color: white; font-size: 1.4rem; margin: 0 0 0.2rem 0; font-weight: 700; }
+      p { color: rgba(255,255,255,0.7); margin: 0; font-size: 0.95rem; }
       .text-warning { color: $accent !important; font-weight: 600; }
     }
   }
@@ -115,154 +117,232 @@ $text-muted: #64748b;
 
   .input-group {
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px; padding: 6px;
+    border-radius: 12px; padding: 4px; padding-left: 12px;
     display: flex; gap: 0.5rem; align-items: center;
 
     input {
       flex: 1; background: transparent; border: none;
-      color: white; padding: 0 1rem;
-      font-family: monospace; font-size: 1rem; outline: none;
-      min-width: 0; 
-      text-overflow: ellipsis; 
+      color: white; font-family: monospace; font-size: 0.9rem; outline: none;
+      width: 100%; text-overflow: ellipsis; 
     }
 
     .btn-copy {
       background: $primary; color: white; border: none;
-      padding: 0.8rem 1.2rem; border-radius: 8px;
-      cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: all 0.2s; white-space: nowrap;
-      
-      svg { width: 20px; height: 20px; }
-      .btn-text { font-weight: 700; }
-      
-      &:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-      &:active { transform: translateY(0); }
+      padding: 8px 12px; border-radius: 8px; cursor: pointer;
+      &:hover { transform: translateY(-1px); }
     }
   }
 
   .btn-whatsapp {
     text-decoration: none; color: white; font-size: 0.9rem; font-weight: 600;
     display: flex; align-items: center; gap: 8px; background: #25D366;
-    padding: 12px; border-radius: 8px; justify-content: center;
+    padding: 10px; border-radius: 8px; justify-content: center;
     transition: background 0.2s;
     &:hover { background: darken(#25D366, 5%); }
   }
 }
 
-/* --- TABLAS --- */
-.table-card {
-  background: white; border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
-  overflow: hidden; border: 1px solid white;
-  
-  /* SEPARACIÓN IMPORTANTE ENTRE TABLAS */
-  margin-bottom: 3rem; // Esto despega la tabla de equipo de la de siniestros
+/* --- TABLAS MODERNAS --- */
+.section-card {
+  background: white; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); border: 1px solid $border;
 }
 
-.table-header {
-  padding: 1.5rem 2rem; border-bottom: 1px solid #f1f5f9;
+.card-header {
+  padding: 1.2rem 1.5rem; border-bottom: 1px solid #f1f5f9;
   display: flex; justify-content: space-between; align-items: center;
   flex-wrap: wrap; gap: 1rem;
 
-  /* Estilos para el Título y Badge dentro del header */
   .header-title {
     display: flex; align-items: center; gap: 1rem;
-    
-    h2 { font-size: 1.25rem; color: $text-main; margin: 0; font-weight: 700; }
-    
-    /* Clase específica para texto dorado */
+    h2 { font-size: 1.2rem; color: $text-main; margin: 0; font-weight: 800; }
     .text-gold { color: $gold !important; }
-
     .count-badge { 
         background: #f1f5f9; padding: 4px 10px; border-radius: 20px; 
-        font-size: 0.8rem; font-weight: 700; color: $text-muted; 
-        
-        /* Badge dorado */
-        &.gold {
-            background: #fffbeb; // Fondo cremita
-            color: $gold;       // Texto dorado
-            border: 1px solid rgba($gold, 0.2);
-        }
+        font-size: 0.75rem; font-weight: 700; color: $text-muted; 
+        &.gold { background: #fffbeb; color: $gold; border: 1px solid rgba($gold, 0.2); }
     }
   }
 
   .search-box {
     position: relative;
-    svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; color: #94a3b8; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
     input {
-      padding: 0.6rem 1rem 0.6rem 2.5rem; border: 1px solid #e2e8f0; border-radius: 8px;
-      font-size: 0.9rem; outline: none; width: 250px; transition: border 0.2s;
-      &:focus { border-color: $primary; }
+      padding: 0.6rem 1rem 0.6rem 2.5rem; border: 1px solid $border; border-radius: 10px;
+      font-size: 0.9rem; outline: none; width: 280px; transition: border 0.2s;
+      &:focus { border-color: $primary; box-shadow: 0 0 0 3px rgba($primary, 0.1); }
     }
   }
 }
 
-table {
-  width: 100%; border-collapse: collapse;
-  th { text-align: left; padding: 1.2rem 2rem; background: #f8fafc; color: $text-muted; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
-  td { padding: 1.2rem 2rem; border-bottom: 1px solid #f1f5f9; color: $text-main; font-size: 0.95rem; vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #f8fafc; }
-  .text-right { text-align: right; }
-  .text-muted { color: $text-muted; }
+.card-header-simple {
+  padding: 1.2rem 1.5rem; border-bottom: 1px solid $border;
+  display: flex; justify-content: space-between; align-items: center;
+  h2 { font-size: 1.1rem; font-weight: 800; margin: 0; color: $text-main; }
+  .count-badge { background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: $text-muted; }
+  .text-gold { color: #d97706; }
 }
 
-/* Celdas especiales */
+.table-responsive {
+  width: 100%; overflow-x: auto; max-height: 600px; overflow-y: auto;
+}
+
+.modern-table {
+  width: 100%; border-collapse: collapse; min-width: 700px; /* Para que scrollee en móvil */
+  th { 
+    text-align: left; padding: 1rem 1.5rem; background: #f8fafc; 
+    color: $text-muted; font-weight: 700; font-size: 0.75rem; 
+    text-transform: uppercase; letter-spacing: 0.5px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  td { padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; color: $text-main; vertical-align: middle; }
+  tr:hover td { background: #fcfcfc; }
+}
+
+/* CELDAS */
 .date-cell {
   display: flex; flex-direction: column; align-items: center; width: fit-content;
   background: #f1f5f9; padding: 4px 8px; border-radius: 6px;
-  .day { font-weight: 800; font-size: 1rem; line-height: 1; }
-  .month { font-size: 0.7rem; text-transform: uppercase; font-weight: 600; color: $text-muted; }
+  .day { font-weight: 800; font-size: 0.9rem; line-height: 1; }
+  .month { font-size: 0.65rem; text-transform: uppercase; font-weight: 700; color: $text-muted; }
 }
 
 .user-cell {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 12px;
   .avatar-circle {
-    width: 32px; height: 32px; background: $primary; color: white;
+    width: 36px; height: 36px; background: $primary; color: white;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-weight: 700; font-size: 0.9rem;
   }
-  .font-bold { font-weight: 600; }
+  .user-data { display: flex; flex-direction: column; .font-bold { font-weight: 600; } }
+}
+
+.avatar-sm {
+    width: 30px; height: 30px; border-radius: 50%; display: inline-flex; 
+    align-items: center; justify-content: center; font-size: 0.75rem; 
+    font-weight: 700; color: white; margin-right: 8px;
+    &.gold { background: $accent; }
 }
 
 .code-pill { font-family: monospace; background: #eff6ff; color: $primary; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; }
 
 .status-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  &.badge-blue { background: #eff6ff; color: #1d4ed8; }
-  &.badge-orange { background: #fff7ed; color: #c2410c; }
-  &.badge-green { background: #ecfdf5; color: #15803d; }
-  &.badge-gray { background: #f1f5f9; color: $text-muted; }
+  padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  background: #f1f5f9; color: $text-muted;
+  
+  &.Enviado { background: #eff6ff; color: $primary; }
+  &.Recepcionado { background: #f5f3ff; color: #7c3aed; }
+  &.Iniciado { background: #f0f9ff; color: #0284c7; }
+  &.Negociacion { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+  &.Indemnizando { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+  &.Indemnizado { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+  &.Rechazado { background: #fef2f2; color: $danger; }
 }
 
 .btn-icon-action {
-  background: white; border: 1px solid #e2e8f0; color: $text-muted;
-  width: 36px; height: 36px; border-radius: 8px;
-  display: inline-flex; align-items: center; justify-content: center;
-  transition: all 0.2s; cursor: pointer;
-  &:hover { border-color: $primary; color: $primary; background: #eff6ff; }
-  svg { width: 18px; }
+  color: $text-muted; transition: all 0.2s; cursor: pointer;
+  &:hover { color: $primary; transform: translateX(-2px); }
 }
 
-.btn-whatsapp-sm {
-    background: #25D366; color: white; width: 32px; height: 32px;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    transition: transform 0.2s;
-    &:hover { transform: scale(1.1); background: darken(#25D366, 5%); }
+/* TOOLBAR Y FILTROS (NUEVO) */
+.toolbar-wrapper {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid $border;
+  background: #fdfdfd;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column; align-items: stretch;
+  }
+
+  .search-box {
+    position: relative; flex: 1; min-width: 250px;
+    .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: $text-muted; }
+    input {
+      width: 100%; padding: 10px 10px 10px 38px; border: 1px solid $border; border-radius: 8px;
+      font-size: 0.9rem; outline: none; transition: all 0.2s;
+      &:focus { border-color: $primary; box-shadow: 0 0 0 3px rgba($primary, 0.1); }
+    }
+  }
+
+  .filters-group {
+    display: flex; gap: 10px;
+    @media (max-width: 768px) { width: 100%; }
+
+    .select-wrapper {
+      flex: 1;
+      select {
+        width: 100%; appearance: none; background: white; border: 1px solid $border;
+        padding: 10px 30px 10px 12px; border-radius: 8px; font-weight: 600; color: $text-main; cursor: pointer;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat; background-position: right 10px top 50%; background-size: 10px auto;
+        &:focus { border-color: $primary; }
+      }
+    }
+
+    .btn-sort {
+      background: white; border: 1px solid $border; border-radius: 8px;
+      width: 42px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: $text-muted; transition: all 0.2s;
+      &:hover { border-color: $primary; color: $primary; background: #eff6ff; }
+    }
+  }
 }
 
-.loading-state, .empty-state { padding: 4rem; text-align: center; color: $text-muted; }
-.spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: $primary; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
+/* UTILS */
+.text-right { text-align: right; }
+.loading-state { padding: 4rem; text-align: center; color: $text-muted; }
+.spinner { width: 40px; height: 40px; border: 3px solid $border; border-top-color: $primary; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.icon-empty { font-size: 3rem; margin-bottom: 1rem; }
+.fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.empty-state { padding: 3rem; text-align: center; color: $text-muted; font-style: italic; }
 
 /* MEDIA QUERIES */
 @media (max-width: 900px) {
   .dashboard-container { padding-left: 1rem; padding-right: 1rem; }
   .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; .header-actions { width: 100%; } .btn-new-claim { display: block; text-align: center; width: 100%; } }
-  .link-card-premium { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem 1.5rem; .content-left { flex-direction: column; align-items: center; } .content-right { width: 100%; } .input-group .btn-copy .btn-text { display: none; } }
-  .table-responsive { overflow-x: auto; }
-  .table-header { flex-direction: column; align-items: stretch; .search-box input { width: 100%; } }
+  .link-card-premium { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem 1.5rem; .content-left { flex-direction: column; align-items: center; } .content-right { width: 100%; } }
+  .card-header { flex-direction: column; align-items: stretch; .search-box input { width: 100%; } }
+}
+
+.team-section {
+  margin-top: 1.5rem;
+  
+  /* Aquí está la magia: 5rem (80px) de separación con la tabla de abajo */
+  margin-bottom: 5rem; 
+  
+  border: 1px solid $border; // Aseguramos que tenga borde sutil igual que la otra
+}
+
+/* Ajuste del header simple para que sea idéntico a "Cartera" */
+.card-header-simple {
+  padding: 1.2rem 1.5rem; 
+  border-bottom: 1px solid #f1f5f9;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  
+  .header-title {
+    display: flex; 
+    align-items: center; 
+    gap: 1rem;
+    
+    h2 { 
+      font-size: 1.2rem; 
+      color: $text-main; // Color oscuro estándar
+      margin: 0; 
+      font-weight: 800; 
+    }
+    
+    .count-badge { 
+      background: #f1f5f9; 
+      padding: 4px 10px; 
+      border-radius: 20px; 
+      font-size: 0.75rem; 
+      font-weight: 700; 
+      color: $text-muted; 
+    }
+  }
 }
