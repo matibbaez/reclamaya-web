@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]], // Validación base, se refuerza en registro
+    password: ['', [Validators.required]], 
     nombre: [''], 
     dni: [''],
     telefono: [''],
@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
         Validators.required, 
         Validators.minLength(3), 
         Validators.pattern(this.nombrePattern),
-        this.noWhitespaceValidator // <--- Custom
+        this.noWhitespaceValidator 
       ]);
 
       // 2. DNI: Required, Regex 7-8 números
@@ -89,35 +89,35 @@ export class LoginComponent implements OnInit {
       ]);
 
     } else {
-      // MODO LOGIN: Relajamos validaciones (solo required)
+      // MODO LOGIN: Relajamos validaciones
       c.nombre.clearValidators();
       c.dni.clearValidators();
       c.telefono.clearValidators();
       
-      // En Login solo pedimos que no esté vacía (no validamos complejidad para no dar pistas)
+      // En Login solo pedimos que no esté vacía
       c.password.setValidators([Validators.required]);
     }
 
-    // Actualizamos el estado de los inputs para que Angular se entere
+    // Actualizamos el estado de los inputs
     c.nombre.updateValueAndValidity();
     c.dni.updateValueAndValidity();
     c.telefono.updateValueAndValidity();
     c.password.updateValueAndValidity();
   }
 
-  // Validador Custom: Evita que pongan "   " (solo espacios)
+  // Validador Custom: Evita solo espacios
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { 'whitespace': true };
   }
 
-  // --- GETTERS PARA EL HTML (Para no escribir chorizo de código en el template) ---
   get f() { return this.loginForm.controls; }
 
+  // --- SUBMIT ---
   onSubmit() {
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched(); // Esto hace que todos los errores salten rojos de una
+      this.loginForm.markAllAsTouched(); 
       this.notificacionService.showError('Por favor revisá los datos ingresados.');
       return;
     }
@@ -126,34 +126,42 @@ export class LoginComponent implements OnInit {
     const formValue = this.loginForm.value;
 
     if (this.isRegisterMode) {
-      // REGISTRO
+      // === REGISTRO ===
       const datosRegistro = { ...formValue, referralCode: this.referralCode };
 
       this.authService.registro(datosRegistro).subscribe({
-        next: () => {
-          this.notificacionService.showSuccess('¡Cuenta creada!');
-          this.procesarLogin(formValue.email!, formValue.password!);
+        next: (res: any) => {
+          this.isLoading = false;
+          // 👇 REDIRECCIÓN A LA PANTALLA DE ÉXITO/PENDIENTE
+          this.router.navigate(['/cuenta-pendiente']);
         },
         error: (err: any) => { 
           this.isLoading = false;
           console.error(err);
-          this.notificacionService.showError(err.error?.message || 'Error al registrarse.');
+          const mensaje = err.error?.message || 'Error al registrarse.';
+          this.notificacionService.showError(mensaje);
         }
       });
 
     } else {
-      // LOGIN
+      // === LOGIN DIRECTO ===
       this.procesarLogin(formValue.email!, formValue.password!);
     }
   }
 
+  // --- LÓGICA CENTRAL DE LOGIN ---
   private procesarLogin(email: string, pass: string) {
     this.authService.login({ email, password: pass }).subscribe({
       next: (response: any) => {
         this.isLoading = false;
+        
+        // 1. Guardar Sesión
         this.authService.setSession(response.access_token);
+        
+        // 2. Notificar Éxito
         this.notificacionService.showSuccess(`¡Hola, ${response.user.nombre}!`);
 
+        // 3. Redirigir según Rol
         if (this.authService.esAdmin) {
           this.router.navigate(['/admin-dashboard']);
         } else if (this.authService.esOrganizador || this.authService.esProductor || this.authService.esTramitador) {
@@ -164,10 +172,21 @@ export class LoginComponent implements OnInit {
       },
       error: (err: any) => {
         this.isLoading = false;
-        if (err.status === 401) {
+        
+        if (err.status === 403) {
+          // CASO: Usuario registrado pero NO aprobado (isApproved: false)
+          this.notificacionService.showWarning(
+            'Cuenta en Revisión',
+            'Tu registro fue exitoso, pero un administrador debe aprobar tu cuenta antes de ingresar.'
+          );
+        } 
+        else if (err.status === 401) {
+          // CASO: Contraseña o mail incorrecto
           this.notificacionService.showError('Email o contraseña incorrectos.');
-        } else {
-          this.notificacionService.showError('Error de conexión.');
+        } 
+        else {
+          // CASO: Servidor caído u otro problema
+          this.notificacionService.showError('Error de conexión. Intente nuevamente.');
         }
       }
     });

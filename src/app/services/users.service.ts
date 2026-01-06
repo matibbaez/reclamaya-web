@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
-// Interfaz unificada para todo tipo de usuario que venga del back
 export interface IUser {
   id: string;
   nombre: string;
@@ -13,7 +12,8 @@ export interface IUser {
   telefono?: string;  
   matricula?: string;
   createdAt?: string;
-  reclamos_cargados?: any[]; // Para la vista de equipo
+  isApproved: boolean;
+  reclamos_cargados?: any[]; 
 }
 
 @Injectable({
@@ -26,7 +26,6 @@ export class UsersService {
 
   constructor() { }
 
-  // 1. TRAER TODOS (Para listados de Admin)
   getAll(role?: string): Observable<IUser[]> {
     let url = this.apiUrl;
     if (role) {
@@ -35,7 +34,14 @@ export class UsersService {
     return this.http.get<IUser[]>(url);
   }
 
-  // 2. TRAER SOLO TRAMITADORES (Para el select de asignación)
+  getPendientes(): Observable<IUser[]> {
+    return this.http.get<IUser[]>(`${this.apiUrl}?approved=false`);
+  }
+
+  aprobarUsuario(id: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/approve`, {});
+  }
+
   getTramitadores(): Observable<IUser[]> {
     return this.getAll('Tramitador');
   }
@@ -44,12 +50,10 @@ export class UsersService {
     return this.http.get<IUser[]>(`${this.apiUrl}/mis-referidos`);
   }
 
-  // 4. CREAR USUARIO (Productor/Tramitador)
   create(user: any): Observable<IUser> {
     return this.http.post<IUser>(this.apiUrl, user);
   }
 
-  // 5. BORRAR USUARIO
   delete(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }

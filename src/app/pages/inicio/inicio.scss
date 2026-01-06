@@ -1,8 +1,8 @@
-// VARIABLES DE DISEÑO
-$bg-dark: #0f172a;       // Slate 900
-$bg-light: #f8fafc;      // Slate 50
-$primary: #3b82f6;       // Blue 500
-$accent: #f59e0b;        // Amber 500 (Naranja Ya)
+/* VARIABLES */
+$bg-dark: #0f172a;       
+$bg-light: #f8fafc;      
+$primary: #3b82f6;       
+$accent: #f59e0b;        
 $text-dark: #1e293b;
 $text-light: #f1f5f9;
 
@@ -11,418 +11,207 @@ $text-light: #f1f5f9;
   overflow-x: hidden;
 }
 
-// Fade in simple
-.fade-in {
-  animation: fadeIn 0.8s ease-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.fade-in { animation: fadeIn 0.8s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  margin-top: 2.5rem
-}
+.container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; margin-top: 2.5rem; }
+.container-revoca { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
 
-.container-revoca {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
+.dot {
+    color: var(--color-brand);
+    font-size: 2rem;
+    line-height: 0;
+    margin-left: 2px;
+  }
 
 /* =========================================
-   1. HERO SECTION (DARK MODE)
+   HERO SECTION
    ========================================= */
 .hero-section {
   position: relative;
   background-color: $bg-dark;
   color: white;
-  padding: 6rem 0 8rem 0;
+  padding: 8rem 0 8rem 0; /* Padding amplio en Desktop */
   overflow: hidden;
   text-align: center;
 }
 
-/* Efecto de luz de fondo moderno */
 .hero-bg-glow {
-  position: absolute;
-  top: -50%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1000px;
-  height: 1000px;
+  position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+  width: 1000px; height: 1000px;
   background: radial-gradient(circle, rgba($primary, 0.2) 0%, rgba($bg-dark, 0) 70%);
-  z-index: 0;
-  pointer-events: none;
+  z-index: 0; pointer-events: none;
 }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  margin: 0 auto;
-}
+.hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
 
-/* Badge "Sistema Jurídico" */
+/* Badge */
 .badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 6px 16px;
-  border-radius: 50px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: rgba(255, 255, 255, 0.9);
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 16px; border-radius: 50px;
+  font-size: 0.8rem; font-weight: 600; margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.8); letter-spacing: 0.5px; text-transform: uppercase;
 
-  .dot {
-    width: 8px;
-    height: 8px;
-    background-color: $accent; // Naranja
-    border-radius: 50%;
-    box-shadow: 0 0 10px $accent;
-  }
+  .dot { width: 6px; height: 6px; background-color: $accent; border-radius: 50%; box-shadow: 0 0 8px $accent; }
 }
 
 h1 {
-  font-size: 3.5rem;
-  line-height: 1.1;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  letter-spacing: -1px;
-
-  .text-ya {
-    color: $accent;
-    font-weight: 900;
-    font-style: italic;
-  }
+  font-size: 4rem; line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; letter-spacing: -1.5px;
+  .text-ya { color: $accent; font-weight: 900; font-style: italic; }
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.7);
-  max-width: 600px;
-  margin: 0 auto 3rem auto;
-  line-height: 1.6;
+  font-size: 1.25rem; color: rgba(255, 255, 255, 0.7); max-width: 650px;
+  margin: 0 auto 3.5rem auto; line-height: 1.6; font-weight: 400;
 }
 
-/* BOTONES HERO */
+/* BOTONES LIMPIOS */
 .hero-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 4rem;
+  display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 5rem;
 }
 
 .btn-primary-glow {
-  background: $accent;
-  color: $bg-dark;
-  font-weight: 700;
-  padding: 14px 32px;
-  border-radius: 50px;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s;
-  box-shadow: 0 0 20px rgba($accent, 0.4);
-  cursor: pointer;
+  background: $accent; color: white; font-weight: 700;
+  padding: 16px 40px; border-radius: 12px; text-decoration: none;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); font-size: 1.1rem;
+  transition: all 0.3s; display: inline-flex; justify-content: center; align-items: center;
 
-  svg { width: 20px; height: 20px; }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba($accent, 0.6);
-    background: lighten($accent, 5%);
-  }
+  &:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.5); background: lighten($accent, 5%); }
 }
 
-.btn-outline-light {
-  background: transparent;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  font-weight: 600;
-  padding: 14px 32px;
-  border-radius: 50px;
-  text-decoration: none;
-  transition: all 0.3s;
-  cursor: pointer;
+.btn-glass {
+  background: rgba(255, 255, 255, 0.05); color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2); font-weight: 600;
+  padding: 16px 40px; border-radius: 12px; text-decoration: none;
+  backdrop-filter: blur(10px); font-size: 1.1rem;
+  transition: all 0.3s; display: inline-flex; justify-content: center; align-items: center;
 
-  &:hover {
-    border-color: white;
-    background: rgba(255, 255, 255, 0.05);
-  }
+  &:hover { background: rgba(255, 255, 255, 0.1); border-color: white; transform: translateY(-3px); }
 }
 
-/* ESTADÍSTICAS */
-.trust-stats {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-  .stat {
-    display: flex;
-    flex-direction: column;
-    strong { font-size: 1.5rem; color: white; display: block; }
-    span { font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 1px; }
-  }
-
-  .divider {
-    width: 1px; height: 40px; background: rgba(255, 255, 255, 0.1);
-  }
-}
-
-/* =========================================
-   2. STEPS SECTION (RENOVADO)
-   ========================================= */
-.steps-section {
-  padding: 8rem 0;
-  background-color: $bg-light;
-  position: relative;
-  overflow: hidden; // Para decoraciones que salgan
-}
-
-.section-header {
-  margin-bottom: 5rem;
-  position: relative;
-  z-index: 2;
+/* TRUST FEATURES (GARANTÍAS) */
+.trust-features {
+  display: flex; justify-content: center; align-items: center; gap: 3rem;
+  padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);
   
-  h2 { 
-    font-size: 2.8rem; 
-    font-weight: 800; 
-    color: $bg-dark; 
-    margin-bottom: 1rem; 
-    letter-spacing: -1px;
-  }
-  
-  // Una pequeña línea decorativa bajo el título
-  &::after {
-    content: ''; display: block; width: 60px; height: 4px;
-    background: $accent; margin: 1.5rem auto 0 auto; border-radius: 2px;
-  }
-}
+  .feature {
+    display: flex; align-items: center; gap: 12px;
+    color: rgba(255, 255, 255, 0.9); font-size: 1rem; font-weight: 500;
 
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  position: relative; // Para la línea conectora
-  
-  /* LÍNEA CONECTORA (Desktop) */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 30%; // A la altura de los iconos
-    left: 15%;
-    right: 15%;
-    height: 2px;
-    background: repeating-linear-gradient(to right, #e2e8f0 0, #e2e8f0 10px, transparent 10px, transparent 20px);
-    z-index: 0;
-  }
-}
-
-.step-card {
-  background: white;
-  padding: 3rem 2rem;
-  border-radius: 24px; // Más redondeado
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); // Sombra inicial sutil
-  border: 1px solid white; // Para el efecto hover
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  overflow: hidden;
-  z-index: 1; // Sobre la línea
-  display: flex;
-  flex-direction: column;
-  align-items: center; // Centrar todo
-  text-align: center;
-
-  /* Número gigante de fondo (más sutil) */
-  .step-number {
-    position: absolute;
-    top: -15px; 
-    right: -10px;
-    font-size: 6rem;
-    font-weight: 900;
-    color: #f1f5f9; // Casi invisible
-    z-index: -1;
-    transition: transform 0.4s, color 0.4s;
-  }
-
-  /* ICONO: Ahora con un "glow" */
-  .card-icon {
-    width: 80px; height: 80px;
-    border-radius: 50%; // Totalmente redondo
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 2rem;
-    position: relative;
-    background: white;
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); // Sombra propia para tapar la línea
-    z-index: 2;
-
-    svg { width: 35px; height: 35px; transition: transform 0.3s; }
-
-    /* Colores específicos */
-    &.blue { color: $primary; border: 2px solid lighten($primary, 30%); }
-    &.orange { color: $accent; border: 2px solid lighten($accent, 30%); }
-    &.green { color: #10b981; border: 2px solid lighten(#10b981, 30%); }
-  }
-
-  h3 { 
-    font-size: 1.4rem; 
-    font-weight: 800; 
-    margin-bottom: 1rem; 
-    color: $bg-dark; 
-  }
-  
-  p { 
-    font-size: 1rem; 
-    color: #64748b; 
-    line-height: 1.7; 
-  }
-
-  /* HOVER EFFECT: Elevación y Borde de color */
-  &:hover { 
-    transform: translateY(-10px); 
-    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
-    border-color: rgba($primary, 0.1); // Borde azulito sutil
-
-    .step-number {
-      transform: scale(1.1) rotate(-5deg);
-      color: #e2e8f0; // Se oscurece un poco
-    }
-
-    .card-icon svg {
-      transform: scale(1.1);
+    .check-circle {
+      width: 24px; height: 24px; background: rgba($accent, 0.2);
+      color: $accent; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 900;
     }
   }
 }
 
-@media (max-width: 900px) {
-  .steps-grid { 
-    grid-template-columns: 1fr; 
-    &::before { display: none; } // Sin línea en móvil
-  }
-  .step-card { 
-    margin-bottom: 1rem; 
-    align-items: flex-start; text-align: left;
-    .card-icon { margin-left: 0; }
-  }
-}
-
 /* =========================================
-   3. REVOCA SECCIÓN (FULL WIDTH)
+   REVOCA SECTION
    ========================================= */
 .revoca-section-full {
-  width: 100%;
-  background-color: #0f172a;
-  padding: 4rem 0; /* Un poco más de aire */
+  width: 100%; background-color: $bg-dark; padding: 5rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 
-  /* Decoración sutil */
   &::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 30%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03));
-    pointer-events: none;
+    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 30%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03)); pointer-events: none;
   }
 }
 
 .revoca-content {
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;
-  gap: 3rem;
+  display: flex; justify-content: space-between; align-items: center; gap: 3rem;
 }
 
 .revoca-text {
   max-width: 600px;
-
-  h3 {
-    color: #ffffff;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.8rem;
-  }
-
-  p {
-    color: rgba(255, 255, 255, 0.8) !important;
-    font-size: 1.05rem;
-    margin: 0;
-    
-    strong {
-      color: $accent; 
-      font-weight: 600;
-    }
+  h3 { color: #ffffff; font-size: 2rem; font-weight: 700; margin-bottom: 0.8rem; }
+  p { color: rgba(255, 255, 255, 0.8) !important; font-size: 1.1rem; margin: 0;
+    strong { color: $accent; font-weight: 600; }
   }
 }
 
-.revoca-action {
-  flex-shrink: 0; 
-}
+.btn-white-solid {
+  background: #ffffff; color: $bg-dark; font-weight: 700;
+  padding: 14px 32px; border-radius: 12px; text-decoration: none;
+  display: inline-flex; justify-content: center; align-items: center;
+  transition: all 0.3s; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 
-.btn-white-pill {
-  background: #ffffff;
-  color: $bg-dark;
-  font-weight: 700;
-  padding: 14px 32px;
-  border-radius: 50px;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  
-  svg { 
-    width: 20px; 
-    height: 20px; 
-    transition: transform 0.3s;
-  }
-
-  &:hover {
-    background: $accent; 
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-    
-    svg { transform: translateX(4px); }
-  }
+  &:hover { background: #f1f5f9; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
 }
 
 /* =========================================
-   RESPONSIVE
+   MOBILE OPTIMIZADO (LA CLAVE)
    ========================================= */
 @media (max-width: 768px) {
-  h1 { font-size: 2.2rem; }
-  .hero-actions { flex-direction: column; width: 100%; }
-  .btn-primary-glow, .btn-outline-light { width: 100%; justify-content: center; }
   
-  .trust-stats { flex-direction: column; gap: 1rem; .divider { display: none; } }
-  
-  .steps-grid { grid-template-columns: 1fr; }
-  
+  .container { margin-top: 1rem; padding: 0 1.2rem; }
+
+  /* 1. Hero Compacto */
+  .hero-section {
+    padding: 6rem 0 4rem 0; /* Un poco menos de aire arriba */
+  }
+
+  /* 2. Título H1 a 2rem (Igual que el resto de secciones) */
+  h1 {
+    font-size: 2rem; 
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    letter-spacing: .5px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    padding: 0 10px;
+  }
+
+  /* 3. Botones Full Width (Estandarizados) */
+  .hero-actions {
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    width: 100%;
+  }
+
+  /* APLICAMOS EL MISMO TAMAÑO A TODOS LOS BOTONES */
+  .btn-primary-glow, 
+  .btn-glass,
+  .btn-white-solid {
+    width: 100%;        /* Ancho total */
+    padding: 14px 0;    /* Misma altura para todos */
+    font-size: 1rem;    /* Misma letra */
+    justify-content: center; /* Texto centrado */
+    display: flex;      /* Asegura flex para centrar */
+  }
+
+  /* 4. Trust Features alineados */
+  .trust-features {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    width: fit-content;
+    margin: 0 auto;
+    padding-top: 2rem;
+    
+    .feature { font-size: 0.95rem; }
+  }
+
+  /* 5. Revoca Section Mobile */
+  .revoca-section-full {
+    padding: 3rem 0;
+  }
+
   .revoca-content {
     flex-direction: column;
     text-align: center;
     gap: 2rem;
   }
+
+  .revoca-text h3 { font-size: 1.6rem; }
   
-  .revoca-action, .btn-white-pill {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .faq-list { margin: 0 auto; }
+  .revoca-action { width: 100%; }
 }

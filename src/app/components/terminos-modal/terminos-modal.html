@@ -2,7 +2,7 @@
   <div class="modal-card animate-pop-in">
     
     <div class="modal-header">
-      <div class="brand-title mobile-hidden">
+      <div class="brand-logo mobile-hidden">
         <span class="text-reclama">Reclama</span><span class="text-ya">Ya</span><span class="dot">.</span>
       </div>
       <h2>Mandato de Representación</h2>
@@ -10,45 +10,46 @@
 
     <div class="modal-body">
       <p class="intro-text">
-        Para iniciar la gestión, necesitamos tu autorización para representarte legalmente ante las aseguradoras.
+        Para avanzar, necesitamos tu autorización legal para gestionar el reclamo ante las compañías de seguros.
       </p>
 
-      <div class="legal-scroll-box">
-        <h4>AUTORIZACIÓN DE GESTIÓN EXTRAJUDICIAL</h4>
-        <p>
-          Por la presente, autorizo a los letrados de <strong>ReclamaYa</strong> a realizar en mi nombre todas las gestiones extrajudiciales necesarias ante las compañías aseguradoras correspondientes, con el fin de obtener la indemnización por los daños y perjuicios sufridos.
-        </p>
-        
-        <h4>CONDICIONES DEL SERVICIO:</h4>
-        <ol>
-          <li>
-            <strong>Sin costo inicial:</strong> El asesoramiento y la gestión son gratuitos hasta el cobro.
-          </li>
-          <li>
-            <strong>Honorarios a resultado:</strong> Se pactan honorarios del 20% sobre el monto total recuperado, pagaderos únicamente al momento de percibir la indemnización.
-          </li>
-          <li>
-            <strong>Veracidad:</strong> Declaro que los datos y documentación aportados son reales y revisten carácter de declaración jurada.
-          </li>
-          <li>
-            <strong>Exclusividad:</strong> Me comprometo a no iniciar gestiones paralelas por este mismo siniestro con otros letrados mientras dure este mandato.
-          </li>
-        </ol>
+      <div class="legal-scroll-container">
+        <div class="legal-content">
+          <h4>1. AUTORIZACIÓN DE GESTIÓN</h4>
+          <p>
+            Autorizo a los letrados de <strong>ReclamaYa</strong> a realizar en mi nombre todas las gestiones extrajudiciales y administrativas necesarias para obtener la indemnización correspondiente.
+          </p>
+          
+          <h4>2. SIN COSTO INICIAL</h4>
+          <p>
+            El servicio es gratuito al inicio. No deberás abonar gastos administrativos, cartas documento ni consultas durante la gestión.
+          </p>
+
+          <h4>3. HONORARIOS A RESULTADO</h4>
+          <p>
+            Los honorarios se pactan en el <strong>20% del monto total recuperado</strong>. Estos solo se abonan si la gestión es exitosa y al momento de cobrar tu indemnización.
+          </p>
+
+          <h4>4. EXCLUSIVIDAD Y VERACIDAD</h4>
+          <p>
+            Declaro que los datos son reales (declaración jurada) y me comprometo a no iniciar gestiones paralelas con otros estudios por este mismo siniestro.
+          </p>
+        </div>
       </div>
 
       <div class="consent-alert">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
+        <div class="icon-box">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
         </div>
-        <p>Al hacer clic en "Aceptar", firmas digitalmente este acuerdo.</p>
+        <p>Al hacer clic en "Aceptar", firmas digitalmente este acuerdo de representación.</p>
       </div>
     </div>
 
     <div class="modal-footer">
-      <button class="btn-cancel" (click)="onCancelar()">Cancelar</button>
-      <button class="btn-accept" (click)="onAceptar()">
-        Aceptar y Continuar
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+      <button class="btn-cancel" (click)="cancelar.emit()">Cancelar</button>
+      <button class="btn-accept" (click)="aceptar.emit()">
+        <span>Aceptar y Firmar</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
       </button>
     </div>
 

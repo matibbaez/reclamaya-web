@@ -28,6 +28,10 @@ export class NotificacionService {
     this.mostrarNotificacion(mensaje, 'error');
   }
 
+  showWarning(mensaje: string, titulo?: string) {
+    this.mostrarNotificacion(mensaje, 'error');
+  }
+
   private mostrarNotificacion(mensaje: string, tipo: 'success' | 'error') {
     const id = this.idCounter++;
     const nuevaNotificacion: Notificacion = { id, mensaje, tipo };

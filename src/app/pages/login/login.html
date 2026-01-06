@@ -1,145 +1,151 @@
-<div class="login-layout">
-  
-  <aside class="brand-side">
-    <div class="brand-content">
-      <h1>Portal Administrativo</h1>
-      <p class="brand-desc">Gestioná tus reclamos y administrá tu cartera desde un solo lugar.</p>
-      <div class="bg-glow"></div>
+<div class="split-layout">
+
+  <aside class="side-panel">
+    <div class="panel-content">
+      
+      <div class="brand-header">
+        <h2>Portal Administrativo</h2>
+      </div>
+
+      <p class="panel-desc">
+        Gestioná tus reclamos, administrá tu cartera y visualizá el estado de los trámites desde un solo lugar.
+      </p>
+
+      <div class="admin-decoration">
+        <div class="stat-card">
+          <span class="stat-num">24/7</span>
+          <span class="stat-txt">Acceso Total</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">100%</span>
+          <span class="stat-txt">Seguro</span>
+        </div>
+      </div>
+
+      <div class="brand-footer">
+        <p>&copy; 2025 VisionPath Tech.</p>
+      </div>
+
     </div>
-    <div class="brand-footer"><p>&copy; 2025 VisionPath Tech.</p></div>
   </aside>
 
-  <main class="form-side">
-    <div class="form-wrapper">
+  <main class="main-content">
+    <div class="content-wrapper">
 
-      <div class="nav-actions">
-        <a routerLink="/" class="btn-back">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-          Volver al Inicio
-        </a>
+      <a routerLink="/" class="nav-back-link">
+        <span class="icon-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+        </span>
+        <span class="text">Volver atrás</span>
+      </a>
+
+      <div class="form-header-internal">
+        <h3>{{ isRegisterMode ? 'Crear Cuenta' : 'Bienvenido' }}</h3>
+        <p>{{ isRegisterMode ? 'Completá tus datos para registrarte.' : 'Ingresá tus credenciales para continuar.' }}</p>
       </div>
 
-      <div class="login-container">
-        
-        <div class="form-header">
-          <h2>{{ isRegisterMode ? 'Crear Cuenta' : 'Bienvenido' }}</h2>
-          <p>{{ isRegisterMode ? 'Completá tus datos para registrarte.' : 'Ingresá tus credenciales para continuar.' }}</p>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <div *ngIf="isRegisterMode" class="grid-2 fade-in">
+          
+          <div class="input-group full">
+            <label>Nombre Completo</label>
+            <div class="input-wrapper-icon">
+              <span class="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+              </span>
+              <input type="text" formControlName="nombre" class="input-modern with-icon" placeholder="Juan Pérez"
+                     [class.error-border]="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
+            </div>
+            <div *ngIf="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
+               <small class="error-msg" *ngIf="f['nombre'].errors?.['required']">El nombre es obligatorio.</small>
+               <small class="error-msg" *ngIf="f['nombre'].errors?.['minlength']">Mínimo 3 caracteres.</small>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>DNI</label>
+            <div class="input-wrapper-icon">
+              <span class="input-icon">
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0z" /></svg>
+              </span>
+              <input type="text" formControlName="dni" class="input-modern with-icon" placeholder="12345678"
+                     [class.error-border]="f['dni'].invalid && (f['dni'].dirty || f['dni'].touched)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Celular</label>
+            <div class="input-wrapper-icon">
+              <span class="input-icon">
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
+              </span>
+              <input type="text" formControlName="telefono" class="input-modern with-icon" placeholder="11 1234 5678"
+                     [class.error-border]="f['telefono'].invalid && (f['telefono'].dirty || f['telefono'].touched)">
+            </div>
+          </div>
+
+          <div class="input-group full">
+             <label>Matrícula <span style="font-weight: 400; color: #94a3b8; font-size: 0.8em;">(Opcional)</span></label>
+             <div class="input-wrapper-icon">
+               <span class="input-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0z" /></svg>
+               </span>
+               <input type="text" formControlName="matricula" class="input-modern with-icon" placeholder="N° de Matrícula (SSN)">
+             </div>
+          </div>
+
         </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-          
-          <div *ngIf="isRegisterMode" class="register-grid fade-in">
-            
-            <div class="input-group full-width">
-              <label for="nombre">Nombre Completo</label>
-              <div class="input-wrapper">
-                <span class="input-icon">
-                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-                </span>
-                <input id="nombre" type="text" formControlName="nombre" placeholder="Juan Pérez" 
-                       [class.error-border]="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
-              </div>
-              
-              <div *ngIf="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
-                <small class="error-msg" *ngIf="f['nombre'].errors?.['required']">El nombre es obligatorio.</small>
-                <small class="error-msg" *ngIf="f['nombre'].errors?.['minlength']">Mínimo 3 caracteres.</small>
-                <small class="error-msg" *ngIf="f['nombre'].errors?.['whitespace']">No puede estar vacío.</small>
-                <small class="error-msg" *ngIf="f['nombre'].errors?.['pattern']">Solo letras y espacios.</small>
-              </div>
-            </div>
-
-            <div class="input-group">
-               <label for="dni">DNI</label>
-               <div class="input-wrapper">
-                  <span class="input-icon">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0z" /></svg>
-                  </span>
-                  <input id="dni" type="text" formControlName="dni" placeholder="12345678"
-                         [class.error-border]="f['dni'].invalid && (f['dni'].dirty || f['dni'].touched)">
-               </div>
-               
-               <div *ngIf="f['dni'].invalid && (f['dni'].dirty || f['dni'].touched)">
-                  <small class="error-msg" *ngIf="f['dni'].errors?.['required']">El DNI es obligatorio.</small>
-                  <small class="error-msg" *ngIf="f['dni'].errors?.['pattern']">Debe tener 7 u 8 números.</small>
-               </div>
-            </div>
-
-            <div class="input-group">
-               <label for="telefono">Celular</label>
-               <div class="input-wrapper">
-                  <span class="input-icon">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
-                  </span>
-                  <input id="telefono" type="text" formControlName="telefono" placeholder="11 1234 5678"
-                         [class.error-border]="f['telefono'].invalid && (f['telefono'].dirty || f['telefono'].touched)">
-               </div>
-               <small class="error-msg" *ngIf="f['telefono'].invalid && (f['telefono'].dirty || f['telefono'].touched)">
-                  Teléfono obligatorio.
-               </small>
-            </div>
-
-            <div class="input-group full-width">
-               <label for="matricula">Matrícula <span class="badge-optional">(Opcional)</span></label>
-               <div class="input-wrapper">
-                 <span class="input-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0z" /></svg>
-                 </span>
-                 <input id="matricula" type="text" formControlName="matricula" placeholder="N° de Matrícula (SSN)">
-               </div>
-            </div>
-
+        <div class="input-group full">
+          <label>Correo Electrónico</label>
+          <div class="input-wrapper-icon">
+            <span class="input-icon">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+            </span>
+            <input type="email" formControlName="email" class="input-modern with-icon" placeholder="nombre@mail.com"
+                   [class.error-border]="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
           </div>
-          <div class="input-group full-width">
-            <label for="email">Correo Electrónico</label>
-            <div class="input-wrapper">
-              <span class="input-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
-              </span>
-              <input id="email" type="email" formControlName="email" placeholder="nombre@mail.com" 
-                     [class.error-border]="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
-            </div>
-            <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
-               <small class="error-msg" *ngIf="f['email'].errors?.['required']">El email es obligatorio.</small>
-               <small class="error-msg" *ngIf="f['email'].errors?.['email']">Formato inválido.</small>
-            </div>
+          <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
+             <small class="error-msg" *ngIf="f['email'].errors?.['required']">Email requerido.</small>
+             <small class="error-msg" *ngIf="f['email'].errors?.['email']">Formato inválido.</small>
           </div>
+        </div>
 
-          <div class="input-group full-width">
-            <label for="password">Contraseña</label>
-            <div class="input-wrapper">
-              <span class="input-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-              </span>
-              <input id="password" type="password" formControlName="password" placeholder="••••••••" 
-                     [class.error-border]="f['password'].invalid && (f['password'].dirty || f['password'].touched)">
-            </div>
-            
-            <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)">
-              <small class="error-msg" *ngIf="f['password'].errors?.['required']">Contraseña requerida.</small>
-              
-              <div *ngIf="isRegisterMode && f['password'].errors?.['pattern']">
-                <small class="error-msg">Mínimo 8 caracteres, 1 mayúscula y 1 número.</small>
-              </div>
-            </div>
+        <div class="input-group full">
+          <label>Contraseña</label>
+          <div class="input-wrapper-icon">
+            <span class="input-icon">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+            </span>
+            <input type="password" formControlName="password" class="input-modern with-icon" placeholder="••••••••"
+                   [class.error-border]="f['password'].invalid && (f['password'].dirty || f['password'].touched)">
           </div>
+          <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)">
+             <small class="error-msg" *ngIf="f['password'].errors?.['required']">Contraseña requerida.</small>
+             <div *ngIf="isRegisterMode && f['password'].errors?.['pattern']">
+               <small class="error-msg">Mínimo 8 caracteres, 1 mayúscula y 1 número.</small>
+             </div>
+          </div>
+        </div>
 
-          <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-login-glow">
+        <div class="form-actions" style="margin-top: 2rem;">
+          <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-submit-glow blue-version">
             <span *ngIf="!isLoading">{{ isRegisterMode ? 'Registrarse' : 'Ingresar' }}</span>
-            <span *ngIf="isLoading" class="spinner"></span>
+            <div *ngIf="isLoading" class="spinner-loader"></div> 
           </button>
+        </div>
 
-          <div class="form-footer">
-            <p *ngIf="!isRegisterMode">
-              ¿No tenés cuenta? <a (click)="toggleMode()" class="link-action">Registrate acá</a>
-            </p>
-            <p *ngIf="isRegisterMode">
-              ¿Ya tenés cuenta? <a (click)="toggleMode()" class="link-action">Iniciá sesión</a>
-            </p>
-          </div>
+        <div class="form-footer">
+           <p *ngIf="!isRegisterMode">
+             ¿No tenés cuenta? <a (click)="toggleMode()" class="link-action">Registrate acá</a>
+           </p>
+           <p *ngIf="isRegisterMode">
+             ¿Ya tenés cuenta? <a (click)="toggleMode()" class="link-action">Iniciá sesión</a>
+           </p>
+        </div>
 
-        </form>
-
-      </div>
+      </form>
     </div>
   </main>
 </div>

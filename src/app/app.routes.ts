@@ -6,6 +6,7 @@ import { LoginComponent } from './pages/login/login';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard';
 import { MiEquipoComponent } from './pages/mi-equipo/mi-equipo';
 import { ExitoComponent } from './pages/exito/exito';
+import { CuentaPendienteComponent } from './pages/cuenta-pendiente/cuenta-pendiente';
 import { MisReferidosComponent } from './pages/dashboard/mis-referidos/mis-referidos';
 import { DetalleReclamoComponent } from './pages/dashboard/detalle-reclamo/detalle-reclamo';
 import { authGuard } from './auth/auth-guard';
@@ -63,6 +64,12 @@ export const routes: Routes = [
     path: 'exito', 
     component: ExitoComponent,
     data: { animation: 'ExitoPage' } 
+  },
+
+  { 
+    path: 'cuenta-pendiente', 
+    component: CuentaPendienteComponent,
+    data: { animation: 'PendientePage' } 
   },
   
   { path: '**', redirectTo: '' } 

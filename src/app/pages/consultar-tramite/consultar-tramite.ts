@@ -9,7 +9,7 @@ import { of } from 'rxjs';
   selector: 'app-consultar-tramite',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './consultar-tramite.html',
+  templateUrl: './consultar-tramite.html', // Asegurate que coincida el nombre
   styleUrl: './consultar-tramite.scss'
 })
 export class ConsultarTramiteComponent {
@@ -26,8 +26,11 @@ export class ConsultarTramiteComponent {
   errorMensaje = '';
 
   // Variables para la vista
-  pasoActual = 0; // 0 a 3
-  claseEstado = 'info'; // 'info', 'warning', 'success', 'danger'
+  pasoActual = 0; 
+  claseEstado = 'info'; 
+  
+  // Variable para la animación del input
+  isInputFocused = false; 
 
   onSubmit() {
     if (this.consultaForm.invalid) return;
@@ -42,13 +45,12 @@ export class ConsultarTramiteComponent {
       .pipe(
         catchError((err) => {
           this.isLoading = false;
-          // Manejo de errores amigable
           if (err.status === 404) {
             this.errorMensaje = 'No encontramos un expediente con ese código. Verificalo e intentá nuevamente.';
           } else {
             this.errorMensaje = 'Ocurrió un error de conexión. Intentá más tarde.';
           }
-          return of(null); // Retorna null para cortar el flujo
+          return of(null);
         })
       )
       .subscribe((data) => {
@@ -61,45 +63,41 @@ export class ConsultarTramiteComponent {
   }
 
   // --- EL CEREBRO DE LA LÍNEA DE TIEMPO ---
-  // Mapeamos los 7 estados del Backend a los 4 pasos visuales del Frontend
   private calcularEstadoVisual(estadoBackend: string) {
     switch (estadoBackend) {
-      // PASO 1: INICIO
       case 'Enviado':
       case 'Recepcionado':
         this.pasoActual = 0;
-        this.claseEstado = 'info'; // Azul
+        this.claseEstado = 'info';
         break;
-
-      // PASO 2: GESTIÓN
       case 'Iniciado':
       case 'Negociacion':
         this.pasoActual = 1;
-        this.claseEstado = 'warning'; // Naranja (Trabajando)
+        this.claseEstado = 'warning';
         break;
-
-      // PASO 3: RESOLUCIÓN
       case 'Indemnizando':
         this.pasoActual = 2;
-        this.claseEstado = 'success'; // Verde
+        this.claseEstado = 'success';
         break;
-
-      // PASO 4: FINAL
       case 'Indemnizado':
         this.pasoActual = 3;
-        this.claseEstado = 'success'; // Verde Fuerte
+        this.claseEstado = 'success';
         break;
-
-      // CASO TRISTE: RECHAZADO
       case 'Rechazado':
-        this.pasoActual = 3; // Lo mostramos al final, pero rojo
-        this.claseEstado = 'danger'; // Rojo
+        this.pasoActual = 3;
+        this.claseEstado = 'danger';
         break;
-
       default:
         this.pasoActual = 0;
         this.claseEstado = 'info';
     }
+  }
+
+  // Calcula el ancho de la barra de progreso en Desktop
+  getProgressWidth() {
+    const step = this.pasoActual; // 0, 1, 2, 3
+    const percent = (step / 3) * 100; // Dividimos por 3 espacios
+    return `${percent}%`;
   }
 
   resetForm() {

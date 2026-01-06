@@ -1,36 +1,56 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+// Importamos iconos para la UI
+import { LucideAngularModule, CheckCircle, Clock, Users, FileText, LayoutDashboard } from 'lucide-angular';
+
+// Servicios e Interfaces
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
+import { UsersService, IUser } from '../../services/users.service';
+import { NotificacionService } from '../../services/notificacion';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LucideAngularModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss'
 })
 export class AdminDashboardComponent implements OnInit {
 
   private reclamosService = inject(ReclamosService);
+  private usersService = inject(UsersService);
+  private notificacionService = inject(NotificacionService);
 
   // --- VARIABLES DE ESTADO (SIGNALS) ---
   fechaHoy = new Date();
   isLoading = signal(true);
   
-  // Fuente de verdad
-  reclamos = signal<IReclamo[]>([]);
+  // Control de Vistas (Tabs)
+  vistaActual = signal<'reclamos' | 'usuarios'>('reclamos');
 
-  // Filtros (Signals reactivos)
+  // --- DATOS: RECLAMOS ---
+  reclamos = signal<IReclamo[]>([]);
   filtroTexto = signal('');
   filtroEstado = signal('');
   filtroRol = signal('');
   ordenDescendente = signal(true);
 
+  // --- DATOS: USUARIOS PENDIENTES ---
+  usuariosPendientes = signal<IUser[]>([]);
+
+  // --- ICONOS ---
+  icons = {
+    check: CheckCircle,
+    clock: Clock,
+    users: Users,
+    file: FileText,
+    dashboard: LayoutDashboard
+  };
+
   // --- LÓGICA REACTIVA (COMPUTED) ---
   
-  // 1. Filtrado y Ordenamiento automático
-  // Se recalcula SOLO si cambia 'reclamos' o algún filtro
+  // 1. Filtrado y Ordenamiento de Reclamos
   reclamosFiltrados = computed(() => {
     const rawData = this.reclamos();
     const texto = this.filtroTexto().toLowerCase();
@@ -58,18 +78,21 @@ export class AdminDashboardComponent implements OnInit {
       });
   });
 
-  // 2. Métricas KPI (Cálculo optimizado)
-  // Calculamos esto una sola vez basado en la data original, no en la vista
+  // 2. Métricas KPI (Incluye contador de solicitudes)
   kpis = computed(() => {
     const data = this.reclamos();
+    const solicitudes = this.usuariosPendientes().length;
+    
     return {
       total: data.length,
-      // Ahora "Gestión Activa" abarca todo lo que no sea nuevo ni finalizado
+      // "Gestión Activa": todo lo que no sea nuevo ni finalizado
       gestionActiva: data.filter(r => 
         ['Recepcionado', 'Iniciado', 'Negociacion', 'Indemnizando'].includes(r.estado)
       ).length,
       // Finalizados Éxito
-      finalizados: data.filter(r => r.estado === 'Indemnizado').length
+      finalizados: data.filter(r => r.estado === 'Indemnizado').length,
+      // Solicitudes de acceso pendientes
+      pendientes: solicitudes
     };
   });
 
@@ -80,19 +103,57 @@ export class AdminDashboardComponent implements OnInit {
   cargarDatos() {
     this.isLoading.set(true);
     
-    this.reclamosService.findAll().subscribe({
-      next: (data) => {
-        this.reclamos.set(data as IReclamo[]);
-        this.isLoading.set(false);
+    // Carga paralela de Reclamos y Usuarios
+    const p1 = new Promise<void>((resolve) => {
+      this.reclamosService.findAll().subscribe({
+        next: (data) => {
+          this.reclamos.set(data as IReclamo[]);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error cargando reclamos', err);
+          resolve();
+        }
+      });
+    });
+
+    const p2 = new Promise<void>((resolve) => {
+      this.usersService.getPendientes().subscribe({
+        next: (data) => {
+          this.usuariosPendientes.set(data);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error cargando usuarios', err);
+          resolve();
+        }
+      });
+    });
+
+    // Cuando ambos terminen, quitamos el loading
+    Promise.all([p1, p2]).then(() => this.isLoading.set(false));
+  }
+
+  // --- ACCIONES DE USUARIOS ---
+
+  aprobarUsuario(user: IUser) {
+    if (!confirm(`¿Confirmas la aprobación de acceso para ${user.nombre}?`)) return;
+
+    this.usersService.aprobarUsuario(user.id).subscribe({
+      next: () => {
+        this.notificacionService.showSuccess(`Usuario ${user.nombre} aprobado.`);
+        // Recargar solo la lista de pendientes
+        this.usersService.getPendientes().subscribe(data => this.usuariosPendientes.set(data));
       },
-      error: (err) => {
-        console.error('Error cargando reclamos', err);
-        this.isLoading.set(false);
-      }
+      error: () => this.notificacionService.showError('Error al aprobar el usuario.')
     });
   }
 
-  // --- EVENTOS DEL HTML (Setters simples) ---
+  // --- EVENTOS DEL HTML ---
+
+  cambiarVista(vista: 'reclamos' | 'usuarios') {
+    this.vistaActual.set(vista);
+  }
 
   filtrarGlobal(event: Event) {
     const valor = (event.target as HTMLInputElement).value;

@@ -1,119 +1,148 @@
-<div class="page-container anim-fade-in">
+<div class="split-layout fade-in">
 
-  <div *ngIf="!resultado && !isLoading" class="hero-search-container">
-    
-    <div class="icon-brand-glow">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-    </div>
-    
-    <h1>Seguimiento de Expediente</h1>
-    <p>Ingresá el código que recibiste por email para ver el avance en tiempo real.</p>
-
-    <form [formGroup]="consultaForm" (ngSubmit)="onSubmit()" class="search-box-large">
-      <div class="input-wrapper">
-        <input type="text" formControlName="codigo" placeholder="EJ: A1B2C3" maxlength="10">
-        <button type="submit" [disabled]="consultaForm.invalid" class="btn-search">
-          <span class="btn-text">Buscar</span>
-          <span class="btn-icon">→</span>
-        </button>
-      </div>
+  <aside class="side-panel">
+    <div class="panel-content">
+      <h2>Portal de Seguimiento</h2>
+      <p class="panel-desc">
+        Ingresá tu código para ver el estado de tu gestión en tiempo real. Transparencia total las 24hs.
+      </p>
       
-      <div *ngIf="consultaForm.get('codigo')?.touched && consultaForm.get('codigo')?.invalid" class="error-msg fade-in">
-        Por favor ingresá un código válido.
-      </div>
-    </form>
-
-    <div *ngIf="errorMensaje" class="alert-box error anim-slide-up">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
-      {{ errorMensaje }}
-    </div>
-  </div>
-
-  <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner"></div>
-    <p>Conectando con el servidor...</p>
-  </div>
-
-  <div *ngIf="resultado" class="result-card anim-slide-up">
-    
-    <div class="result-header">
-      <div class="meta-group">
-        <span class="label">EXPEDIENTE</span>
-        <span class="code">{{ resultado.codigo_seguimiento }}</span>
-      </div>
-      <div class="meta-group date">
-        <span class="label">FECHA INICIO</span>
-        <span class="value">{{ resultado.fecha_creacion | date:'dd/MM/yyyy' }}</span>
+      <div class="trust-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+        <span>Datos encriptados y seguros.</span>
       </div>
     </div>
+  </aside>
 
-    <div class="status-banner" [ngClass]="claseEstado">
-      <div class="icon-circle">
-        <svg *ngIf="['Enviado', 'Recepcionado', 'Iniciado', 'Negociacion'].includes(resultado.estado)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  <main class="main-content">
+    <div class="content-wrapper">
+
+      <div *ngIf="!resultado" class="search-container anim-slide-up">
         
-        <svg *ngIf="['Indemnizado', 'Indemnizando'].includes(resultado.estado)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+        <div class="search-header">
+         <div class="icon-hero">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+          </div>
+          <h3>Consultar Estado</h3>
+          <p>Utilizá el código que te enviamos por correo electrónico.</p>
+        </div>
+
+        <form [formGroup]="consultaForm" (ngSubmit)="onSubmit()" class="search-form">
+          <div class="input-group-hero" [class.focused]="isInputFocused">
+            <input type="text" 
+                   formControlName="codigo" 
+                   placeholder="EJ: A1B2C3" 
+                   maxlength="10"
+                   (focus)="isInputFocused = true"
+                   (blur)="isInputFocused = false">
+            
+            <button type="submit" [disabled]="consultaForm.invalid || isLoading" class="btn-search">
+              <span *ngIf="!isLoading">Buscar</span>
+              <div *ngIf="isLoading" class="spinner-mini"></div>
+            </button>
+          </div>
+          
+          <div *ngIf="consultaForm.get('codigo')?.touched && consultaForm.get('codigo')?.invalid" class="error-msg">
+            Ingresá un código válido (mínimo 6 caracteres).
+          </div>
+        </form>
+
+        <div *ngIf="errorMensaje" class="alert-box error anim-fade-in">
+          {{ errorMensaje }}
+        </div>
+
+      </div>
+
+      <div *ngIf="resultado" class="dashboard-container anim-slide-up">
         
-        <svg *ngIf="resultado.estado === 'Rechazado'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+        <div class="dash-header">
+          <div class="meta">
+            <span class="label">EXPEDIENTE</span>
+            <span class="code">{{ resultado.codigo_seguimiento }}</span>
+          </div>
+          <div class="meta-date">
+            <span class="label">ACTUALIZADO</span>
+            <span class="date-val">{{ (resultado.updated_at || resultado.fecha_creacion) | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="status-card-main" [ngClass]="claseEstado">
+          <div class="status-icon">
+             <svg *ngIf="['Enviado', 'Recepcionado', 'Iniciado'].includes(resultado.estado)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+             <svg *ngIf="resultado.estado === 'Negociacion'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+             <svg *ngIf="['Indemnizado', 'Indemnizando'].includes(resultado.estado)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+             <svg *ngIf="resultado.estado === 'Rechazado'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+          </div>
+          <div class="status-details">
+            <span class="lbl">Estado Actual</span>
+            <h2>{{ resultado.estado }}</h2>
+          </div>
+        </div>
+
+        <div class="timeline-box">
+          <div class="timeline-track">
+            
+            <div class="track-line-bg"></div>
+            <div class="track-line-fill" [style.width]="getProgressWidth()"></div>
+
+            <div class="t-step" [class.completed]="pasoActual > 0" [class.active]="pasoActual === 0">
+              <div class="t-marker">
+                <div class="dot"></div>
+              </div>
+              <div class="t-content">
+                <h4>Inicio</h4>
+                <p>Análisis inicial.</p>
+              </div>
+            </div>
+
+            <div class="t-step" [class.completed]="pasoActual > 1" [class.active]="pasoActual === 1">
+              <div class="t-marker">
+                <div class="dot"></div>
+              </div>
+              <div class="t-content">
+                <h4>Gestión</h4>
+                <p>Reclamo en curso.</p>
+              </div>
+            </div>
+
+            <div class="t-step" [class.completed]="pasoActual > 2" [class.active]="pasoActual === 2">
+              <div class="t-marker">
+                <div class="dot"></div>
+              </div>
+              <div class="t-content">
+                <h4>Resolución</h4>
+                <p>Negociación final.</p>
+              </div>
+            </div>
+
+            <div class="t-step" 
+                 [class.completed]="pasoActual === 3" 
+                 [class.active]="pasoActual === 3"
+                 [class.rejected]="resultado.estado === 'Rechazado'">
+              <div class="t-marker">
+                <div class="dot icon-dot">
+                  <span *ngIf="resultado.estado !== 'Rechazado'">✓</span>
+                  <span *ngIf="resultado.estado === 'Rechazado'">✕</span>
+                </div>
+              </div>
+              <div class="t-content">
+                <h4>Fin</h4>
+                <p *ngIf="resultado.estado === 'Rechazado'">Cerrado.</p>
+                <p *ngIf="resultado.estado !== 'Rechazado'">¡Éxito!</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="dashboard-footer">
+          <button (click)="resetForm()" class="btn-new-search">
+            Realizar otra consulta
+          </button>
+        </div>
+
       </div>
-      
-      <div class="status-text">
-        <small>ESTADO ACTUAL</small>
-        <h2>{{ resultado.estado | uppercase }}</h2>
-      </div>
+
     </div>
-
-    <div class="timeline-container">
-      
-      <div class="step" [class.active]="pasoActual >= 0">
-        <div class="step-icon">1</div>
-        <span class="step-label">Inicio</span>
-      </div>
-      <div class="line" [class.filled]="pasoActual >= 1"></div>
-
-      <div class="step" [class.active]="pasoActual >= 1">
-        <div class="step-icon">2</div>
-        <span class="step-label">Gestión</span>
-      </div>
-      <div class="line" [class.filled]="pasoActual >= 2"></div>
-
-      <div class="step" [class.active]="pasoActual >= 2">
-        <div class="step-icon">3</div>
-        <span class="step-label">Resolución</span>
-      </div>
-      
-      <div class="line" [class.filled]="pasoActual >= 3 && resultado.estado !== 'Rechazado'"></div>
-
-      <div class="step" 
-           [class.active]="pasoActual >= 3" 
-           [class.error]="resultado.estado === 'Rechazado'">
-        <div class="step-icon">4</div>
-        <span class="step-label">Final</span>
-      </div>
-
-    </div>
-
-    <div class="context-message">
-      <p *ngIf="pasoActual === 0">
-        Hemos recibido tu documentación. El equipo legal está analizando el caso para iniciar el reclamo administrativo.
-      </p>
-      <p *ngIf="pasoActual === 1">
-        El reclamo ya fue presentado ante la compañía de seguros. Estamos en etapa de seguimiento y negociación.
-      </p>
-      <p *ngIf="pasoActual === 2">
-        ¡Estamos cerca! Se está gestionando el acuerdo de pago o la firma del convenio.
-      </p>
-      <p *ngIf="resultado.estado === 'Indemnizado'">
-        ¡Felicidades! El trámite ha concluido exitosamente y el pago fue procesado.
-      </p>
-      <p *ngIf="resultado.estado === 'Rechazado'">
-        El trámite ha sido cerrado por improcedencia. Por favor revisá tu casilla de email para ver el informe legal detallado.
-      </p>
-    </div>
-
-    <button (click)="resetForm()" class="btn-reset">
-      Consultar otro código
-    </button>
-
-  </div>
-
+  </main>
 </div>

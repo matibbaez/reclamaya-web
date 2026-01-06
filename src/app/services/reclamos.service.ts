@@ -11,7 +11,8 @@ export interface IReclamo {
   codigo_seguimiento: string;
   estado: string;
   fecha_creacion: string;
-  
+  updated_at?: Date;
+
   rol_victima: string;
   tiene_seguro: boolean;
   

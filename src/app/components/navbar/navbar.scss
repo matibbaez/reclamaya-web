@@ -263,7 +263,7 @@
   a:not(.highlight-mobile):not(.btn-mobile-login):not(.btn-mobile-logout) {
     font-family: 'Montserrat', sans-serif;
     font-size: 2.5rem; /* Letra Gigante */
-    font-weight: 800;
+    font-weight: 700;
     color: white;
     text-decoration: none;
     padding: 10px 0;
@@ -324,16 +324,16 @@
     transition: all 0.3s;
 
     /* Bullet point naranja */
-    &::before {
-        content: '•';
-        color: #f59e0b;
-        margin-right: 10px;
-        font-size: 1.5rem;
-        line-height: 0;
-        opacity: 0.5; /* Siempre visible pero tenue */
-        transform: translateX(0);
-        transition: all 0.3s;
-    }
+    // &::before {
+    //     content: '•';
+    //     color: #f59e0b;
+    //     margin-right: 10px;
+    //     font-size: 1.5rem;
+    //     line-height: 0;
+    //     opacity: 0.5; /* Siempre visible pero tenue */
+    //     transform: translateX(0);
+    //     transition: all 0.3s;
+    // }
 
     &:hover, &.active {
       color: white;
@@ -362,12 +362,12 @@
     text-align: center;
     background: linear-gradient(135deg, #f59e0b, #d97706); /* Gradient Amber */
     color: white !important;
-    font-weight: 800;
+    font-weight: 500;
     font-size: 1.2rem;
     border-radius: 16px;
     padding: 16px;
     text-decoration: none;
-    box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 8px 10px -5px rgba(245, 158, 11, 0.4);
     transition: all 0.3s;
 
     &:hover {
@@ -384,7 +384,7 @@
     border: 1px solid rgba(239, 68, 68, 0.3);
     padding: 14px;
     border-radius: 16px;
-    font-weight: 700;
+    font-weight: 500;
     width: 100%;
     display: flex;
     align-items: center;

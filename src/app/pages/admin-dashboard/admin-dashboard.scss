@@ -5,10 +5,11 @@ $accent: #f59e0b;
 $text-main: #1e293b;
 $text-muted: #64748b;
 $border-color: #e2e8f0;
+$success: #10b981;
 
 /* LAYOUT PRINCIPAL */
 .dashboard-wrapper {
-  padding-top: 110px; /* Espacio para Navbar Fixed */
+  padding-top: 110px;
   padding-bottom: 2rem;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -18,10 +19,14 @@ $border-color: #e2e8f0;
   background-color: #f8fafc;
 }
 
-/* HEADER */
+/* HEADER Y TABS */
 .dashboard-header {
   display: flex; justify-content: space-between; align-items: flex-end;
   margin-bottom: 2rem;
+
+  .header-left {
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
 
   h1 { font-size: 2rem; font-weight: 800; color: $text-main; margin: 0; letter-spacing: -0.5px; }
   p { color: $text-muted; margin: 5px 0 0 0; }
@@ -31,6 +36,36 @@ $border-color: #e2e8f0;
     padding: 6px 16px; border-radius: 20px;
     font-size: 0.9rem; font-weight: 600; color: $text-muted;
     text-transform: capitalize;
+    align-self: flex-start; /* Para alinear arriba */
+  }
+}
+
+/* ESTILOS DE TABS (BOTONES) */
+.view-tabs {
+  display: flex; gap: 1rem;
+  
+  .tab-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: white; border: 1px solid $border-color;
+    padding: 0.6rem 1.2rem; border-radius: 12px;
+    font-size: 0.95rem; font-weight: 600; color: $text-muted;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+
+    .tab-icon { width: 18px; height: 18px; }
+
+    &:hover { background: #f1f5f9; color: $text-main; }
+
+    &.active {
+      background: $text-main; color: white; border-color: $text-main;
+      box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+    }
+
+    .badge-count {
+      background: $accent; color: white;
+      font-size: 0.75rem; padding: 2px 6px;
+      border-radius: 10px; min-width: 20px; text-align: center;
+    }
   }
 }
 
@@ -56,7 +91,7 @@ $border-color: #e2e8f0;
     
     &.blue { background: #eff6ff; color: $primary; }
     &.orange { background: #fff7ed; color: $accent; }
-    &.green { background: #ecfdf5; color: #10b981; }
+    &.green { background: #ecfdf5; color: $success; }
     
     svg { width: 26px; height: 26px; }
   }
@@ -86,7 +121,6 @@ $border-color: #e2e8f0;
     &:focus {
       border-color: $primary;
       outline: none;
-      /* Anillo suave alrededor en lugar de borde duro */
       box-shadow: 0 0 0 4px rgba($primary, 0.15); 
     }
   }
@@ -119,7 +153,7 @@ $border-color: #e2e8f0;
 .table-container {
   background: white; border-radius: 16px; overflow: hidden;
   box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05); border: 1px solid $border-color;
-  max-height: 600px; /* Opcional: Altura máxima para scrollear dentro de la tarjeta */
+  max-height: 600px;
   overflow-y: auto;
 }
 
@@ -133,7 +167,7 @@ $border-color: #e2e8f0;
     background: #f8fafc; color: $text-muted; font-size: 0.75rem;
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
     border-bottom: 1px solid $border-color;
-    position: sticky; /* MAGIA */
+    position: sticky;
     top: 0;
     z-index: 10;
     box-shadow: 0 1px 0 $border-color;
@@ -150,12 +184,8 @@ $border-color: #e2e8f0;
     
     &:hover {
       background-color: #f8fafc;
-      transform: scale(1); /* Truco para mejorar renderizado de fuentes */
-      
-      /* Opcional: Resaltar el borde izquierdo al pasar el mouse */
-      td:first-child {
-        box-shadow: inset 4px 0 0 $primary; 
-      }
+      transform: scale(1);
+      td:first-child { box-shadow: inset 4px 0 0 $primary; }
     }
   }
 }
@@ -184,7 +214,7 @@ $border-color: #e2e8f0;
 .role-badge {
   font-size: 0.8rem; font-weight: 600; padding: 4px 10px; border-radius: 6px;
   &.conductor { background: #eff6ff; color: $primary; }
-  &.acompanante { background: #ecfdf5; color: #059669; }
+  &.acompanante { background: #ecfdf5; color: $success; }
   &.peaton { background: #fff7ed; color: $accent; }
 }
 
@@ -194,63 +224,19 @@ $border-color: #e2e8f0;
   .plate { font-size: 0.8rem; font-family: monospace; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; width: fit-content; margin-top: 4px; }
 }
 
-/* Reemplazá el bloque .status-indicator anterior por este completo */
 .status-indicator {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  
-  .dot { display: none; } /* Ya no usamos el punto */
+  display: inline-flex; align-items: center; padding: 4px 12px;
+  border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  .dot { display: none; } 
 
-  /* 1. Etapa Inicial */
-  &.Enviado { 
-    background-color: rgba($primary, 0.1); 
-    color: $primary; 
-    border: 1px solid rgba($primary, 0.2);
-  }
-  
-  &.Recepcionado { 
-    background-color: rgba(#8b5cf6, 0.1); /* Violeta */
-    color: #7c3aed; 
-    border: 1px solid rgba(#8b5cf6, 0.2);
-  }
-
-  /* 2. Gestión */
-  &.Iniciado { 
-    background-color: rgba(#0ea5e9, 0.1); /* Celeste fuerte */
-    color: #0ea5e9; 
-    border: 1px solid rgba(#0ea5e9, 0.2);
-  }
-  
-  &.Negociacion { 
-    background-color: rgba($accent, 0.1); /* Naranja */
-    color: darken($accent, 10%); 
-    border: 1px solid rgba($accent, 0.2);
-  }
-
-  /* 3. Resolución */
-  &.Indemnizando { 
-    background-color: rgba(#14b8a6, 0.1); /* Teal / Turquesa */
-    color: #0d9488; 
-    border: 1px solid rgba(#14b8a6, 0.2);
-  }
-
-  &.Indemnizado { 
-    background-color: rgba(#10b981, 0.1); /* Verde Éxito */
-    color: #10b981; 
-    border: 1px solid rgba(#10b981, 0.2);
-  }
-  
-  &.Rechazado { 
-    background-color: rgba(#ef4444, 0.1); /* Rojo */
-    color: #ef4444; 
-    border: 1px solid rgba(#ef4444, 0.2);
-  }
+  &.Enviado { background-color: rgba($primary, 0.1); color: $primary; border: 1px solid rgba($primary, 0.2); }
+  &.Recepcionado { background-color: rgba(#8b5cf6, 0.1); color: #7c3aed; border: 1px solid rgba(#8b5cf6, 0.2); }
+  &.Iniciado { background-color: rgba(#0ea5e9, 0.1); color: #0ea5e9; border: 1px solid rgba(#0ea5e9, 0.2); }
+  &.Negociacion { background-color: rgba($accent, 0.1); color: darken($accent, 10%); border: 1px solid rgba($accent, 0.2); }
+  &.Indemnizando { background-color: rgba(#14b8a6, 0.1); color: #0d9488; border: 1px solid rgba(#14b8a6, 0.2); }
+  &.Indemnizado { background-color: rgba($success, 0.1); color: $success; border: 1px solid rgba($success, 0.2); }
+  &.Rechazado { background-color: rgba(#ef4444, 0.1); color: #ef4444; border: 1px solid rgba(#ef4444, 0.2); }
 }
 
 .btn-action {
@@ -258,9 +244,76 @@ $border-color: #e2e8f0;
   background: white; border: 1px solid $border-color; color: $text-muted;
   padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
   transition: all 0.2s;
-  
   &:hover { border-color: $primary; color: $primary; background: #eff6ff; }
   svg { width: 16px; }
+}
+
+/* ========================================= */
+/* NUEVOS ESTILOS: SECCIÓN PENDIENTES        */
+/* ========================================= */
+.section-pendientes {
+  background: transparent;
+  
+  .pendientes-header {
+    margin-bottom: 1.5rem;
+    h2 { font-size: 1.5rem; color: $text-main; margin: 0; }
+    p { color: $text-muted; }
+  }
+}
+
+.grid-users {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.user-card {
+  background: white; border-radius: 16px; padding: 1.5rem;
+  border: 1px solid $border-color;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  display: flex; flex-direction: column; gap: 1.2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    border-color: #cbd5e1;
+  }
+
+  .card-header {
+    display: flex; align-items: center; gap: 1rem;
+    .user-avatar {
+      width: 48px; height: 48px; background: $accent; color: white;
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 700;
+    }
+    .user-meta {
+      display: flex; flex-direction: column;
+      h3 { margin: 0; font-size: 1.1rem; color: $text-main; }
+      .user-email { font-size: 0.9rem; color: $text-muted; }
+    }
+  }
+
+  .card-body {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    padding: 1rem; background: #f8fafc; border-radius: 10px;
+    
+    .data-row {
+      display: flex; justify-content: space-between; font-size: 0.9rem;
+      .label { color: $text-muted; }
+      .value { font-weight: 600; color: $text-main; }
+    }
+  }
+
+  .card-footer {
+    .btn-aprobar {
+      width: 100%; border: none; padding: 0.8rem; border-radius: 8px;
+      background: $success; color: white; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      cursor: pointer; transition: background 0.2s;
+      &:hover { background: darken($success, 10%); }
+    }
+  }
 }
 
 /* UTILS */
@@ -277,30 +330,13 @@ $border-color: #e2e8f0;
 /* MOBILE */
 @media (max-width: 768px) {
   .dashboard-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .view-tabs { width: 100%; overflow-x: auto; padding-bottom: 5px; }
+  .tab-btn { flex: 1; white-space: nowrap; justify-content: center; }
   .toolbar-card { flex-direction: column; }
   .search-wrapper { width: 100%; }
   .filters-group { width: 100%; overflow-x: auto; padding-bottom: 5px; }
 }
 
-/* Animación para las filas de la tabla */
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Aplicar retraso a las primeras 10 filas para efecto cascada */
-.fade-in-item {
-  animation: slideIn 0.3s ease-out forwards;
-  opacity: 0; /* Empiezan invisibles */
-  
-  @for $i from 1 through 10 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.05}s;
-    }
-  }
-  
-  /* A partir de la 11, aparecen todas juntas para no esperar */
-  &:nth-child(n+11) {
-    animation-delay: 0.5s;
-  }
-}
+/* Animación filas */
+@keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in-item { animation: slideIn 0.3s ease-out forwards; opacity: 0; @for $i from 1 through 10 { &:nth-child(#{$i}) { animation-delay: #{$i * 0.05}s; } } &:nth-child(n+11) { animation-delay: 0.5s; } }
