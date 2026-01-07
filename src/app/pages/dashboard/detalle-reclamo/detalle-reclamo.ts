@@ -113,6 +113,13 @@ export class DetalleReclamoComponent implements OnInit {
       { key: 'denuncia', label: 'Denuncia', sub: 'Administrativa', path: r.path_denuncia },
       { key: 'fotos', label: 'Fotos', sub: 'Daños/Lugar', path: r.path_fotos, highlight: true },
       { key: 'medicos', label: 'Médicos', sub: 'Certificados', path: r.path_medicos, alert: true },
+      
+      // --- NUEVOS CAMPOS AGREGADOS ---
+      { key: 'presupuesto', label: 'Presupuesto', sub: 'Reparación', path: r.path_presupuesto },
+      { key: 'cbu', label: 'Comp. CBU', sub: 'Bancario', path: r.path_cbu_archivo },
+      { key: 'legal', label: 'Denuncia Penal', sub: 'Judicial', path: r.path_denuncia_penal },
+      // -------------------------------
+
       { key: 'representacion', label: 'Poder', sub: 'Legal', path: r.path_representacion, highlight: true },
       { key: 'honorarios', label: 'Honorarios', sub: 'Convenio', path: r.path_honorarios }
     ];

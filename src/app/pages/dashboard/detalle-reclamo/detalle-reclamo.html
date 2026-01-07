@@ -17,7 +17,9 @@
         <div class="meta-row">
           <span class="id-badge">#{{ r.codigo_seguimiento }}</span>
           <span class="role-badge" [ngClass]="r.rol_victima.toLowerCase()">
-            {{ r.rol_victima }}
+            <ng-container *ngIf="r.rol_victima === 'Conductor'">Conductor</ng-container>
+            <ng-container *ngIf="r.rol_victima === 'Peaton'">Peatón</ng-container>
+            <ng-container *ngIf="r.rol_victima === 'Acompanante'">Acompañante</ng-container>
           </span>
         </div>
       </div>
@@ -74,50 +76,84 @@
         <div class="grid-2">
           <div class="field-box">
             <label>Lugar</label>
-            <p>{{ r.lugar_hecho }} <small>({{ r.localidad }})</small></p>
+            <p>{{ r.lugar_hecho }} <small class="text-muted">({{ r.localidad }})</small></p>
           </div>
           <div class="field-box">
             <label>Fecha y Hora</label>
-            <p>{{ r.fecha_hecho | date:'shortDate' }} - {{ r.hora_hecho || '--:--' }}hs</p>
+            <p>{{ r.fecha_hecho | date:'dd/MM/yyyy' }} <span *ngIf="r.hora_hecho">- {{ r.hora_hecho }}hs</span></p>
           </div>
-          <div class="field-box">
-            <label>Tercero (Aseguradora)</label>
-            <p class="highlight">{{ r.aseguradora_tercero }}</p>
-          </div>
-          <div class="field-box">
-            <label>Patente Tercero</label>
-            <div class="plate">{{ r.patente_tercero || 'S/D' }}</div>
-          </div>
+        </div>
 
+        <ng-container *ngIf="r.aseguradora_tercero || r.tercero_nombre">
+            <div class="divider"></div>
+            
+            <div class="tercero-section">
+              <h4 class="subsection-title">Datos del Tercero</h4>
+              
+              <div class="grid-2">
+                <div class="field-box">
+                  <label>Aseguradora</label>
+                  <p class="highlight">{{ r.aseguradora_tercero || 'No informada' }}</p>
+                </div>
+                <div class="field-box">
+                  <label>Patente</label>
+                  <div class="plate">{{ r.patente_tercero || 'S/D' }}</div>
+                </div>
+
+                <div class="field-box" *ngIf="r.tercero_nombre">
+                  <label>Conductor</label>
+                  <p>{{ r.tercero_nombre }} {{ r.tercero_apellido }}</p>
+                </div>
+                <div class="field-box" *ngIf="r.tercero_dni">
+                  <label>DNI Tercero</label>
+                  <p>{{ r.tercero_dni }}</p>
+                </div>
+                <div class="field-box full-width" *ngIf="r.tercero_marca_modelo">
+                  <label>Vehículo</label>
+                  <p>{{ r.tercero_marca_modelo }}</p>
+                </div>
+              </div>
+            </div>
+        </ng-container>
+
+        <div class="divider"></div>
+
+        <div class="grid-2">
           <div class="field-box" *ngIf="r.patente_propia">
             <label>Tu Patente (Asegurado)</label>
             <div class="plate own">{{ r.patente_propia }}</div>
           </div>
         </div>
 
-        <div class="context-badges" *ngIf="r.in_itinere || r.posee_art || r.intervino_policia || r.intervino_ambulancia">
-          
-          <div class="badge-item blue" *ngIf="r.in_itinere">
-            <lucide-icon [img]="icons.Briefcase" size="16"></lucide-icon>
-            <span>In Itinere</span>
-          </div>
-          <div class="badge-item green" *ngIf="r.posee_art">
-            <lucide-icon [img]="icons.HardHat" size="16"></lucide-icon>
-            <span>Con A.R.T.</span>
-          </div>
+        <div class="context-badges" *ngIf="r.in_itinere || r.posee_art || r.intervino_policia || r.intervino_ambulancia || r.sufrio_lesiones">
+            
+            <div class="badge-item red" *ngIf="r.sufrio_lesiones">
+              <lucide-icon [img]="icons.Stethoscope" size="16"></lucide-icon>
+              <span>Sufrió Lesiones</span>
+            </div>
+            
+            <div class="badge-item blue" *ngIf="r.in_itinere">
+              <lucide-icon [img]="icons.Briefcase" size="16"></lucide-icon>
+              <span>In Itinere</span>
+            </div>
 
-          <div class="badge-item red" *ngIf="r.intervino_ambulancia">
-            <lucide-icon [img]="icons.Ambulance" size="16"></lucide-icon>
-            <span>Hubo Ambulancia</span>
-          </div>
-          <div class="badge-item indigo" *ngIf="r.intervino_policia">
-            <lucide-icon [img]="icons.Siren" size="16"></lucide-icon>
-            <span>Intervino Policía</span>
-          </div>
+            <div class="badge-item green" *ngIf="r.posee_art">
+              <lucide-icon [img]="icons.HardHat" size="16"></lucide-icon>
+              <span>Tiene A.R.T.</span>
+            </div>
 
+            <div class="badge-item indigo" *ngIf="r.intervino_policia">
+              <lucide-icon [img]="icons.Siren" size="16"></lucide-icon>
+              <span>Intervino Policía</span>
+            </div>
+            
+            <div class="badge-item orange" *ngIf="r.intervino_ambulancia">
+              <lucide-icon [img]="icons.Ambulance" size="16"></lucide-icon>
+              <span>Intervino Ambulancia</span>
+            </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="divider" *ngIf="r.relato_hecho"></div>
 
         <div class="relato-box" *ngIf="r.relato_hecho">
           <label>Relato del Hecho</label>
@@ -142,6 +178,11 @@
             <label>Teléfono</label>
             <p>{{ r.telefono }}</p>
           </div>
+          
+          <div class="field-box full-width" *ngIf="r.domicilio_usuario">
+            <label>Domicilio Real</label>
+            <p>{{ r.domicilio_usuario }}</p>
+          </div>
         </div>
         
         <div class="cbu-highlight" *ngIf="r.cbu">
@@ -163,6 +204,7 @@
           <div *ngFor="let doc of archivosDisponibles" 
                class="file-item"
                [class.active]="doc.highlight"
+               [class.alert]="doc.alert"
                (click)="verArchivo(doc.key)">
             <div class="icon-wrap">
               <lucide-icon [img]="doc.icon" size="20"></lucide-icon>
@@ -173,6 +215,10 @@
             </div>
             <lucide-icon [img]="icons.Eye" size="16" class="eye-icon"></lucide-icon>
           </div>
+        </div>
+        
+        <div *ngIf="archivosDisponibles.length === 0" class="empty-docs">
+            <p>No hay documentación cargada aún.</p>
         </div>
       </section>
 
@@ -196,7 +242,7 @@
               <span class="name">{{ r.tramitador.nombre }}</span>
               <span class="badge">Tramitador</span>
             </div>
-            <button class="btn-icon-edit" *ngIf="authService.esAdmin" (click)="activarEdicion()">
+            <button class="btn-icon-edit" *ngIf="authService.esAdmin" (click)="activarEdicion()" title="Reasignar">
               <lucide-icon [img]="icons.UserCog" size="16"></lucide-icon>
             </button>
           </div>

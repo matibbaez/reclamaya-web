@@ -525,3 +525,152 @@ input:checked + .slider:before { transform: translateX(22px); }
     .summary-card { padding: 1.5rem; }
     .buttons-row { flex-direction: column-reverse; } 
 }
+
+/* --- NUEVO DISEÑO DE CARGA DE ARCHIVOS (TIPO DRAG & DROP) --- */
+
+.files-grid-large {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.file-upload-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.highlight {
+    background-color: #f0f9ff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #bae6fd;
+    
+    .card-header-file label { color: $primary; }
+  }
+
+  /* Header del archivo (Título y descripción) */
+  .card-header-file {
+    display: flex;
+    flex-direction: column;
+    
+    label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #334155; /* Azul oscuro */
+      margin-bottom: 4px;
+    }
+
+    .file-hint {
+      font-size: 0.85rem;
+      color: #64748b; /* Gris texto */
+    }
+  }
+
+  /* Área de subida */
+  .upload-area {
+    width: 100%;
+  }
+
+  .drop-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 80px; /* Altura cómoda */
+    background-color: #f8fafc; /* Gris muy claro de fondo */
+    border: 2px dashed #cbd5e1; /* Borde punteado */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 1rem;
+
+    &:hover {
+      background-color: #f1f5f9;
+      border-color: #94a3b8;
+    }
+  }
+
+  /* Contenido cuando NO hay archivo */
+  .placeholder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+
+    .icon-upload {
+      width: 24px;
+      height: 24px;
+      color: #94a3b8;
+      
+      svg { width: 100%; height: 100%; }
+    }
+
+    span {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+
+  /* Contenido cuando SÍ hay archivo */
+  .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+
+    .icon-check {
+      width: 24px;
+      height: 24px;
+      background-color: $success;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .filename {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .change-text {
+      font-size: 0.8rem;
+      color: $primary;
+      text-decoration: underline;
+      margin-left: auto; /* Empuja a la derecha si hay espacio */
+    }
+  }
+
+  /* Estados de validación */
+  &.uploaded {
+    .drop-zone {
+      border-color: $success;
+      background-color: #f0fdf4;
+      border-style: solid; /* Borde sólido al subir */
+    }
+  }
+
+  &.error-border {
+    .drop-zone {
+      border-color: $danger;
+      background-color: #fef2f2;
+    }
+    .card-header-file label { color: $danger; }
+  }
+}

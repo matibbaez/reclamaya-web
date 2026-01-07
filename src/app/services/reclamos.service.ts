@@ -15,6 +15,7 @@ export interface IReclamo {
   dni: string;
   email: string;
   telefono: string;
+  domicilio_usuario?: string; // 👈 NUEVO: Faltaba para el HTML
   cbu?: string;
 
   // Datos Siniestro
@@ -24,25 +25,32 @@ export interface IReclamo {
   patente_tercero?: string;
   patente_propia?: string;
   
+  // --- Datos del Tercero (NUEVOS) ---
+  tercero_nombre?: string;       // 👈 Agregado
+  tercero_apellido?: string;     // 👈 Agregado
+  tercero_dni?: string;          // 👈 Agregado
+  tercero_marca_modelo?: string; // 👈 Agregado
+
   fecha_hecho: string;
   hora_hecho?: string;
   lugar_hecho: string;
   localidad: string;
   relato_hecho?: string;
 
-  // --- Contexto Laboral (Nuevos) ---
-  in_itinere?: boolean; // o string | boolean
-  posee_art?: boolean;  // o string | boolean
+  // --- Contexto Laboral ---
+  in_itinere?: boolean;
+  posee_art?: boolean;
 
-  // --- Intervenciones (LOS QUE FALTABAN) ---
-  intervino_policia?: boolean;    // 👈 Agregá este
-  intervino_ambulancia?: boolean; // 👈 Agregá este
+  // --- Intervenciones ---
+  intervino_policia?: boolean;
+  intervino_ambulancia?: boolean;
+  sufrio_lesiones?: boolean; // 👈 NUEVO: Faltaba este booleano
 
   // Relaciones
   usuario_creador?: any;
   tramitador?: any;
 
-  // Archivos (Paths)
+  // --- Archivos (Paths) ---
   path_dni?: string;
   path_licencia?: string;
   path_cedula?: string;
@@ -52,6 +60,11 @@ export interface IReclamo {
   path_medicos?: string;
   path_representacion?: string;
   path_honorarios?: string;
+
+  // 👇 LOS QUE TE DABAN ERROR (NUEVOS)
+  path_presupuesto?: string;
+  path_cbu_archivo?: string;
+  path_denuncia_penal?: string;
 }
 
 @Injectable({
@@ -62,9 +75,7 @@ export class ReclamosService {
 
   constructor(private http: HttpClient) { }
 
-  // =========================================================
   // 1. CREAR RECLAMO 
-  // =========================================================
   crearReclamo(formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData);
   }
@@ -102,7 +113,7 @@ export class ReclamosService {
     return this.http.patch<IReclamo>(`${this.apiUrl}/${id}`, body);
   }
 
-  // 👇 NUEVO MÉTODO: ASIGNAR TRAMITADOR
+  // ASIGNAR TRAMITADOR
   asignarTramitador(reclamoId: string, tramitadorId: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${reclamoId}/asignar`, { tramitadorId });
   }

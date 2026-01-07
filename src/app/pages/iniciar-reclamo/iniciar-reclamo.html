@@ -12,15 +12,17 @@
       <h2>
         <ng-container [ngSwitch]="pasoActual">
             <span *ngSwitchCase="0">Empecemos</span>
-            <span *ngSwitchCase="1">Datos del Siniestro</span>
-            <span *ngSwitchCase="2">Confirmación</span>
+            <span *ngSwitchCase="1">Tus Datos</span>
+            <span *ngSwitchCase="2">Documentación</span>
+            <span *ngSwitchCase="3">Confirmación</span>
         </ng-container>
       </h2>
 
       <p class="panel-desc">
         <span *ngIf="pasoActual === 0">Seleccioná tu rol en el accidente para personalizar los requisitos.</span>
-        <span *ngIf="pasoActual === 1">Completá el formulario. Tus datos están protegidos por secreto profesional.</span>
-        <span *ngIf="pasoActual === 2">Revisá que todo esté correcto antes de enviar tu reclamo.</span>
+        <span *ngIf="pasoActual === 1">Ingresá tus datos personales y los detalles del hecho.</span>
+        <span *ngIf="pasoActual === 2">Cargá los datos del tercero y subí las fotos.</span>
+        <span *ngIf="pasoActual === 3">Revisá que todo esté correcto antes de enviar tu reclamo.</span>
       </p>
 
       <div class="steps-vertical">
@@ -30,15 +32,15 @@
         </div>
         <div class="step-item" [class.active]="pasoActual === 1" [class.completed]="pasoActual > 1">
           <div class="step-circle">{{ pasoActual > 1 ? '✓' : '2' }}</div>
-          <div class="step-text">Datos y Fotos</div>
+          <div class="step-text">Mis Datos</div>
         </div>
-        <div class="step-item" [class.active]="pasoActual === 2">
-          <div class="step-circle">3</div>
-          <div class="step-text">Confirmación</div>
+        <div class="step-item" [class.active]="pasoActual === 2" [class.completed]="pasoActual > 2">
+            <div class="step-circle">{{ pasoActual > 2 ? '✓' : '3' }}</div>
+            <div class="step-text">Tercero y Docs</div>
         </div>
-        <div class="step-item">
+        <div class="step-item" [class.active]="pasoActual === 3">
           <div class="step-circle">4</div>
-          <div class="step-text">Código de Seguimiento</div>
+          <div class="step-text">Confirmación</div>
         </div>
       </div>
 
@@ -63,14 +65,12 @@
           
           <div class="hero-card conductor" (click)="seleccionarRol('Conductor')">
             <div class="bg-decoration"></div>
-            
             <div class="card-header">
               <div class="icon-box">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg>
               </div>
               <div class="selection-indicator"></div>
             </div>
-
             <div class="card-body">
               <h4>Conductor</h4>
               <p>Manejaba el auto o moto.</p>
@@ -79,14 +79,12 @@
 
           <div class="hero-card acompanante" (click)="seleccionarRol('Acompanante')">
             <div class="bg-decoration"></div>
-            
             <div class="card-header">
               <div class="icon-box">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
               </div>
               <div class="selection-indicator"></div>
             </div>
-
             <div class="card-body">
               <h4>Acompañante</h4>
               <p>Pasajero en el vehículo.</p>
@@ -95,14 +93,12 @@
 
           <div class="hero-card peaton" (click)="seleccionarRol('Peaton')">
             <div class="bg-decoration"></div>
-            
             <div class="card-header">
               <div class="icon-box">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
               </div>
               <div class="selection-indicator"></div>
             </div>
-
             <div class="card-body">
               <h4>Peatón / Bici</h4>
               <p>Embestido en vía pública.</p>
@@ -112,479 +108,543 @@
         </div>
       </div>
 
-      <div class="form-container" [hidden]="pasoActual !== 1">
+      <div class="form-container" *ngIf="pasoActual === 1 || pasoActual === 2">
         
-        <button type="button" class="nav-back-link" (click)="volverAStep1()">
-          <span class="icon-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-          </span>
-          <span class="text">Cambiar Rol</span>
-        </button>
+        <form [formGroup]="reclamoForm" autocomplete="off">
 
-        <form [formGroup]="reclamoForm">
-
-          <div class="switches-group">
-              <div class="switch-box" *ngIf="esConductor">
-                <div class="switch-info">
-                  <span class="label">¿Tenías Seguro Vigente?</span>
-                  <span class="sub-label">Al momento del accidente.</span>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" formControlName="tiene_seguro" (change)="toggleSeguro($event.target.checked)">
-                  <span class="slider round"></span>
-                </label>
-              </div>
-
-              <div class="switch-box">
-                <div class="switch-info">
-                  <span class="label">¿Sufriste heridas?</span>
-                  <span class="sub-label">Lesiones físicas.</span>
-                </div>
-                <label class="switch">
-                  <input type="checkbox" formControlName="sufrio_lesiones">
-                  <span class="slider round"></span>
-                </label>
-              </div>
-          </div>
-
-          <div *ngIf="esConductor && !tieneSeguro" class="alert-box warning">
-            <strong>⚠️ Carta de No Seguro</strong>
-            <p>Se generará automáticamente el documento legal necesario. Completá los datos del tercero obligatoriamente.</p>
-          </div>
-
-          <div class="form-section" *ngIf="esConductor">
-            <h4 class="section-title">Contexto Laboral</h4>
+          <div [hidden]="pasoActual !== 1" class="fade-in">
             
-            <div class="switch-box-compact" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 8px;">
-              <div class="switch-info">
-                <span class="label" style="font-weight: 600; color: #334155;">¿Ibas o volvías del trabajo?</span>
-                <span class="sub-label" style="font-size: 0.85rem; color: #64748b; margin-left: 5px;">(In Itinere)</span>
-              </div>
-              <label class="switch">
-                <input type="checkbox" formControlName="in_itinere">
-                <span class="slider round"></span>
-              </label>
-            </div>
-
-            <div class="switch-box-compact" *ngIf="isInItinere" style="display: flex; justify-content: space-between; align-items: center; background: #f0f9ff; padding: 1rem; border: 1px solid #bae6fd; border-radius: 8px;">
-              <div class="switch-info">
-                <span class="label" style="font-weight: 600; color: #0369a1;">¿Tenés A.R.T.?</span>
-              </div>
-              <label class="switch">
-                <input type="checkbox" formControlName="posee_art">
-                <span class="slider round"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="form-section">
-            <h4 class="section-title">Datos Personales</h4>
-            
-            <div class="input-group full">
-              <label>Nombre Completo</label>
-              <input type="text" formControlName="nombre" class="input-modern" placeholder="Tal cual figura en tu DNI"
-                     [class.error-border]="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
-              
-              <div *ngIf="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
-                <small class="error-msg" *ngIf="f['nombre'].errors?.['required']">El nombre es obligatorio.</small>
-                <small class="error-msg" *ngIf="f['nombre'].errors?.['minlength']">Mínimo 3 caracteres.</small>
-                <small class="error-msg" *ngIf="f['nombre'].errors?.['pattern']">Solo letras y espacios.</small>
-              </div>
-            </div>
-
-            <div class="grid-2">
-              <div class="input-group">
-                <label>DNI</label>
-                <input type="text" formControlName="dni" class="input-modern" placeholder="Sin puntos"
-                       [class.error-border]="f['dni'].invalid && (f['dni'].dirty || f['dni'].touched)">
-                <div *ngIf="f['dni'].invalid && (f['dni'].dirty || f['dni'].touched)">
-                   <small class="error-msg" *ngIf="f['dni'].errors?.['pattern']">Debe tener 7 u 8 números.</small>
-                </div>
-              </div>
-              <div class="input-group">
-                <label>Celular / WhatsApp</label>
-                <input type="text" formControlName="telefono" class="input-modern" placeholder="Ej: 11 5555 6666"
-                       [class.error-border]="f['telefono'].invalid && (f['telefono'].dirty || f['telefono'].touched)">
-                <div *ngIf="f['telefono'].invalid && (f['telefono'].dirty || f['telefono'].touched)">
-                   <small class="error-msg" *ngIf="f['telefono'].errors?.['pattern']">Número inválido.</small>
-                </div>
-              </div>
-            </div>
-
-            <div class="input-group full">
-              <label>Domicilio (Calle y Altura)</label>
-              <input type="text" formControlName="domicilio_usuario" class="input-modern" placeholder="Ej: Av. Santa Fe 1234"
-                     [class.error-border]="f['domicilio_usuario'].invalid && (f['domicilio_usuario'].dirty || f['domicilio_usuario'].touched)">
-              <div *ngIf="f['domicilio_usuario'].invalid && (f['domicilio_usuario'].dirty || f['domicilio_usuario'].touched)">
-                 <small class="error-msg">El domicilio es obligatorio.</small>
-              </div>
-            </div>
-
-            <div class="input-group full">
-              <label>Email</label>
-              <input type="email" formControlName="email" class="input-modern" placeholder="Para recibir notificaciones"
-                     [class.error-border]="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
-              <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
-                 <small class="error-msg">Formato de email incorrecto.</small>
-              </div>
-            </div>
-            
-            <div class="input-group full">
-              <label>CBU / CVU (Opcional)</label>
-              <input type="text" formControlName="cbu" class="input-modern" placeholder="Para depositar tu indemnización (22 dígitos)">
-              <div *ngIf="f['cbu'].invalid && (f['cbu'].dirty || f['cbu'].touched)">
-                 <small class="error-msg">Debe tener 22 números.</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-section">
-            <h4 class="section-title">Detalles del Siniestro</h4>
-
-            <div class="grid-2" *ngIf="esConductor">
-              <div class="input-group">
-                <label>Tu Patente</label>
-                <input type="text" formControlName="patente_propia" class="input-modern uppercase" placeholder="AA123BB"
-                       [class.error-border]="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
-                <div *ngIf="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
-                   <small class="error-msg">Patente inválida.</small>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid-2">
-              <div class="input-group">
-                <label>Fecha</label>
-                <input type="date" formControlName="fecha_hecho" class="input-modern"
-                       [class.error-border]="f['fecha_hecho'].invalid && (f['fecha_hecho'].dirty || f['fecha_hecho'].touched)">
-                <div *ngIf="f['fecha_hecho'].invalid && (f['fecha_hecho'].dirty || f['fecha_hecho'].touched)">
-                   <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['required']">Fecha obligatoria.</small>
-                   <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['futuro']">No puede ser fecha futura.</small>
-                   <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['prescripto']">El reclamo prescribió.</small>
-                </div>
-              </div>
-              <div class="input-group">
-                <label>Hora Aprox.</label>
-                <input type="time" formControlName="hora_hecho" class="input-modern">
-              </div>
-            </div>
-
-            <div class="input-group full">
-              <label>Lugar del Hecho</label>
-              <input type="text" formControlName="lugar_hecho" class="input-modern" placeholder="Calle y Altura o Intersección"
-                     [class.error-border]="f['lugar_hecho'].invalid && (f['lugar_hecho'].dirty || f['lugar_hecho'].touched)">
-              <div *ngIf="f['lugar_hecho'].invalid && (f['lugar_hecho'].dirty || f['lugar_hecho'].touched)">
-                 <small class="error-msg">El lugar es obligatorio.</small>
-              </div>
-            </div>
-            
-            <div class="input-group full">
-              <label>Localidad</label>
-              <input type="text" formControlName="localidad" class="input-modern"
-                     [class.error-border]="f['localidad'].invalid && (f['localidad'].dirty || f['localidad'].touched)">
-              <div *ngIf="f['localidad'].invalid && (f['localidad'].dirty || f['localidad'].touched)">
-                 <small class="error-msg">La localidad es obligatoria.</small>
-              </div>
-            </div>
-
-            <div class="checkbox-group-row" style="margin-top: 15px; display: flex; gap: 20px;">
-                <div class="checkbox-item" style="display: flex; align-items: center;">
-                    <input type="checkbox" formControlName="intervino_policia" id="policia" style="width: 18px; height: 18px;">
-                    <label for="policia" style="margin-left: 8px; font-size: 0.9rem; color: #334155;">¿Intervino Policía?</label>
-                </div>
-                <div class="checkbox-item" style="display: flex; align-items: center;">
-                    <input type="checkbox" formControlName="intervino_ambulancia" id="ambulancia" style="width: 18px; height: 18px;">
-                    <label for="ambulancia" style="margin-left: 8px; font-size: 0.9rem; color: #334155;">¿Intervino Ambulancia?</label>
-                </div>
-            </div>
-
-            <div class="input-group full" style="margin-top: 15px;">
-              <label>Relato</label>
-              <textarea formControlName="relato_hecho" rows="3" class="input-modern textarea" placeholder="Describí brevemente cómo ocurrió..."
-                        [class.error-border]="f['relato_hecho'].invalid && (f['relato_hecho'].dirty || f['relato_hecho'].touched)"></textarea>
-              <div *ngIf="f['relato_hecho'].invalid && (f['relato_hecho'].dirty || f['relato_hecho'].touched)">
-                 <small class="error-msg">El relato es obligatorio.</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-section">
-            <h4 class="section-title">Datos del Tercero (Quien te chocó)</h4>
-            
-            <div class="info-pill mb-4" *ngIf="esConductor && tieneSeguro">
-                <small class="info-notice-dark">
-                    ℹ️ Si estos datos figuran en tu Denuncia Administrativa, no es obligatorio cargarlos manual.
-                </small>
-            </div>
-
-            <div class="grid-2">
-              <div class="input-group">
-                <label>Aseguradora Tercero <span class="text-red-500">*</span></label>
-                <select formControlName="aseguradora_tercero" class="input-modern"
-                        [class.error-border]="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
-                  <option value="" disabled selected>Seleccioná...</option>
-                  <option *ngFor="let a of aseguradoras" [value]="a">{{ a }}</option>
-                </select>
-                <div *ngIf="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
-                   <small class="error-msg">Seleccioná una aseguradora.</small>
-                </div>
-              </div>
-              
-              <div class="input-group">
-                <label>Patente Tercero <span class="text-red-500">*</span></label>
-                <input type="text" formControlName="patente_tercero" class="input-modern uppercase" placeholder="AA999ZZ"
-                       [class.error-border]="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
-                <div *ngIf="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
-                   <small class="error-msg">Formato inválido.</small>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid-2" style="margin-top: 15px;">
-                <div class="input-group">
-                    <label>
-                        Nombre y Apellido
-                        <span *ngIf="esConductor && tieneSeguro" class="text-gray-400 text-xs font-normal ml-1">(Opcional)</span>
-                        <span *ngIf="!esConductor || !tieneSeguro" class="text-red-500 text-xs font-bold ml-1">(Obligatorio)</span>
-                    </label>
-                    
-                    <input type="text" formControlName="tercero_nombre" class="input-modern" placeholder="Nombre"
-                           [class.error-border]="f['tercero_nombre'].invalid && (f['tercero_nombre'].dirty || f['tercero_nombre'].touched)">
-                    
-                    <input type="text" formControlName="tercero_apellido" class="input-modern" placeholder="Apellido" style="margin-top: 5px;"
-                           [class.error-border]="f['tercero_apellido'].invalid && (f['tercero_apellido'].dirty || f['tercero_apellido'].touched)">
-                    
-                    <div *ngIf="(f['tercero_nombre'].invalid || f['tercero_apellido'].invalid) && (f['tercero_nombre'].touched || f['tercero_apellido'].touched)">
-                        <small class="error-msg">Nombre completo requerido.</small>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>
-                        DNI Tercero
-                        <span *ngIf="esConductor && tieneSeguro" class="text-gray-400 text-xs font-normal ml-1">(Opcional)</span>
-                        <span *ngIf="!esConductor || !tieneSeguro" class="text-red-500 text-xs font-bold ml-1">(Obligatorio)</span>
-                    </label>
-                    <input type="text" formControlName="tercero_dni" class="input-modern" placeholder="Sin puntos"
-                           [class.error-border]="f['tercero_dni'].invalid && (f['tercero_dni'].dirty || f['tercero_dni'].touched)">
-                     <div *ngIf="f['tercero_dni'].invalid && f['tercero_dni'].touched">
-                        <small class="error-msg" *ngIf="f['tercero_dni'].errors?.['required']">Requerido.</small>
-                        <small class="error-msg" *ngIf="f['tercero_dni'].errors?.['pattern']">Debe tener 7 u 8 números.</small>
-                     </div>
-                </div>
-            </div>
-
-            <div class="input-group full">
-                <label>
-                    Vehículo (Marca y Modelo)
-                    <span *ngIf="esConductor && tieneSeguro" class="text-gray-400 text-xs font-normal ml-1">(Opcional)</span>
-                    <span *ngIf="!esConductor || !tieneSeguro" class="text-red-500 text-xs font-bold ml-1">(Obligatorio)</span>
-                </label>
-                <input type="text" formControlName="tercero_marca_modelo" class="input-modern" placeholder="Ej: Toyota Corolla gris"
-                       [class.error-border]="f['tercero_marca_modelo'].invalid && (f['tercero_marca_modelo'].dirty || f['tercero_marca_modelo'].touched)">
-                <div *ngIf="f['tercero_marca_modelo'].invalid && f['tercero_marca_modelo'].touched">
-                     <small class="error-msg">Requerido.</small>
-                </div>
-            </div>
-          </div>
-
-          <div class="form-section">
-            <h4 class="section-title">Documentación</h4>
-            <p class="helper-text">Podés subir fotos sacadas con el celular. Importante que se lean bien.</p>
-
-            <div class="files-stack">
-              
-              <div class="file-box" 
-                   [class.uploaded]="f['fileDNI'].value"
-                   [class.error-border]="f['fileDNI'].invalid && (f['fileDNI'].dirty || f['fileDNI'].touched)">
-                <div class="file-info">
-                  <span class="file-label">DNI (Frente y Dorso)</span>
-                  <span class="file-sub" *ngIf="!f['fileDNI'].value">Obligatorio</span>
-                  <span class="file-name-display" *ngIf="f['fileDNI'].value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ getFileName('fileDNI') }}
-                  </span>
-                </div>
-                <label class="btn-upload-small">
-                  {{ f['fileDNI'].value ? 'Cambiar' : 'Subir' }}
-                  <input type="file" hidden (change)="onFileChange($event, 'fileDNI')">
-                </label>
-              </div>
-              <small class="error-msg" *ngIf="f['fileDNI'].invalid && (f['fileDNI'].dirty || f['fileDNI'].touched)">⚠ Falta subir DNI.</small>
-
-              <div class="file-box" *ngIf="esConductor" 
-                   [class.uploaded]="f['fileLicencia'].value"
-                   [class.error-border]="f['fileLicencia'].invalid && (f['fileLicencia'].dirty || f['fileLicencia'].touched)">
-                <div class="file-info">
-                  <span class="file-label">Licencia de Conducir</span>
-                  <span class="file-name-display" *ngIf="f['fileLicencia'].value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ getFileName('fileLicencia') }}
-                  </span>
-                </div>
-                <label class="btn-upload-small">
-                  {{ f['fileLicencia'].value ? 'Cambiar' : 'Subir' }}
-                  <input type="file" hidden (change)="onFileChange($event, 'fileLicencia')">
-                </label>
-              </div>
-              <small class="error-msg" *ngIf="esConductor && f['fileLicencia'].invalid && (f['fileLicencia'].dirty || f['fileLicencia'].touched)">⚠ Falta Licencia.</small>
-
-              <div class="file-box" *ngIf="esConductor"
-                   [class.uploaded]="f['fileCedula'].value"
-                   [class.error-border]="f['fileCedula'].invalid && (f['fileCedula'].dirty || f['fileCedula'].touched)">
-                <div class="file-info">
-                  <span class="file-label">Cédula Verde/Azul</span>
-                  <span class="file-name-display" *ngIf="f['fileCedula'].value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ getFileName('fileCedula') }}
-                  </span>
-                </div>
-                <label class="btn-upload-small">
-                  {{ f['fileCedula'].value ? 'Cambiar' : 'Subir' }}
-                  <input type="file" hidden (change)="onFileChange($event, 'fileCedula')">
-                </label>
-              </div>
-              <small class="error-msg" *ngIf="esConductor && f['fileCedula'].invalid && (f['fileCedula'].dirty || f['fileCedula'].touched)">⚠ Falta Cédula.</small>
-
-              <ng-container *ngIf="esConductor && tieneSeguro">
-                  <div class="file-box"
-                       [class.uploaded]="f['fileSeguro'].value"
-                       [class.error-border]="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">
-                    <div class="file-info">
-                      <span class="file-label">Certificado de Cobertura</span>
-                      <span class="file-name-display" *ngIf="f['fileSeguro'].value">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        {{ getFileName('fileSeguro') }}
-                      </span>
-                    </div>
-                    <label class="btn-upload-small">
-                      {{ f['fileSeguro'].value ? 'Cambiar' : 'Subir' }}
-                      <input type="file" hidden (change)="onFileChange($event, 'fileSeguro')">
-                    </label>
-                  </div>
-                  <small class="error-msg" *ngIf="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">⚠ Falta Certificado.</small>
-
-                  <div class="file-box" [class.uploaded]="f['fileDenuncia'].value"
-                       [class.error-border]="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">
-                    <div class="file-info">
-                      <span class="file-label">Denuncia Administrativa</span>
-                      <span class="file-sub" *ngIf="!f['fileDenuncia'].value">La constancia de tu seguro</span>
-                      <span class="file-name-display" *ngIf="f['fileDenuncia'].value">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        {{ getFileName('fileDenuncia') }}
-                      </span>
-                    </div>
-                    <label class="btn-upload-small">
-                      {{ f['fileDenuncia'].value ? 'Cambiar' : 'Subir' }}
-                      <input type="file" hidden (change)="onFileChange($event, 'fileDenuncia')">
-                    </label>
-                  </div>
-                  <small class="error-msg" *ngIf="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">⚠ Falta Denuncia.</small>
-
-                  <div class="file-box" [class.uploaded]="f['filePresupuesto'].value"
-                       [class.error-border]="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">
-                    <div class="file-info">
-                      <span class="file-label">Presupuesto o Carta de Franquicia</span>
-                      <span class="file-name-display" *ngIf="f['filePresupuesto'].value">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        {{ getFileName('filePresupuesto') }}
-                      </span>
-                    </div>
-                    <label class="btn-upload-small">
-                      {{ f['filePresupuesto'].value ? 'Cambiar' : 'Subir' }}
-                      <input type="file" hidden (change)="onFileChange($event, 'filePresupuesto')">
-                    </label>
-                  </div>
-                  <small class="error-msg" *ngIf="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">⚠ Requerido.</small>
-              </ng-container>
-
-              <div class="file-box" *ngIf="f['sufrio_lesiones'].value" 
-                   [class.uploaded]="f['fileMedicos'].value"
-                   [class.error-border]="f['fileMedicos'].invalid && (f['fileMedicos'].dirty || f['fileMedicos'].touched)">
-                <div class="file-info">
-                  <span class="file-label">Certificados Médicos</span>
-                  <span class="file-sub" *ngIf="!f['fileMedicos'].value">Historia clínica, alta, placas</span>
-                  <span class="file-name-display" *ngIf="f['fileMedicos'].value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ getFileName('fileMedicos') }}
-                  </span>
-                </div>
-                <label class="btn-upload-small">
-                  {{ f['fileMedicos'].value ? 'Cambiar' : 'Subir' }}
-                  <input type="file" hidden (change)="onFileChange($event, 'fileMedicos')">
-                </label>
-              </div>
-              <small class="error-msg" *ngIf="f['sufrio_lesiones'].value && f['fileMedicos'].invalid && (f['fileMedicos'].dirty || f['fileMedicos'].touched)">⚠ Faltan certificados.</small>
-
-              <div class="file-box" [class.uploaded]="f['fileCBU'].value">
-                <div class="file-info">
-                  <span class="file-label">Comprobante de CBU</span>
-                  <span class="file-sub" *ngIf="!f['fileCBU'].value">Opcional pero recomendado</span>
-                  <span class="file-name-display" *ngIf="f['fileCBU'].value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ getFileName('fileCBU') }}
-                  </span>
-                </div>
-                <label class="btn-upload-small">
-                  {{ f['fileCBU'].value ? 'Cambiar' : 'Subir' }}
-                  <input type="file" hidden (change)="onFileChange($event, 'fileCBU')">
-                </label>
-              </div>
-
-              <div class="file-box" *ngIf="!esConductor" [class.uploaded]="f['fileDenunciaPenal'].value">
-                <div class="file-info">
-                  <span class="file-label">Denuncia Penal</span>
-                  <span class="file-sub" *ngIf="!f['fileDenunciaPenal'].value">Si la hubiera</span>
-                  <span class="file-name-display" *ngIf="f['fileDenunciaPenal'].value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ getFileName('fileDenunciaPenal') }}
-                  </span>
-                </div>
-                <label class="btn-upload-small">
-                  {{ f['fileDenunciaPenal'].value ? 'Cambiar' : 'Subir' }}
-                  <input type="file" hidden (change)="onFileChange($event, 'fileDenunciaPenal')">
-                </label>
-              </div>
-
-              <div class="file-box highlight" 
-                   [class.uploaded]="f['fileFotos'].value"
-                   [class.error-border]="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
-                <div class="file-info">
-                  <span class="file-label">Fotos de los Daños</span>
-                  <span class="file-sub" *ngIf="!f['fileFotos'].value">Del vehículo o lesiones</span>
-                  <span class="file-name-display" *ngIf="f['fileFotos'].value">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ getFileName('fileFotos') }}
-                  </span>
-                </div>
-                <label class="btn-upload-small accent">
-                  {{ f['fileFotos'].value ? 'Cambiar' : 'Subir Fotos' }}
-                  <input type="file" hidden (change)="onFileChange($event, 'fileFotos')">
-                </label>
-              </div>
-              <small class="error-msg" *ngIf="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">⚠ Faltan fotos.</small>
-
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" 
-                    (click)="irAConfirmacion()" 
-                    class="btn-submit-glow"
-                    [disabled]="reclamoForm.invalid || !f['fileFotos'].value">
-              
-              <span>Continuar y Revisar</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" style="margin-left:8px"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-            
+            <button type="button" class="nav-back-link" (click)="volverAStep1()">
+                <span class="icon-wrap">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                  </svg>
+                </span>
+                <span class="text">Cambiar Rol</span>
             </button>
+
+            <div class="switches-group">
+                <div class="switch-box" *ngIf="esConductor">
+                  <div class="switch-info">
+                    <span class="label">¿Tenías Seguro Vigente?</span>
+                    <span class="sub-label">Al momento del accidente.</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" formControlName="tiene_seguro" (change)="toggleSeguro($event.target.checked)">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+
+                <div class="switch-box">
+                  <div class="switch-info">
+                    <span class="label">¿Sufriste heridas?</span>
+                    <span class="sub-label">Lesiones físicas.</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" formControlName="sufrio_lesiones">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+            </div>
+
+            <div *ngIf="esConductor && !tieneSeguro" class="alert-box warning">
+              <strong>⚠️ Carta de No Seguro</strong>
+              <p>Se generará automáticamente el documento legal necesario. Completá los datos del tercero obligatoriamente.</p>
+            </div>
+
+            <div class="form-section" *ngIf="esConductor">
+              <h4 class="section-title">Contexto Laboral</h4>
+              
+              <div class="switch-box-compact" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                <div class="switch-info">
+                  <span class="label" style="font-weight: 600; color: #334155;">¿Ibas o volvías del trabajo?</span>
+                  <span class="sub-label" style="font-size: 0.85rem; color: #64748b; margin-left: 5px;">(In Itinere)</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" formControlName="in_itinere">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="switch-box-compact" *ngIf="isInItinere" style="display: flex; justify-content: space-between; align-items: center; background: #f0f9ff; padding: 1rem; border: 1px solid #bae6fd; border-radius: 8px;">
+                <div class="switch-info">
+                  <span class="label" style="font-weight: 600; color: #0369a1;">¿Tenés A.R.T.?</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" formControlName="posee_art">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="section-title">Datos Personales</h4>
+              
+              <div class="input-group full">
+                <label>Nombre Completo / Razón Social</label>
+                <input type="text" formControlName="nombre" class="input-modern" 
+                       placeholder="Si es empresa, ingresá la Razón Social"
+                       [class.error-border]="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
+                
+                <div *ngIf="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
+                  <small class="error-msg" *ngIf="f['nombre'].errors?.['required']">Obligatorio.</small>
+                  <small class="error-msg" *ngIf="f['nombre'].errors?.['minlength']">Mínimo 3 caracteres.</small>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>DNI / CUIT</label>
+                  <input type="text" formControlName="dni" class="input-modern" placeholder="Sin puntos"
+                         [class.error-border]="f['dni'].invalid && (f['dni'].dirty || f['dni'].touched)">
+                  <div *ngIf="f['dni'].invalid && (f['dni'].dirty || f['dni'].touched)">
+                     <small class="error-msg">Número inválido.</small>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label>Celular / WhatsApp</label>
+                  <input type="text" formControlName="telefono" class="input-modern" placeholder="Ej: 11 5555 6666"
+                         [class.error-border]="f['telefono'].invalid && (f['telefono'].dirty || f['telefono'].touched)">
+                  <div *ngIf="f['telefono'].invalid && (f['telefono'].dirty || f['telefono'].touched)">
+                     <small class="error-msg" *ngIf="f['telefono'].errors?.['pattern']">Número inválido.</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="input-group full">
+                <label>Domicilio (Calle y Altura)</label>
+                <input type="text" formControlName="domicilio_usuario" class="input-modern" placeholder="Ej: Av. Santa Fe 1234"
+                       [class.error-border]="f['domicilio_usuario'].invalid && (f['domicilio_usuario'].dirty || f['domicilio_usuario'].touched)">
+                <div *ngIf="f['domicilio_usuario'].invalid && (f['domicilio_usuario'].dirty || f['domicilio_usuario'].touched)">
+                   <small class="error-msg">El domicilio es obligatorio.</small>
+                </div>
+              </div>
+
+              <div class="input-group full">
+                <label>Email</label>
+                <input type="email" formControlName="email" class="input-modern" placeholder="Para recibir notificaciones"
+                       [class.error-border]="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
+                <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
+                   <small class="error-msg">Formato de email incorrecto.</small>
+                </div>
+              </div>
+              
+              <div class="input-group full">
+                <label>CBU / CVU (Opcional)</label>
+                <input type="text" formControlName="cbu" class="input-modern" placeholder="Para depositar tu indemnización (22 dígitos)">
+                <div *ngIf="f['cbu'].invalid && (f['cbu'].dirty || f['cbu'].touched)">
+                   <small class="error-msg">Debe tener 22 números.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="section-title">Detalles del Siniestro</h4>
+
+              <div class="grid-2" *ngIf="esConductor">
+                <div class="input-group">
+                  <label>Tu Patente</label>
+                  <input type="text" formControlName="patente_propia" class="input-modern uppercase" placeholder="AA123BB"
+                         [class.error-border]="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
+                  <div *ngIf="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
+                     <small class="error-msg">Patente inválida.</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>Fecha</label>
+                  <input type="date" formControlName="fecha_hecho" class="input-modern"
+                         [class.error-border]="f['fecha_hecho'].invalid && (f['fecha_hecho'].dirty || f['fecha_hecho'].touched)">
+                  </div>
+                <div class="input-group">
+                  <label>Hora Aprox.</label>
+                  <input type="time" formControlName="hora_hecho" class="input-modern">
+                </div>
+              </div>
+
+              <div class="input-group full">
+                <label>Lugar del Hecho</label>
+                <input type="text" formControlName="lugar_hecho" class="input-modern" placeholder="Calle y Altura o Intersección"
+                       [class.error-border]="f['lugar_hecho'].invalid && (f['lugar_hecho'].dirty || f['lugar_hecho'].touched)">
+                </div>
+              
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>Provincia</label>
+                  <select formControlName="provincia" class="input-modern"
+                          [class.error-border]="f['provincia'].invalid && (f['provincia'].dirty || f['provincia'].touched)">
+                    <option value="" disabled selected>Seleccioná...</option>
+                    <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
+                  </select>
+                  <div *ngIf="f['provincia'].invalid && (f['provincia'].dirty || f['provincia'].touched)">
+                     <small class="error-msg">Requerido.</small>
+                  </div>
+                </div>
+
+                <div class="input-group">
+                  <label>Localidad</label>
+                  <input type="text" formControlName="localidad" class="input-modern"
+                         [class.error-border]="f['localidad'].invalid && (f['localidad'].dirty || f['localidad'].touched)">
+                  <div *ngIf="f['localidad'].invalid && (f['localidad'].dirty || f['localidad'].touched)">
+                     <small class="error-msg">Requerido.</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="checkbox-group-row" style="margin-top: 15px; display: flex; gap: 20px;">
+                  <div class="checkbox-item" style="display: flex; align-items: center;">
+                      <input type="checkbox" formControlName="intervino_policia" id="policia" style="width: 18px; height: 18px;">
+                      <label for="policia" style="margin-left: 8px; font-size: 0.9rem; color: #334155;">¿Intervino Policía?</label>
+                  </div>
+                  <div class="checkbox-item" style="display: flex; align-items: center;">
+                      <input type="checkbox" formControlName="intervino_ambulancia" id="ambulancia" style="width: 18px; height: 18px;">
+                      <label for="ambulancia" style="margin-left: 8px; font-size: 0.9rem; color: #334155;">¿Intervino Ambulancia?</label>
+                  </div>
+              </div>
+
+              <div class="input-group full" style="margin-top: 15px;">
+                <label>Relato</label>
+                <textarea formControlName="relato_hecho" rows="3" class="input-modern textarea" 
+                          placeholder="Describí cómo ocurrió el hecho y cómo te encontrás de salud actualmente..."
+                          [class.error-border]="f['relato_hecho'].invalid && (f['relato_hecho'].dirty || f['relato_hecho'].touched)"></textarea>
+                <div *ngIf="f['relato_hecho'].invalid && (f['relato_hecho'].dirty || f['relato_hecho'].touched)">
+                   <small class="error-msg">El relato es obligatorio.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-submit-glow" (click)="avanzarAPaso2()">
+                    Siguiente: Cargar Documentación
+                    <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" style="margin-left:8px"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg> -->
+                </button>
+            </div>
+
+          </div>
+
+          <div [hidden]="pasoActual !== 2" class="fade-in">
+            
+            <button type="button" class="nav-back-link" (click)="volverAPaso1()">
+                <span class="icon-wrap">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                  </svg>
+                </span>
+                <span class="text">Volver a Mis Datos</span>
+            </button>
+
+            <div class="form-section">
+              <h4 class="section-title">Datos del Tercero (Quien te chocó)</h4>
+              
+              <div class="info-pill mb-4" *ngIf="esConductor && tieneSeguro">
+                  <small class="info-notice-dark">
+                      ℹ️ Si estos datos figuran en tu Denuncia Administrativa, no es obligatorio cargarlos manual.
+                  </small>
+              </div>
+
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>Aseguradora Tercero <span class="text-red-500">*</span></label>
+                  <select formControlName="aseguradora_tercero" class="input-modern"
+                          [class.error-border]="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
+                    <option value="" disabled selected>Seleccioná...</option>
+                    <option *ngFor="let a of aseguradoras" [value]="a">{{ a }}</option>
+                  </select>
+                  <div *ngIf="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
+                     <small class="error-msg">Seleccioná una aseguradora.</small>
+                  </div>
+                </div>
+                
+                <div class="input-group">
+                  <label>Patente Tercero <span class="text-red-500">*</span></label>
+                  <input type="text" formControlName="patente_tercero" class="input-modern uppercase" placeholder="AA999ZZ"
+                         [class.error-border]="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
+                  <div *ngIf="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
+                     <small class="error-msg">Formato inválido.</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-2" style="margin-top: 15px;">
+                  <div class="input-group">
+                      <label>
+                          Nombre y Apellido
+                          <span *ngIf="esConductor && tieneSeguro" class="text-gray-400 text-xs font-normal ml-1">(Opcional)</span>
+                          <span *ngIf="!esConductor || !tieneSeguro" class="text-red-500 text-xs font-bold ml-1">(Obligatorio)</span>
+                      </label>
+                      
+                      <input type="text" formControlName="tercero_nombre" class="input-modern" placeholder="Nombre"
+                             [class.error-border]="f['tercero_nombre'].invalid && (f['tercero_nombre'].dirty || f['tercero_nombre'].touched)">
+                      
+                      <input type="text" formControlName="tercero_apellido" class="input-modern" placeholder="Apellido" style="margin-top: 5px;"
+                             [class.error-border]="f['tercero_apellido'].invalid && (f['tercero_apellido'].dirty || f['tercero_apellido'].touched)">
+                      
+                      <div *ngIf="(f['tercero_nombre'].invalid || f['tercero_apellido'].invalid) && (f['tercero_nombre'].touched || f['tercero_apellido'].touched)">
+                          <small class="error-msg">Nombre completo requerido.</small>
+                      </div>
+                  </div>
+
+                  <div class="input-group">
+                      <label>
+                          DNI Tercero
+                          <span *ngIf="esConductor && tieneSeguro" class="text-gray-400 text-xs font-normal ml-1">(Opcional)</span>
+                          <span *ngIf="!esConductor || !tieneSeguro" class="text-red-500 text-xs font-bold ml-1">(Obligatorio)</span>
+                      </label>
+                      <input type="text" formControlName="tercero_dni" class="input-modern" placeholder="Sin puntos"
+                             [class.error-border]="f['tercero_dni'].invalid && (f['tercero_dni'].dirty || f['tercero_dni'].touched)">
+                       <div *ngIf="f['tercero_dni'].invalid && f['tercero_dni'].touched">
+                          <small class="error-msg" *ngIf="f['tercero_dni'].errors?.['required']">Requerido.</small>
+                          <small class="error-msg" *ngIf="f['tercero_dni'].errors?.['pattern']">Debe tener 7 u 8 números.</small>
+                       </div>
+                  </div>
+              </div>
+
+              <div class="input-group full">
+                  <label>
+                      Vehículo (Marca y Modelo)
+                      <span *ngIf="esConductor && tieneSeguro" class="text-gray-400 text-xs font-normal ml-1">(Opcional)</span>
+                      <span *ngIf="!esConductor || !tieneSeguro" class="text-red-500 text-xs font-bold ml-1">(Obligatorio)</span>
+                  </label>
+                  <input type="text" formControlName="tercero_marca_modelo" class="input-modern" placeholder="Ej: Toyota Corolla gris"
+                         [class.error-border]="f['tercero_marca_modelo'].invalid && (f['tercero_marca_modelo'].dirty || f['tercero_marca_modelo'].touched)">
+                  <div *ngIf="f['tercero_marca_modelo'].invalid && f['tercero_marca_modelo'].touched">
+                       <small class="error-msg">Requerido.</small>
+                  </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="section-title">Documentación Requerida</h4>
+              <p class="helper-text">
+                Subí fotos claras y legibles. Podés arrastrar los archivos o hacer clic en el recuadro.
+              </p>
+
+              <div class="files-grid-large">
+                
+                <div class="file-upload-card" 
+                     [class.uploaded]="f['fileDNI'].value"
+                     [class.error-border]="f['fileDNI'].invalid && (f['fileDNI'].dirty || f['fileDNI'].touched)">
+                  
+                  <div class="card-header-file">
+                    <label>DNI del titular</label>
+                    <span class="file-hint">Frente y dorso. Si es persona jurídica, adjuntar estatuto.</span>
+                  </div>
+
+                  <div class="upload-area">
+                    <input type="file" id="fileDNI" hidden (change)="onFileChange($event, 'fileDNI')">
+                    <label for="fileDNI" class="drop-zone">
+                      <div *ngIf="!f['fileDNI'].value" class="placeholder-content">
+                        <div class="icon-upload">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                        </div>
+                        <span>Hacé clic o arrastrá tu archivo aquí</span>
+                      </div>
+
+                      <div *ngIf="f['fileDNI'].value" class="file-preview">
+                        <div class="icon-check">✓</div>
+                        <span class="filename">{{ getFileName('fileDNI') }}</span>
+                        <span class="change-text">Cambiar archivo</span>
+                      </div>
+                    </label>
+                  </div>
+                  <small class="error-msg" *ngIf="f['fileDNI'].invalid && (f['fileDNI'].dirty || f['fileDNI'].touched)">⚠ Requerido.</small>
+                </div>
+
+                <div class="file-upload-card" *ngIf="esConductor"
+                     [class.uploaded]="f['fileLicencia'].value"
+                     [class.error-border]="f['fileLicencia'].invalid && (f['fileLicencia'].dirty || f['fileLicencia'].touched)">
+                  
+                  <div class="card-header-file">
+                    <label>Licencia de Conducir</label>
+                    <span class="file-hint">Frente y dorso del conductor al momento del siniestro.</span>
+                  </div>
+
+                  <div class="upload-area">
+                    <input type="file" id="fileLicencia" hidden (change)="onFileChange($event, 'fileLicencia')">
+                    <label for="fileLicencia" class="drop-zone">
+                      <div *ngIf="!f['fileLicencia'].value" class="placeholder-content">
+                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                        <span>Hacé clic o arrastrá tu archivo aquí</span>
+                      </div>
+                      <div *ngIf="f['fileLicencia'].value" class="file-preview">
+                        <div class="icon-check">✓</div>
+                        <span class="filename">{{ getFileName('fileLicencia') }}</span>
+                        <span class="change-text">Cambiar archivo</span>
+                      </div>
+                    </label>
+                  </div>
+                  <small class="error-msg" *ngIf="f['fileLicencia'].invalid && (f['fileLicencia'].dirty || f['fileLicencia'].touched)">⚠ Requerido.</small>
+                </div>
+
+                <div class="file-upload-card" *ngIf="esConductor"
+                     [class.uploaded]="f['fileCedula'].value"
+                     [class.error-border]="f['fileCedula'].invalid && (f['fileCedula'].dirty || f['fileCedula'].touched)">
+                  
+                  <div class="card-header-file">
+                    <label>Cédula del Vehículo</label>
+                    <span class="file-hint">Verde o Azul (Frente y dorso).</span>
+                  </div>
+
+                  <div class="upload-area">
+                    <input type="file" id="fileCedula" hidden (change)="onFileChange($event, 'fileCedula')">
+                    <label for="fileCedula" class="drop-zone">
+                      <div *ngIf="!f['fileCedula'].value" class="placeholder-content">
+                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                        <span>Hacé clic o arrastrá tu archivo aquí</span>
+                      </div>
+                      <div *ngIf="f['fileCedula'].value" class="file-preview">
+                        <div class="icon-check">✓</div>
+                        <span class="filename">{{ getFileName('fileCedula') }}</span>
+                        <span class="change-text">Cambiar archivo</span>
+                      </div>
+                    </label>
+                  </div>
+                  <small class="error-msg" *ngIf="f['fileCedula'].invalid && (f['fileCedula'].dirty || f['fileCedula'].touched)">⚠ Requerido.</small>
+                </div>
+
+                <ng-container *ngIf="esConductor && tieneSeguro">
+                    
+                    <div class="file-upload-card"
+                         [class.uploaded]="f['fileSeguro'].value"
+                         [class.error-border]="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">
+                      <div class="card-header-file">
+                        <label>Certificado de Cobertura</label>
+                        <span class="file-hint">Vigente al momento del hecho.</span>
+                      </div>
+                      <div class="upload-area">
+                        <input type="file" id="fileSeguro" hidden (change)="onFileChange($event, 'fileSeguro')">
+                        <label for="fileSeguro" class="drop-zone">
+                          <div *ngIf="!f['fileSeguro'].value" class="placeholder-content">
+                            <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                            <span>Subir archivo</span>
+                          </div>
+                          <div *ngIf="f['fileSeguro'].value" class="file-preview">
+                            <div class="icon-check">✓</div>
+                            <span class="filename">{{ getFileName('fileSeguro') }}</span>
+                          </div>
+                        </label>
+                      </div>
+                      <small class="error-msg" *ngIf="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">⚠ Requerido.</small>
+                    </div>
+
+                    <div class="file-upload-card"
+                         [class.uploaded]="f['fileDenuncia'].value"
+                         [class.error-border]="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">
+                      <div class="card-header-file">
+                        <label>Denuncia Administrativa</label>
+                        <span class="file-hint">Presentada ante tu propia aseguradora.</span>
+                      </div>
+                      <div class="upload-area">
+                        <input type="file" id="fileDenuncia" hidden (change)="onFileChange($event, 'fileDenuncia')">
+                        <label for="fileDenuncia" class="drop-zone">
+                          <div *ngIf="!f['fileDenuncia'].value" class="placeholder-content">
+                            <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                            <span>Subir archivo</span>
+                          </div>
+                          <div *ngIf="f['fileDenuncia'].value" class="file-preview">
+                            <div class="icon-check">✓</div>
+                            <span class="filename">{{ getFileName('fileDenuncia') }}</span>
+                          </div>
+                        </label>
+                      </div>
+                      <small class="error-msg" *ngIf="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">⚠ Requerido.</small>
+                    </div>
+
+                    <div class="file-upload-card"
+                         [class.uploaded]="f['filePresupuesto'].value"
+                         [class.error-border]="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">
+                      <div class="card-header-file">
+                        <label>Presupuesto o Franquicia</label>
+                        <span class="file-hint">Carta de franquicia o presupuesto de reparación.</span>
+                      </div>
+                      <div class="upload-area">
+                        <input type="file" id="filePresupuesto" hidden (change)="onFileChange($event, 'filePresupuesto')">
+                        <label for="filePresupuesto" class="drop-zone">
+                          <div *ngIf="!f['filePresupuesto'].value" class="placeholder-content">
+                            <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                            <span>Subir archivo</span>
+                          </div>
+                          <div *ngIf="f['filePresupuesto'].value" class="file-preview">
+                            <div class="icon-check">✓</div>
+                            <span class="filename">{{ getFileName('filePresupuesto') }}</span>
+                          </div>
+                        </label>
+                      </div>
+                      <small class="error-msg" *ngIf="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">⚠ Requerido.</small>
+                    </div>
+                </ng-container>
+
+                <div class="file-upload-card highlight"
+                     [class.uploaded]="f['fileFotos'].value"
+                     [class.error-border]="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
+                  
+                  <div class="card-header-file">
+                    <label>Fotos de los Daños</label>
+                    <span class="file-hint">Fotos claras de los daños y del lugar del hecho.</span>
+                  </div>
+
+                  <div class="upload-area">
+                    <input type="file" id="fileFotos" hidden (change)="onFileChange($event, 'fileFotos')">
+                    <label for="fileFotos" class="drop-zone">
+                      <div *ngIf="!f['fileFotos'].value" class="placeholder-content">
+                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg></div>
+                        <span>Subir Fotos</span>
+                      </div>
+                      <div *ngIf="f['fileFotos'].value" class="file-preview">
+                        <div class="icon-check">✓</div>
+                        <span class="filename">{{ getFileName('fileFotos') }}</span>
+                        <span class="change-text">Cambiar fotos</span>
+                      </div>
+                    </label>
+                  </div>
+                  <small class="error-msg" *ngIf="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">⚠ Las fotos son obligatorias.</small>
+                </div>
+
+                <div class="file-upload-card" *ngIf="f['sufrio_lesiones'].value">
+                    <div class="card-header-file"><label>Certificados Médicos</label><span class="file-hint">Historia clínica, alta, placas.</span></div>
+                    <div class="upload-area">
+                        <input type="file" id="fileMedicos" hidden (change)="onFileChange($event, 'fileMedicos')">
+                        <label for="fileMedicos" class="drop-zone">
+                            <div *ngIf="!f['fileMedicos'].value" class="placeholder-content"><span>Subir archivo</span></div>
+                            <div *ngIf="f['fileMedicos'].value" class="file-preview"><div class="icon-check">✓</div><span class="filename">{{ getFileName('fileMedicos') }}</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="file-upload-card">
+                    <div class="card-header-file"><label>Comprobante de CBU</label><span class="file-hint">Opcional para acreditar cuenta.</span></div>
+                    <div class="upload-area">
+                        <input type="file" id="fileCBU" hidden (change)="onFileChange($event, 'fileCBU')">
+                        <label for="fileCBU" class="drop-zone">
+                            <div *ngIf="!f['fileCBU'].value" class="placeholder-content"><span>Subir archivo</span></div>
+                            <div *ngIf="f['fileCBU'].value" class="file-preview"><div class="icon-check">✓</div><span class="filename">{{ getFileName('fileCBU') }}</span></div>
+                        </label>
+                    </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" 
+                        (click)="irAConfirmacion()" 
+                        class="btn-submit-glow"
+                        [disabled]="reclamoForm.invalid || !f['fileFotos'].value">
+                  
+                  <span>Continuar y Revisar</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" style="margin-left:8px"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                
+                </button>
+            </div>
+
           </div>
 
         </form>
       </div>
 
-      <div class="confirmation-container fade-in" *ngIf="pasoActual === 2">
+      <div class="confirmation-container fade-in" *ngIf="pasoActual === 3">
         
         <div class="header-center" style="margin-bottom: 2rem;">
             <h3>Confirmá los Datos</h3>
