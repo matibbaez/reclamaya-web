@@ -9,11 +9,18 @@
   <aside class="side-panel">
     <div class="panel-content">
 
-      <h2>{{ pasoActual === 0 ? 'Empecemos' : 'Datos del Siniestro' }}</h2>
+      <h2>
+        <ng-container [ngSwitch]="pasoActual">
+            <span *ngSwitchCase="0">Empecemos</span>
+            <span *ngSwitchCase="1">Datos del Siniestro</span>
+            <span *ngSwitchCase="2">Confirmación</span>
+        </ng-container>
+      </h2>
 
       <p class="panel-desc">
         <span *ngIf="pasoActual === 0">Seleccioná tu rol en el accidente para personalizar los requisitos.</span>
         <span *ngIf="pasoActual === 1">Completá el formulario. Tus datos están protegidos por secreto profesional.</span>
+        <span *ngIf="pasoActual === 2">Revisá que todo esté correcto antes de enviar tu reclamo.</span>
       </p>
 
       <div class="steps-vertical">
@@ -21,13 +28,17 @@
           <div class="step-circle">{{ pasoActual > 0 ? '✓' : '1' }}</div>
           <div class="step-text">Rol</div>
         </div>
-        <div class="step-item" [class.active]="pasoActual === 1">
-          <div class="step-circle">2</div>
+        <div class="step-item" [class.active]="pasoActual === 1" [class.completed]="pasoActual > 1">
+          <div class="step-circle">{{ pasoActual > 1 ? '✓' : '2' }}</div>
           <div class="step-text">Datos y Fotos</div>
         </div>
-        <div class="step-item">
+        <div class="step-item" [class.active]="pasoActual === 2">
           <div class="step-circle">3</div>
           <div class="step-text">Confirmación</div>
+        </div>
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <div class="step-text">Código de Seguimiento</div>
         </div>
       </div>
 
@@ -101,7 +112,7 @@
         </div>
       </div>
 
-      <div class="form-container" *ngIf="pasoActual === 1">
+      <div class="form-container" [hidden]="pasoActual !== 1">
         
         <button type="button" class="nav-back-link" (click)="volverAStep1()">
           <span class="icon-wrap">
@@ -112,7 +123,7 @@
           <span class="text">Cambiar Rol</span>
         </button>
 
-        <form [formGroup]="reclamoForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="reclamoForm">
 
           <div class="switch-box" *ngIf="esConductor">
             <div class="switch-info">
@@ -426,13 +437,115 @@
           </div>
 
           <div class="form-actions">
-            <button type="submit" [disabled]="reclamoForm.invalid || isLoading" class="btn-submit-glow">
-              <span *ngIf="!isLoading">Iniciar Reclamo</span>
-              <div *ngIf="isLoading" class="spinner-loader"></div> 
+            <button type="button" 
+                    (click)="irAConfirmacion()" 
+                    class="btn-submit-glow"
+                    [disabled]="reclamoForm.invalid || !f['fileFotos'].value">
+              
+              <span>Continuar y Revisar</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="20" style="margin-left:8px"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            
             </button>
           </div>
 
         </form>
+      </div>
+
+      <div class="confirmation-container fade-in" *ngIf="pasoActual === 2">
+        
+        <div class="header-center" style="margin-bottom: 2rem;">
+            <h3>Confirmá los Datos</h3>
+            <p>Verificá que la información sea correcta antes de enviar.</p>
+        </div>
+
+        <div class="summary-card">
+            
+            <div class="summary-section">
+                <h4 class="summary-title">Tus Datos</h4>
+                <div class="summary-grid">
+                    <div class="data-row">
+                        <label>Rol:</label> <span>{{ v.rol_victima }}</span>
+                    </div>
+                    <div class="data-row">
+                        <label>Nombre:</label> <span>{{ v.nombre }}</span>
+                    </div>
+                    <div class="data-row">
+                        <label>DNI:</label> <span>{{ v.dni }}</span>
+                    </div>
+                    <div class="data-row">
+                        <label>Contacto:</label> <span>{{ v.telefono }} / {{ v.email }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="summary-section">
+                <h4 class="summary-title">El Siniestro</h4>
+                <div class="summary-grid">
+                    <div class="data-row full">
+                        <label>Lugar:</label> <span>{{ v.lugar_hecho }}, {{ v.localidad }}</span>
+                    </div>
+                    <div class="data-row">
+                        <label>Fecha:</label> <span>{{ v.fecha_hecho }} {{ v.hora_hecho }}</span>
+                    </div>
+                    <div class="data-row" *ngIf="esConductor && tieneSeguro">
+                        <label>Tu Patente:</label> <span>{{ v.patente_propia || '-' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="summary-section">
+                <h4 class="summary-title">Tercero (Responsable)</h4>
+                <div class="summary-grid">
+                    <div class="data-row">
+                        <label>Aseguradora:</label> <span>{{ v.aseguradora_tercero }}</span>
+                    </div>
+                    <div class="data-row">
+                        <label>Patente:</label> <span>{{ v.patente_tercero || 'No especificada' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="summary-section">
+                <h4 class="summary-title">Archivos Cargados</h4>
+                <div class="files-list-read">
+                    <div class="file-read-item" *ngIf="v.fileDNI">
+                        <span class="check-icon">✓</span> DNI
+                    </div>
+                    <div class="file-read-item" *ngIf="v.fileLicencia">
+                        <span class="check-icon">✓</span> Licencia
+                    </div>
+                    <div class="file-read-item" *ngIf="v.fileCedula">
+                        <span class="check-icon">✓</span> Cédula
+                    </div>
+                    <div class="file-read-item" *ngIf="v.fileSeguro">
+                        <span class="check-icon">✓</span> Cert. Seguro
+                    </div>
+                    <div class="file-read-item" *ngIf="v.fileMedicos">
+                        <span class="check-icon">✓</span> Cert. Médicos
+                    </div>
+                    <div class="file-read-item highlight" *ngIf="v.fileFotos">
+                        <span class="check-icon">✓</span> Fotos Daños
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons-row">
+            <button class="btn-secondary" (click)="editarDatos()">
+                Editar
+            </button>
+            <button class="btn-submit-glow" (click)="confirmarReclamo()" [disabled]="isLoading">
+                <span *ngIf="!isLoading">Confirmar y Enviar</span>
+                <div *ngIf="isLoading" class="spinner-loader"></div> 
+            </button>
+        </div>
+
       </div>
 
     </div>

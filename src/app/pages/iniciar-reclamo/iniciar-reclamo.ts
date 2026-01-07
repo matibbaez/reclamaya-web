@@ -42,37 +42,29 @@ export class IniciarReclamoComponent implements OnInit {
 
   reclamoForm = this.fb.group({
     codigo_ref: [''],
-    
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.nombrePattern), this.noWhitespaceValidator]],
-    
     dni: ['', [Validators.required, Validators.pattern(this.dniPattern)]],
     cbu: ['', [Validators.pattern(this.cbuPattern)]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.pattern(this.telPattern)]],
-
     rol_victima: ['', Validators.required],
     tiene_seguro: [true], 
     in_itinere: [false],
     posee_art: [false],
-
     fecha_hecho: ['', [Validators.required, this.fechaValidator]], 
     hora_hecho: [''],
-    
     lugar_hecho: ['', [Validators.required, Validators.minLength(5), this.noWhitespaceValidator]],
     localidad: ['', [Validators.required, Validators.minLength(4), this.noWhitespaceValidator]],
-    
     relato_hecho: [''], 
-
     aseguradora_tercero: ['', Validators.required],
     patente_tercero: ['', [Validators.pattern(this.patentePattern)]],
     patente_propia: ['', [Validators.pattern(this.patentePattern)]], 
-
     fileDNI: [null],
     fileLicencia: [null],
     fileCedula: [null],
     fileSeguro: [null],
     fileDenuncia: [null],
-    fileFotos: [null], 
+    fileFotos: [null, Validators.required],
     fileMedicos: [null],
   });
 
@@ -83,28 +75,26 @@ export class IniciarReclamoComponent implements OnInit {
     });
   }
 
-  // --- VALIDADOR ANTI-ESPACIOS ---
+  // --- VALIDADORES ---
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { 'whitespace': true };
   }
 
-  // --- VALIDADOR DE FECHA ---
   fechaValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
     const fecha = new Date(control.value);
     const hoy = new Date();
     const limitePasado = new Date();
     limitePasado.setFullYear(hoy.getFullYear() - 3);
-
     if (fecha > hoy) return { futuro: true };
     if (fecha < limitePasado) return { prescripto: true };
-
     return null;
   }
 
   get f() { return this.reclamoForm.controls; }
+  get v() { return this.reclamoForm.value; } // Getter rápido para valores en el HTML
 
   aceptarTerminos() { this.mostrarTerminos = false; }
   cancelarTerminos() { this.router.navigate(['/']); }
@@ -138,14 +128,12 @@ export class IniciarReclamoComponent implements OnInit {
         c[key]?.clearValidators();
         // @ts-ignore
         c[key]?.updateValueAndValidity();
-        
         if (key.includes('patente')) {
             // @ts-ignore
             c[key]?.addValidators(Validators.pattern(this.patentePattern));
         }
       });
 
-    // LÓGICA CONDICIONAL CON EL NUEVO VALIDADOR
     if (rol === 'Conductor' && tieneSeguro) {
         c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
         c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
@@ -158,14 +146,12 @@ export class IniciarReclamoComponent implements OnInit {
         c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
         c.fileLicencia.setValidators([Validators.required]);
         c.fileCedula.setValidators([Validators.required]);
-        
         c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
     }
     else { 
         c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
         c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
     }
-
     c.fileFotos.setValidators([Validators.required]);
     this.reclamoForm.updateValueAndValidity();
   }
@@ -177,21 +163,19 @@ export class IniciarReclamoComponent implements OnInit {
         this.notificacionService.showError('Archivo muy pesado (Máx 5MB).');
         event.target.value = ''; return;
       }
-      
       const tiposValidos = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
       if (!tiposValidos.includes(file.type)) {
          this.notificacionService.showError('Formato inválido. Solo JPG, PNG o PDF.');
          event.target.value = ''; return;
       }
-
       this.reclamoForm.patchValue({ [controlName]: file });
     }
   }
 
-  onSubmit() {
+  // --- NUEVO: Validar y pasar a confirmación ---
+  irAConfirmacion() {
     if (this.reclamoForm.invalid) {
       this.reclamoForm.markAllAsTouched(); 
-      
       if (this.reclamoForm.get('fecha_hecho')?.errors?.['futuro']) {
          this.notificacionService.showError('La fecha no puede ser futura.');
          return;
@@ -200,11 +184,22 @@ export class IniciarReclamoComponent implements OnInit {
          this.notificacionService.showError('El reclamo tiene más de 3 años.');
          return;
       }
-
       this.notificacionService.showError('Revisá los campos marcados en rojo.');
       return;
     }
+    // Si todo ok, vamos al paso 2 (Confirmación)
+    this.pasoActual = 2;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
+  // --- NUEVO: Volver a editar ---
+  editarDatos() {
+    this.pasoActual = 1;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // --- ENVIO FINAL ---
+  confirmarReclamo() {
     this.isLoading = true;
     const v = this.reclamoForm.value;
     const formData = new FormData();
