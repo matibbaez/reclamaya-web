@@ -16,7 +16,9 @@
         <h1>{{ r.nombre }}</h1>
         <div class="meta-row">
           <span class="id-badge">#{{ r.codigo_seguimiento }}</span>
-          <span class="role-badge" [ngClass]="r.rol_victima.toLowerCase()">{{ r.rol_victima }}</span>
+          <span class="role-badge" [ngClass]="r.rol_victima.toLowerCase()">
+            {{ r.rol_victima }}
+          </span>
         </div>
       </div>
 
@@ -86,6 +88,33 @@
             <label>Patente Tercero</label>
             <div class="plate">{{ r.patente_tercero || 'S/D' }}</div>
           </div>
+
+          <div class="field-box" *ngIf="r.patente_propia">
+            <label>Tu Patente (Asegurado)</label>
+            <div class="plate own">{{ r.patente_propia }}</div>
+          </div>
+        </div>
+
+        <div class="context-badges" *ngIf="r.in_itinere || r.posee_art || r.intervino_policia || r.intervino_ambulancia">
+          
+          <div class="badge-item blue" *ngIf="r.in_itinere">
+            <lucide-icon [img]="icons.Briefcase" size="16"></lucide-icon>
+            <span>In Itinere</span>
+          </div>
+          <div class="badge-item green" *ngIf="r.posee_art">
+            <lucide-icon [img]="icons.HardHat" size="16"></lucide-icon>
+            <span>Con A.R.T.</span>
+          </div>
+
+          <div class="badge-item red" *ngIf="r.intervino_ambulancia">
+            <lucide-icon [img]="icons.Ambulance" size="16"></lucide-icon>
+            <span>Hubo Ambulancia</span>
+          </div>
+          <div class="badge-item indigo" *ngIf="r.intervino_policia">
+            <lucide-icon [img]="icons.Siren" size="16"></lucide-icon>
+            <span>Intervino Policía</span>
+          </div>
+
         </div>
 
         <div class="divider"></div>
@@ -153,10 +182,7 @@
       
       <section class="card admin-panel" *ngIf="authService.esAdmin || authService.esTramitador">
         <div class="panel-header">
-          <h3>
-            <lucide-icon [img]="icons.UserCog" size="20"></lucide-icon>
-            Gestión del Caso
-          </h3>
+          <h3><lucide-icon [img]="icons.UserCog" size="20"></lucide-icon> Gestión del Caso</h3>
         </div>
 
         <div class="control-section">
@@ -170,7 +196,7 @@
               <span class="name">{{ r.tramitador.nombre }}</span>
               <span class="badge">Tramitador</span>
             </div>
-            <button class="btn-icon-edit" *ngIf="authService.esAdmin" (click)="activarEdicion()" title="Cambiar responsable">
+            <button class="btn-icon-edit" *ngIf="authService.esAdmin" (click)="activarEdicion()">
               <lucide-icon [img]="icons.UserCog" size="16"></lucide-icon>
             </button>
           </div>
@@ -178,8 +204,7 @@
           <button class="btn-assign-pulse fade-in" 
                   *ngIf="!editandoTramitador() && !r.tramitador"
                   (click)="activarEdicion()">
-            <lucide-icon [img]="icons.UserPlus" size="18"></lucide-icon>
-            Asignar Tramitador
+            <lucide-icon [img]="icons.UserPlus" size="18"></lucide-icon> Asignar Tramitador
           </button>
 
           <div class="edit-mode-box slide-down" *ngIf="editandoTramitador()">
@@ -188,12 +213,8 @@
               <option *ngFor="let t of tramitadores" [value]="t.id">{{ t.nombre }}</option>
             </select>
             <div class="actions-row">
-              <button class="btn-action cancel" (click)="cancelarEdicion()">
-                Cancelar
-              </button>
-              <button class="btn-action save" (click)="asignarAbogado()">
-                Asignar
-              </button>
+              <button class="btn-action cancel" (click)="cancelarEdicion()">Cancelar</button>
+              <button class="btn-action save" (click)="asignarAbogado()">Asignar</button>
             </div>
           </div>
         </div>
@@ -216,7 +237,6 @@
             </button>
           </div>
         </div>
-
       </section>
 
       <section class="card producer-card">
@@ -231,6 +251,5 @@
       </section>
 
     </div>
-
   </div>
 </div>

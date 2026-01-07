@@ -10,7 +10,8 @@ import {
   LucideAngularModule, Eye, FileText, Camera, Shield, CreditCard,
   Car, AlertTriangle, Stethoscope, ChevronLeft, Calendar, MapPin, 
   Phone, Mail, CheckCircle2, AlertCircle, Clock, UserCog, UserPlus,
-  Save, X, Check
+  Save, X, Check, File, Briefcase, HardHat, 
+  Siren, Ambulance 
 } from 'lucide-angular';
 
 /* Services */
@@ -28,12 +29,14 @@ import { UsersService, IUser } from '../../../services/users.service';
 })
 export class DetalleReclamoComponent implements OnInit {
 
-  // --- ICONOS PARA EL NUEVO DISEÑO ---
+  // --- ICONOS ---
   readonly icons = { 
     Eye, FileText, Camera, Shield, CreditCard, Car, AlertTriangle, 
     Stethoscope, ChevronLeft, Calendar, MapPin, Phone, Mail, 
     Check: CheckCircle2, Alert: AlertCircle, Clock, 
-    UserCog, UserPlus, Save, X, Tick: Check
+    UserCog, UserPlus, Save, X, Tick: Check, File,
+    Briefcase, HardHat,
+    Siren, Ambulance
   };
 
   private route = inject(ActivatedRoute);
@@ -43,17 +46,16 @@ export class DetalleReclamoComponent implements OnInit {
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService);
 
-  // --- ESTADO (USANDO SIGNALS) ---
+  // --- ESTADO (SIGNALS) ---
   reclamo = signal<IReclamo | null>(null);
   isLoading = signal(true);
   editandoTramitador = signal(false);
   
-  // Datos Auxiliares
   archivosDisponibles: any[] = [];
   tramitadores: IUser[] = [];
   tramitadorSeleccionado = '';
 
-  // --- LÓGICA DE LA LÍNEA DE TIEMPO ---
+  // --- TIMELINE ---
   pasosTimeline = [
     { id: 'Enviado', label: 'Enviado' },
     { id: 'Recepcionado', label: 'Recepcionado' },
@@ -63,11 +65,10 @@ export class DetalleReclamoComponent implements OnInit {
     { id: 'Indemnizado', label: 'Finalizado' }
   ];
 
-  // Calculamos dinámicamente en qué paso estamos
   indiceProgreso = computed(() => {
     const r = this.reclamo();
     if (!r) return 0;
-    if (r.estado === 'Rechazado') return -1; // Caso especial para mostrar alerta roja
+    if (r.estado === 'Rechazado') return -1;
     return this.pasosTimeline.findIndex(p => p.id === r.estado);
   });
 
@@ -79,7 +80,6 @@ export class DetalleReclamoComponent implements OnInit {
     if (this.authService.esAdmin) this.cargarTramitadores();
   }
 
-  // --- CARGA DE DATOS ---
   private cargarReclamo(id: string): void {
     this.isLoading.set(true);
     this.reclamosService.getReclamoPorId(id)
@@ -104,6 +104,7 @@ export class DetalleReclamoComponent implements OnInit {
       representacion: FileText, honorarios: FileText
     };
 
+    // Mapeamos TODOS los documentos posibles que subió en el paso 1
     const docs = [
       { key: 'dni', label: 'DNI', sub: 'Identidad', path: r.path_dni },
       { key: 'licencia', label: 'Licencia', sub: 'Conductor', path: r.path_licencia },
@@ -116,6 +117,7 @@ export class DetalleReclamoComponent implements OnInit {
       { key: 'honorarios', label: 'Honorarios', sub: 'Convenio', path: r.path_honorarios }
     ];
 
+    // Solo mostramos los que tienen path (fueron subidos)
     this.archivosDisponibles = docs.filter(d => d.path).map(d => ({
       ...d, icon: iconMap[d.key] || FileText
     }));
@@ -130,19 +132,16 @@ export class DetalleReclamoComponent implements OnInit {
       this.tramitadorSeleccionado = data.tramitador.id;
       this.editandoTramitador.set(false);
     } else {
-      // Si no hay tramitador, dejamos que el UI muestre el botón de asignar
       this.tramitadorSeleccionado = '';
       this.editandoTramitador.set(false);
     }
   }
 
-  // --- ACCIONES UI ---
   activarEdicion() { this.editandoTramitador.set(true); }
   
   cancelarEdicion() {
     this.editandoTramitador.set(false);
     const r = this.reclamo();
-    // Restauramos la selección al valor actual (o vacío)
     if (r?.tramitador) {
       this.tramitadorSeleccionado = r.tramitador.id;
     } else {
@@ -171,28 +170,20 @@ export class DetalleReclamoComponent implements OnInit {
     Swal.fire({
       title: '¿Cambiar Estado?',
       text: `El trámite pasará a: ${nuevoEstado}`,
-      icon: 'info',
+      icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sí, cambiar',
-      confirmButtonColor: '#3b82f6'
+      confirmButtonColor: '#3b82f6',
+      cancelButtonText: 'Cancelar'
     }).then(res => {
       if (res.isConfirmed) {
-        
-        // 1. GUARDAMOS EL TRAMITADOR ACTUAL ANTES DE ENVIAR
         const tramitadorActual = r.tramitador; 
-
         this.reclamosService.actualizarEstado(r.id, nuevoEstado).subscribe({
           next: (updated) => {
-            
-            // 2. TRUCO: Si el backend no devolvió el tramitador, se lo pegamos nosotros
-            // para que no desaparezca de la vista.
             if (!updated.tramitador && tramitadorActual) {
               updated.tramitador = tramitadorActual;
             }
-
-            // 3. Ahora sí actualizamos la señal
             this.reclamo.set(updated);
-            
             this.notificacionService.showSuccess(`Estado actualizado a ${nuevoEstado}`);
           },
           error: () => this.notificacionService.showError('Error al actualizar estado.')
@@ -204,11 +195,8 @@ export class DetalleReclamoComponent implements OnInit {
   contactarWhatsApp() {
     const r = this.reclamo();
     if (!r?.telefono) return;
-    
-    // Limpiamos el número para que sea formato internacional válido
     const tel = r.telefono.replace(/\D/g, '');
     const msg = `Hola ${r.nombre}, te contacto de ReclamaYa por el caso #${r.codigo_seguimiento}.`;
-    
     window.open(`https://wa.me/549${tel}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
@@ -216,10 +204,7 @@ export class DetalleReclamoComponent implements OnInit {
     const r = this.reclamo();
     if (!r) return;
     
-    // Abrimos ventana inmediatamente para evitar bloqueo de popups
     const nuevaVentana = window.open('', '_blank');
-    
-    // Loader visual mientras el backend firma la URL
     const htmlCarga = `
       <!DOCTYPE html><html lang="es"><head><title>Cargando...</title>
       <style>body{margin:0;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#f8fafc;font-family:sans-serif;color:#1e293b}
@@ -233,14 +218,9 @@ export class DetalleReclamoComponent implements OnInit {
     }
 
     this.reclamosService.getArchivoUrl(r.id, tipo).subscribe({
-      next: res => { 
-        if (nuevaVentana) nuevaVentana.location.href = res.url; 
-      },
+      next: res => { if (nuevaVentana) nuevaVentana.location.href = res.url; },
       error: () => { 
-        if (nuevaVentana) {
-          // Mostramos error en la ventana en vez de cerrarla bruscamente
-          nuevaVentana.document.body.innerHTML = '<h3 style="color:red;text-align:center;margin-top:50px">No se pudo cargar el archivo.</h3>';
-        }
+        if (nuevaVentana) nuevaVentana.close();
         this.notificacionService.showError('No se pudo abrir el archivo.');
       }
     });

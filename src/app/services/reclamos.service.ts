@@ -5,34 +5,44 @@ import { Observable } from 'rxjs';
 
 export interface IReclamo {
   id: string;
-  nombre: string;
-  dni: string;
-  cbu?: string;
-  email: string;
   codigo_seguimiento: string;
   estado: string;
-  fecha_creacion: string;
-  updated_at?: Date;
+  fecha_creacion: Date;
+  updatedAt?: Date;
+  
+  // Datos Personales
+  nombre: string;
+  dni: string;
+  email: string;
+  telefono: string;
+  cbu?: string;
 
+  // Datos Siniestro
   rol_victima: string;
   tiene_seguro: boolean;
-  
-  aseguradora_tercero?: string;
+  aseguradora_tercero: string;
   patente_tercero?: string;
   patente_propia?: string;
   
+  fecha_hecho: string;
+  hora_hecho?: string;
+  lugar_hecho: string;
+  localidad: string;
   relato_hecho?: string;
-  fecha_hecho?: string;
-  
-  hora_hecho?: string;   
-  in_itinere?: boolean;  
-  posee_art?: boolean;   
 
-  lugar_hecho?: string;
-  localidad?: string;
-  telefono?: string;
+  // --- Contexto Laboral (Nuevos) ---
+  in_itinere?: boolean; // o string | boolean
+  posee_art?: boolean;  // o string | boolean
 
-  // Archivos
+  // --- Intervenciones (LOS QUE FALTABAN) ---
+  intervino_policia?: boolean;    // 👈 Agregá este
+  intervino_ambulancia?: boolean; // 👈 Agregá este
+
+  // Relaciones
+  usuario_creador?: any;
+  tramitador?: any;
+
+  // Archivos (Paths)
   path_dni?: string;
   path_licencia?: string;
   path_cedula?: string;
@@ -42,10 +52,6 @@ export interface IReclamo {
   path_medicos?: string;
   path_representacion?: string;
   path_honorarios?: string;
-
-  // Relaciones
-  tramitador?: { id: string; nombre: string; email: string };
-  usuario_creador?: { id: string; nombre: string; email: string };
 }
 
 @Injectable({

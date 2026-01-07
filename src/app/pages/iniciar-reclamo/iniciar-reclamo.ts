@@ -42,23 +42,42 @@ export class IniciarReclamoComponent implements OnInit {
 
   reclamoForm = this.fb.group({
     codigo_ref: [''],
+    // Paso 1: Datos Personales
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.nombrePattern), this.noWhitespaceValidator]],
     dni: ['', [Validators.required, Validators.pattern(this.dniPattern)]],
-    cbu: ['', [Validators.pattern(this.cbuPattern)]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.pattern(this.telPattern)]],
+    domicilio_usuario: ['', [Validators.required, Validators.minLength(5), this.noWhitespaceValidator]],
+    
+    // Rol y preguntas iniciales
     rol_victima: ['', Validators.required],
     tiene_seguro: [true], 
+    sufrio_lesiones: [false], // Nuevo: Checkbox lesiones
+    
+    // Paso 2: Detalles del Hecho
     in_itinere: [false],
     posee_art: [false],
     fecha_hecho: ['', [Validators.required, this.fechaValidator]], 
     hora_hecho: [''],
     lugar_hecho: ['', [Validators.required, Validators.minLength(5), this.noWhitespaceValidator]],
-    localidad: ['', [Validators.required, Validators.minLength(4), this.noWhitespaceValidator]],
-    relato_hecho: [''], 
+    localidad: ['', [Validators.required]],
+    relato_hecho: [''], // Obligatorio si no hay seguro
+    intervino_policia: [false], // Nuevo
+    intervino_ambulancia: [false], // Nuevo
+
+    // Datos del Tercero (Paso 3)
+    tercero_nombre: [''], // Nuevo
+    tercero_apellido: [''], // Nuevo
+    tercero_dni: [''], // Nuevo
+    tercero_marca_modelo: [''], // Nuevo
     aseguradora_tercero: ['', Validators.required],
     patente_tercero: ['', [Validators.pattern(this.patentePattern)]],
+    
+    // Datos Propios (Si es conductor)
     patente_propia: ['', [Validators.pattern(this.patentePattern)]], 
+    cbu: ['', [Validators.pattern(this.cbuPattern)]], // CBU numerico
+
+    // Archivos
     fileDNI: [null],
     fileLicencia: [null],
     fileCedula: [null],
@@ -66,6 +85,11 @@ export class IniciarReclamoComponent implements OnInit {
     fileDenuncia: [null],
     fileFotos: [null, Validators.required],
     fileMedicos: [null],
+    
+    // Archivos Nuevos
+    filePresupuesto: [null], // Presupuesto o franquicia
+    fileCBU: [null],         // Comprobante de CBU
+    fileDenunciaPenal: [null] // Para peatones
   });
 
   ngOnInit(): void {
@@ -75,7 +99,7 @@ export class IniciarReclamoComponent implements OnInit {
     });
   }
 
-  // --- VALIDADORES ---
+  // --- VALIDADORES CUSTOM ---
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
@@ -94,11 +118,12 @@ export class IniciarReclamoComponent implements OnInit {
   }
 
   get f() { return this.reclamoForm.controls; }
-  get v() { return this.reclamoForm.value; } // Getter rápido para valores en el HTML
+  get v() { return this.reclamoForm.value; } 
 
   aceptarTerminos() { this.mostrarTerminos = false; }
   cancelarTerminos() { this.router.navigate(['/']); }
 
+  // --- LÓGICA DE ROLES ---
   seleccionarRol(rol: string) {
     this.reclamoForm.patchValue({ rol_victima: rol });
     if (rol !== 'Conductor') {
@@ -121,39 +146,76 @@ export class IniciarReclamoComponent implements OnInit {
   actualizarValidaciones(rol: string) {
     const c = this.reclamoForm.controls;
     const tieneSeguro = this.reclamoForm.get('tiene_seguro')?.value;
+    const sufrioLesiones = this.reclamoForm.get('sufrio_lesiones')?.value;
 
-    ['patente_propia', 'patente_tercero', 'relato_hecho', 'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 'fileMedicos']
-      .forEach(key => {
+    // 1. Limpieza inicial de validadores condicionales
+    const camposCondicionales = [
+      'patente_propia', 'patente_tercero', 'relato_hecho', 
+      'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 'filePresupuesto', 'fileMedicos',
+      'tercero_nombre', 'tercero_apellido', 'tercero_dni', 'tercero_marca_modelo', 'fileDenunciaPenal'
+    ];
+
+    camposCondicionales.forEach(key => {
         // @ts-ignore
         c[key]?.clearValidators();
         // @ts-ignore
         c[key]?.updateValueAndValidity();
-        if (key.includes('patente')) {
-            // @ts-ignore
-            c[key]?.addValidators(Validators.pattern(this.patentePattern));
-        }
-      });
+    });
 
-    if (rol === 'Conductor' && tieneSeguro) {
-        c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
-        c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
+    // Validadores de patente siempre activos si hay texto escrito
+    if (c.patente_propia.value) c.patente_propia.setValidators([Validators.pattern(this.patentePattern)]);
+    if (c.patente_tercero.value) c.patente_tercero.setValidators([Validators.pattern(this.patentePattern)]);
+
+    // --- LÓGICA DE ROLES ---
+
+    if (rol === 'Conductor') {
         c.fileLicencia.setValidators([Validators.required]);
         c.fileCedula.setValidators([Validators.required]);
-        c.fileSeguro.setValidators([Validators.required]);
-    }
-    else if (rol === 'Conductor' && !tieneSeguro) {
         c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
+        
+        if (tieneSeguro) {
+            // CASO 1: CON SEGURO -> Tercero manual es OPCIONAL (se saca de la denuncia)
+            c.fileSeguro.setValidators([Validators.required]);
+            c.fileDenuncia.setValidators([Validators.required]);
+            c.filePresupuesto.setValidators([Validators.required]);
+            // Patente tercero sí es requerida siempre para identificar
+            c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
+        } else {
+            // CASO 2: SIN SEGURO -> Tercero manual es OBLIGATORIO
+            this.setTerceroRequerido();
+            c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
+            c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
+        }
+    } 
+    else {
+        // CASO 3: PEATÓN / ACOMPAÑANTE -> Tercero manual es OBLIGATORIO
+        // (Porque no tienen denuncia administrativa propia)
+        this.setTerceroRequerido();
         c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
-        c.fileLicencia.setValidators([Validators.required]);
-        c.fileCedula.setValidators([Validators.required]);
         c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
     }
-    else { 
-        c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
-        c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
+
+    // --- LÓGICA DE LESIONES ---
+    if (sufrioLesiones) {
+        c.fileMedicos.setValidators([Validators.required]);
     }
+
     c.fileFotos.setValidators([Validators.required]);
     this.reclamoForm.updateValueAndValidity();
+  }
+
+  // Helper para no repetir código
+  private setTerceroRequerido() {
+    const c = this.reclamoForm.controls;
+    c.tercero_nombre.setValidators([Validators.required, Validators.minLength(3), Validators.pattern(this.nombrePattern), this.noWhitespaceValidator]);
+    c.tercero_apellido.setValidators([Validators.required, Validators.minLength(3), Validators.pattern(this.nombrePattern), this.noWhitespaceValidator]);
+    c.tercero_dni.setValidators([Validators.required, Validators.pattern(this.dniPattern)]);
+    c.tercero_marca_modelo.setValidators([Validators.required, this.noWhitespaceValidator]);
+    
+    c.tercero_nombre.updateValueAndValidity();
+    c.tercero_apellido.updateValueAndValidity();
+    c.tercero_dni.updateValueAndValidity();
+    c.tercero_marca_modelo.updateValueAndValidity();
   }
 
   onFileChange(event: any, controlName: string) {
@@ -172,7 +234,7 @@ export class IniciarReclamoComponent implements OnInit {
     }
   }
 
-  // --- NUEVO: Validar y pasar a confirmación ---
+  // --- NAVEGACIÓN ---
   irAConfirmacion() {
     if (this.reclamoForm.invalid) {
       this.reclamoForm.markAllAsTouched(); 
@@ -187,40 +249,56 @@ export class IniciarReclamoComponent implements OnInit {
       this.notificacionService.showError('Revisá los campos marcados en rojo.');
       return;
     }
-    // Si todo ok, vamos al paso 2 (Confirmación)
     this.pasoActual = 2;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // --- NUEVO: Volver a editar ---
   editarDatos() {
     this.pasoActual = 1;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // --- ENVIO FINAL ---
+  // --- ENVÍO FINAL ---
   confirmarReclamo() {
     this.isLoading = true;
     const v = this.reclamoForm.value;
     const formData = new FormData();
 
+    // 1. Appendeamos campos de texto y booleanos convertidos
     Object.keys(v).forEach(key => {
+        // @ts-ignore
+        const value = v[key];
+        
         if (key.startsWith('file')) {
-            // @ts-ignore
-            if (v[key]) formData.append(key, v[key]);
-        } else if (key === 'in_itinere' || key === 'posee_art' || key === 'tiene_seguro') {
-             // @ts-ignore
-             formData.append(key, String(v[key]));
+            // Los archivos se procesan después o si no son nulos
+        } else if (typeof value === 'boolean') {
+             formData.append(key, String(value)); // 'true' o 'false'
         } else {
-             // @ts-ignore
-             if (v[key]) formData.append(key, v[key]);
+             if (value) formData.append(key, value);
         }
     });
 
-    if (v.rol_victima === 'Conductor' && !v.in_itinere) {
-        formData.set('posee_art', 'false');
+    // 2. Ajuste manual de in_itinere/art logic si es conductor
+    if (v.rol_victima === 'Conductor') {
+         // Conductor no suele tener in_itinere/art salvo casos específicos, aseguramos false si no aplica
+         if (!v.in_itinere) formData.set('posee_art', 'false');
     }
 
+    // 3. Appendeamos Archivos
+    const fileKeys = [
+        'fileDNI', 'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 
+        'fileFotos', 'fileMedicos', 'filePresupuesto', 'fileCBU', 'fileDenunciaPenal'
+    ];
+
+    fileKeys.forEach(key => {
+        // @ts-ignore
+        const file = v[key];
+        if (file instanceof File) {
+            formData.append(key, file);
+        }
+    });
+
+    // 4. Enviar
     this.reclamosService.crearReclamo(formData).subscribe({
       next: (res: any) => {
         this.isLoading = false;
@@ -228,7 +306,9 @@ export class IniciarReclamoComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.notificacionService.showError('Error de conexión. Intente nuevamente.');
+        console.error(err);
+        const msg = err.error?.message || 'Error de conexión. Intente nuevamente.';
+        this.notificacionService.showError(msg);
       }
     });
   }
@@ -240,5 +320,7 @@ export class IniciarReclamoComponent implements OnInit {
 
   get esConductor(): boolean { return this.reclamoForm.get('rol_victima')?.value === 'Conductor'; }
   get tieneSeguro(): boolean { return this.reclamoForm.get('tiene_seguro')?.value === true; }
-  get isInItinere(): boolean { return this.reclamoForm.get('in_itinere')?.value === true; }
+  get isInItinere(): boolean { 
+    return this.reclamoForm.get('in_itinere')?.value === true; 
+  }
 }

@@ -7,6 +7,7 @@ $primary: #3b82f6;
 $success: #10b981;
 $text-dark: #1e293b;
 $text-muted: #64748b;
+$danger: #ef4444; /* Agregué esta variable que faltaba */
 
 :host {
   display: block;
@@ -99,21 +100,19 @@ $text-muted: #64748b;
 
 /* --- PASO 0: SELECCIÓN DE ROL (DISEÑO PREMIUM) --- */
 
-/* Wrapper que centra todo verticalmente en la pantalla */
 .role-selection-wrapper {
   width: 100%;
   display: flex; 
   flex-direction: column; 
   align-items: center; 
   justify-content: center;
-  /* Esto asegura que quede centrado en el espacio visible */
   min-height: calc(100vh - 16rem); 
 }
 
 .header-center {
   text-align: center; 
   max-width: 700px; 
-  margin: 0 auto 3.5rem auto; /* Centrado y separado */
+  margin: 0 auto 3.5rem auto; 
   
   h3 { font-size: 2.5rem; color: $text-dark; margin-bottom: 1rem; font-weight: 800; letter-spacing: -1px; }
   p { font-size: 1.15rem; color: $text-muted; line-height: 1.6; }
@@ -121,7 +120,7 @@ $text-muted: #64748b;
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columnas exactas */
+  grid-template-columns: repeat(3, 1fr); 
   gap: 30px;
   width: 100%;
 }
@@ -134,17 +133,13 @@ $text-muted: #64748b;
   position: relative;
   cursor: pointer;
   overflow: hidden;
-  
-  /* Borde base transparente para evitar saltos al hover */
   border: 2px solid transparent; 
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  
-  /* Flexbox para centrar contenido */
   display: flex; 
   flex-direction: column; 
-  align-items: center; /* Centra horizontalmente */
-  text-align: center;  /* Centra el texto */
+  align-items: center;
+  text-align: center;
   gap: 1.5rem;
 
   /* Decoración fondo */
@@ -154,7 +149,7 @@ $text-muted: #64748b;
     filter: blur(40px); z-index: 0;
   }
 
-  /* 1. INDICADOR (Check) - Flotando arriba derecha */
+  /* INDICADOR (Check) */
   .selection-indicator {
     position: absolute; top: 20px; right: 20px; z-index: 2;
     width: 24px; height: 24px; border-radius: 50%;
@@ -168,7 +163,7 @@ $text-muted: #64748b;
     }
   }
 
-  /* 2. ICONO GRANDE CENTRADO */
+  /* ICONO GRANDE */
   .icon-box {
     width: 80px; height: 80px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
@@ -178,13 +173,13 @@ $text-muted: #64748b;
     svg { width: 36px; height: 36px; transition: stroke 0.3s; }
   }
 
-  /* 3. TEXTOS */
+  /* TEXTOS */
   .card-body {
     z-index: 1;
     h4 { font-size: 1.4rem; font-weight: 800; color: $text-dark; margin-bottom: 0.8rem; transition: color 0.3s; }
     p { 
       font-size: 1rem; color: $text-muted; line-height: 1.5; font-weight: 500; 
-      margin: 0 auto; max-width: 90%; /* Evita líneas muy largas */
+      margin: 0 auto; max-width: 90%;
     }
   }
 
@@ -236,6 +231,7 @@ $text-muted: #64748b;
 .form-section {
   margin-bottom: 3rem;
   .section-title { font-size: 1.2rem; color: $text-dark; margin-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+  .helper-text { color: $text-muted; font-size: 0.95rem; margin-bottom: 1.5rem; }
 }
 
 .input-group {
@@ -251,10 +247,33 @@ $text-muted: #64748b;
   &:focus { outline: none; border-color: $primary; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
   &.uppercase { text-transform: uppercase; }
   &.textarea { resize: none; }
-  &.error-border { border-color: #ef4444 !important; background-color: #fff5f5; animation: shake 0.4s ease-in-out; }
+  &.error-border { border-color: $danger !important; background-color: #fff5f5; animation: shake 0.4s ease-in-out; }
 }
 
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+/* GRID 2 (Separación ajustada para Mobile) */
+.grid-2 { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 1.5rem; 
+}
+
+/* CORRECCIÓN 1: Aviso de Denuncia Administrativa con texto oscuro 
+   (Usar esta clase en el HTML donde pones el aviso con el ícono ℹ️)
+*/
+.info-notice-dark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f1f5f9; /* Gris muy suave */
+    color: $text-dark; /* Texto oscuro para legibilidad */
+    border-left: 4px solid $primary;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-weight: 500;
+}
 
 /* Switch & Alerts */
 .switch-box {
@@ -265,6 +284,45 @@ $text-muted: #64748b;
     .sub-label { font-size: 0.85rem; color: $text-muted; }
   }
 }
+
+/* CORRECCIÓN 2: Estilos mejorados para los "Compact Switch" (Policía/Ambulancia)
+   Reemplaza los estilos inline del HTML por esta clase.
+*/
+.switch-box-compact {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: #fff; 
+    padding: 1rem; 
+    border: 1px solid #cbd5e1; 
+    border-radius: 8px;
+    margin-bottom: 1rem; /* Margen por defecto entre switches */
+
+    .switch-info {
+        display: flex; flex-direction: column;
+        .label { font-weight: 600; color: #334155; }
+        .sub-label { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
+    }
+
+    /* Estilo especial si tiene ART (Fondo azulado) */
+    &.blue-highlight {
+        background: #f0f9ff; 
+        border-color: #bae6fd;
+        .label { color: #0369a1; }
+    }
+}
+
+/* CORRECCIÓN 3: Contenedor para dar margen inferior a los elegibles 
+   (Policía/Ambulancia) antes del Relato.
+*/
+.extra-toggles-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 3rem; /* Espacio GRANDE antes del relato */
+}
+
+/* Switch UI */
 .switch {
   position: relative; display: inline-block; width: 50px; height: 28px;
   input { opacity: 0; width: 0; height: 0; }
@@ -311,7 +369,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     .btn-upload-small { border-color: #a7f3d0; background-color: white; color: #059669; }
     &::after { content: '✓'; position: absolute; right: -10px; top: -10px; font-size: 4rem; color: rgba(52, 211, 153, 0.1); pointer-events: none; font-weight: 900; }
   }
-  &.error-border { border: 1px solid #ef4444 !important; background-color: #fff5f5 !important; }
+  &.error-border { border: 1px solid $danger !important; background-color: #fff5f5 !important; }
   &.highlight { border-color: $accent; background: #fffaf0; }
 }
 
@@ -328,7 +386,7 @@ input:checked + .slider:before { transform: translateX(22px); }
   width: 24px; height: 24px; border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%; border-top-color: #ffffff; animation: spin 1s ease-in-out infinite;
 }
-.error-msg { color: #ef4444; font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: block; animation: slideDown 0.3s ease-out; }
+.error-msg { color: $danger; font-size: 0.8rem; font-weight: 600; margin-top: 4px; display: block; animation: slideDown 0.3s ease-out; }
 
 /* Animaciones */
 @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
@@ -344,7 +402,7 @@ input:checked + .slider:before { transform: translateX(22px); }
   /* --- Panel Izquierdo (Móvil) --- */
   .side-panel {
     width: 100%; height: auto; position: relative;
-    padding: 9rem 1.5rem 2rem 1.5rem; /* Padding corregido */
+    padding: 9rem 1.5rem 2rem 1.5rem; 
     
     .steps-vertical, .trust-badge { display: none; }
     h2 { font-size: 2rem; text-align: center; }
@@ -367,18 +425,16 @@ input:checked + .slider:before { transform: translateX(22px); }
   
   .cards-grid { grid-template-columns: 1fr; gap: 1rem; max-width: 100%; }
 
-  /* Tarjeta en Móvil: Diseño Horizontal Compacto */
+  /* Tarjeta en Móvil */
   .hero-card {
     padding: 1.5rem; 
-    flex-direction: row; /* Icono izq, texto der */
+    flex-direction: row; 
     align-items: center; 
-    text-align: left; /* Texto a la izquierda */
+    text-align: left; 
     gap: 1.2rem;
     min-height: auto;
     
-    /* En móvil ocultamos el check para que quede más limpio */
     .selection-indicator { display: none; } 
-    
     .icon-box { width: 56px; height: 56px; flex-shrink: 0; svg { width: 26px; } }
     
     .card-body {
@@ -386,106 +442,62 @@ input:checked + .slider:before { transform: translateX(22px); }
       p { font-size: 0.9rem; margin: 0; max-width: 100%; }
     }
     
-    /* Flecha decorativa */
     &::after { content: '›'; font-size: 1.8rem; color: #cbd5e1; margin-left: auto; line-height: 0; }
     &:active { transform: scale(0.98); }
   }
 
   /* Form Mobile */
-  .grid-2 { grid-template-columns: 1fr; gap: 1rem; }
+  /* Aquí ajusto grid-2 para que se separen verticalmente los campos en móvil */
+  .grid-2 { 
+      grid-template-columns: 1fr; 
+      gap: 1.5rem; /* Separación vertical entre Nombre y Apellido del Tercero */
+  }
+  
   .file-box { padding: 0.8rem; .file-name-display { max-width: 140px; } }
 }
 
 /* --- PASO 2: CONFIRMACIÓN Y RESUMEN --- */
 
-.confirmation-container {
-    width: 100%;
-}
+.confirmation-container { width: 100%; }
 
 .summary-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2.5rem;
-    border: 1px solid #e2e8f0;
+    background: white; border-radius: 20px;
+    padding: 2.5rem; border: 1px solid #e2e8f0;
     box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05);
     margin-bottom: 2rem;
 }
 
 .summary-section {
     margin-bottom: 1.5rem;
-    
     .summary-title {
-        font-size: 1.1rem;
-        color: $text-dark;
-        font-weight: 700;
-        margin-bottom: 1rem;
+        font-size: 1.1rem; color: $text-dark; font-weight: 700; margin-bottom: 1rem;
         display: flex; align-items: center; gap: 8px;
-        
-        &::before {
-            content: ''; display: block; width: 4px; height: 18px; 
-            background: $accent; border-radius: 4px;
-        }
+        &::before { content: ''; display: block; width: 4px; height: 18px; background: $accent; border-radius: 4px; }
     }
 }
 
-.summary-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem 2rem;
-}
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem; }
 
 .data-row {
     display: flex; flex-direction: column;
-    
-    label {
-        font-size: 0.8rem;
-        color: $text-muted;
-        font-weight: 600;
-        margin-bottom: 2px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    span {
-        font-size: 1.05rem;
-        color: #334155;
-        font-weight: 500;
-        word-break: break-word;
-    }
-    
+    label { font-size: 0.8rem; color: $text-muted; font-weight: 600; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+    span { font-size: 1.05rem; color: #334155; font-weight: 500; word-break: break-word; }
     &.full { grid-column: 1 / -1; }
 }
 
-.divider {
-    height: 1px;
-    background: #f1f5f9;
-    margin: 1.5rem 0;
-}
+.divider { height: 1px; background: #f1f5f9; margin: 1.5rem 0; }
 
-/* Lista de archivos en modo lectura */
-.files-list-read {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+.files-list-read { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .file-read-item {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #166534;
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534;
+    padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
     display: flex; align-items: center; gap: 6px;
     
     .check-icon {
-        background: #22c55e; color: white;
-        border-radius: 50%; width: 16px; height: 16px;
-        display: flex; justify-content: center; align-items: center;
-        font-size: 0.7rem;
+        background: #22c55e; color: white; border-radius: 50%; width: 16px; height: 16px;
+        display: flex; justify-content: center; align-items: center; font-size: 0.7rem;
     }
-    
     &.highlight {
         background: #fff7ed; border-color: #fed7aa; color: #9a3412;
         .check-icon { background: #f97316; }
@@ -493,46 +505,23 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 .buttons-row {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+    display: flex; gap: 1rem; margin-top: 2rem;
     
     .btn-secondary {
-        flex: 1;
-        padding: 1rem;
-        background: white;
-        border: 2px solid #e2e8f0;
-        color: $text-muted;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        
-        &:hover {
-            border-color: #cbd5e1;
-            color: $text-dark;
-            background: #f8fafc;
-        }
+        flex: 1; padding: 1rem; background: white; border: 2px solid #e2e8f0;
+        color: $text-muted; border-radius: 12px; font-weight: 700; font-size: 1rem;
+        cursor: pointer; transition: all 0.2s;
+        &:hover { border-color: #cbd5e1; color: $text-dark; background: #f8fafc; }
     }
-    
-    .btn-submit-glow {
-        flex: 2; /* El botón de confirmar es más grande */
-    }
+    .btn-submit-glow { flex: 2; }
 }
 
 /* Fade in animation global */
-.fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+.fade-in { animation: fadeIn 0.5s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 900px) {
     .summary-grid { grid-template-columns: 1fr; gap: 1rem; }
     .summary-card { padding: 1.5rem; }
-    .buttons-row { flex-direction: column-reverse; } /* Editar abajo en móvil */
+    .buttons-row { flex-direction: column-reverse; } 
 }

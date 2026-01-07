@@ -6,7 +6,7 @@ $bg-page: #f8fafc;
 $success: #10b981;
 $danger: #ef4444;
 $border: #e2e8f0;
-$dark-panel: #1e293b; // Azul oscuro corporativo
+$dark-panel: #1e293b; 
 
 .dashboard-container {
   padding: 100px 1rem 3rem 1rem;
@@ -36,41 +36,45 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
 
   .hero-content {
     display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;
-    h1 { font-size: 2rem; color: $text-dark; margin: 0 0 0.5rem 0; letter-spacing: -1px; }
-    
-    .meta-row {
-      display: flex; gap: 10px; align-items: center;
-      .id-badge { font-family: monospace; font-size: 1.1rem; color: $text-muted; font-weight: 600; }
-      .role-badge {
-        font-size: 0.75rem; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 6px;
-        &.conductor { background: #eff6ff; color: $primary; }
-        &.peaton { background: #fff7ed; color: #f59e0b; }
-        &.acompanante { background: #ecfdf5; color: $success; }
+    .title-group {
+      h1 { font-size: 1.8rem; color: $text-dark; margin: 0 0 0.5rem 0; letter-spacing: -0.5px; line-height: 1.2; }
+      .meta-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        .id-badge { font-family: monospace; font-size: 1.1rem; color: $text-muted; font-weight: 600; }
+        .role-badge {
+          font-size: 0.75rem; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+          &.conductor { background: #eff6ff; color: $primary; }
+          &.peaton { background: #fff7ed; color: #f59e0b; }
+          &.acompanante { background: #ecfdf5; color: $success; }
+        }
       }
     }
-
     .btn-whatsapp {
       background: #25D366; color: white; border: none; padding: 10px 20px;
       border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px;
-      cursor: pointer; transition: transform 0.2s;
+      cursor: pointer; transition: transform 0.2s; white-space: nowrap;
       &:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); }
     }
   }
 }
 
-/* TIMELINE */
+/* TIMELINE (REVERTIDO AL DISEÑO FLEX ORIGINAL) */
 .timeline-wrapper {
   margin-top: 3rem; position: relative; padding: 0 10px;
+  
   .progress-bar {
     position: absolute; top: 12px; left: 0; right: 0; height: 4px;
     background: #e2e8f0; border-radius: 4px; z-index: 0;
     .progress-fill { height: 100%; background: $primary; transition: width 0.5s ease; border-radius: 4px; }
   }
+
   .steps-container {
     display: flex; justify-content: space-between; position: relative; z-index: 1;
+    
     .step-item {
       display: flex; flex-direction: column; align-items: center; gap: 8px;
-      opacity: 0.5; transition: all 0.3s; 
+      opacity: 0.5; transition: all 0.3s; flex: 1;
+      
       .step-dot {
         width: 28px; height: 28px; border-radius: 50%; background: white;
         border: 2px solid #cbd5e1; color: #cbd5e1;
@@ -78,6 +82,7 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
         transition: all 0.3s;
       }
       .step-label { font-size: 0.8rem; font-weight: 600; text-align: center; }
+      
       &.active {
         opacity: 1;
         .step-dot { border-color: $primary; background: $primary; color: white; }
@@ -89,6 +94,13 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
       }
     }
   }
+}
+
+.rejected-banner {
+  margin-top: 2rem; background: #fef2f2; border: 1px solid #fecaca;
+  color: $danger; padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem;
+  strong { display: block; font-size: 1rem; margin-bottom: 2px; }
+  p { margin: 0; font-size: 0.9rem; color: #b91c1c; }
 }
 
 /* GRID LAYOUT */
@@ -113,9 +125,32 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
 
 .field-box {
   label { display: block; font-size: 0.75rem; color: $text-muted; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-  p { margin: 0; font-weight: 600; color: $text-dark; font-size: 0.95rem; }
+  p { margin: 0; font-weight: 600; color: $text-dark; font-size: 0.95rem; word-break: break-word; }
+  .email-text { font-size: 0.9rem; }
   .highlight { color: $primary; }
-  .plate { font-family: monospace; background: #e2e8f0; display: inline-block; padding: 4px 8px; border-radius: 6px; }
+  
+  .plate { 
+    font-family: monospace; background: #e2e8f0; display: inline-block; padding: 4px 8px; border-radius: 6px; 
+    &.own { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+  }
+}
+
+/* CONTEXTO LABORAL (NUEVO) */
+.context-badges {
+  display: flex; gap: 10px; margin-top: 1.5rem; flex-wrap: wrap;
+  
+  .badge-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px;
+    font-size: 0.85rem; font-weight: 600;
+    
+    /* Laboral */
+    &.blue { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
+    &.green { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    
+    /* Intervenciones (NUEVO) */
+    &.red { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; } /* Ambulancia */
+    &.indigo { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; } /* Policía */
+  }
 }
 
 .divider { height: 1px; background: $border; margin: 1.5rem 0; }
@@ -129,8 +164,8 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
 .cbu-highlight {
   margin-top: 1.5rem; background: #ecfdf5; border: 1px solid #6ee7b7;
   padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem;
-  .icon-bank { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; }
-  .cbu-data { display: flex; flex-direction: column; label { font-size: 0.75rem; color: #047857; font-weight: 700; } span { font-family: monospace; font-size: 1.1rem; color: #064e3b; font-weight: 600; } }
+  .icon-bank { width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; flex-shrink: 0; }
+  .cbu-data { display: flex; flex-direction: column; overflow: hidden; label { font-size: 0.75rem; color: #047857; font-weight: 700; } span { font-family: monospace; font-size: 1.1rem; color: #064e3b; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } }
 }
 
 /* FILES */
@@ -139,16 +174,14 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
   .file-item {
     border: 1px solid $border; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s;
     &:hover { border-color: $primary; background: #eff6ff; .eye-icon { opacity: 1; color: $primary; } }
-    .icon-wrap { width: 36px; height: 36px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: $text-muted; }
-    .file-meta { flex: 1; display: flex; flex-direction: column; .name { font-size: 0.9rem; font-weight: 600; color: $text-dark; } .sub { font-size: 0.75rem; color: $text-muted; } }
+    .icon-wrap { width: 36px; height: 36px; padding-top: 0.5rem; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: $text-muted; flex-shrink: 0; }
+    .file-meta { flex: 1; display: flex; flex-direction: column; overflow: hidden; .name { font-size: 0.9rem; font-weight: 600; color: $text-dark; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .sub { font-size: 0.75rem; color: $text-muted; } }
     .eye-icon { opacity: 0; transition: opacity 0.2s; }
     &.active { border-color: $primary; background: #eff6ff; .icon-wrap { background: $primary; color: white; } }
   }
 }
 
-/* ========================================= */
-/* PANEL DE GESTIÓN (MEJORADO)               */
-/* ========================================= */
+/* ADMIN PANEL */
 .admin-panel {
   background: $dark-panel; color: white; border: none;
   .panel-header {
@@ -158,17 +191,14 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
   
   .section-label { display: block; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 0.8rem; }
   
-  /* ESTADO 1: Tarjeta de Tramitador */
   .tramitador-card {
     background: rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;
     display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,0.1);
-    
-    .tramitador-avatar { width: 40px; height: 40px; background: $primary; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .tramitador-avatar { width: 40px; height: 40px; background: $primary; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
     .tramitador-info { flex: 1; display: flex; flex-direction: column; .name { font-weight: 600; font-size: 0.95rem; } .badge { font-size: 0.75rem; color: #94a3b8; } }
     .btn-icon-edit { background: transparent; border: none; color: #60a5fa; cursor: pointer; padding: 5px; &:hover { color: white; background: rgba(255,255,255,0.1); border-radius: 6px; } }
   }
 
-  /* ESTADO 2: Botón Pulse (Sin Asignar) */
   .btn-assign-pulse {
     width: 100%; padding: 12px; border-radius: 12px; background: rgba($primary, 0.15); 
     border: 1px dashed $primary; color: #60a5fa; font-weight: 600; cursor: pointer;
@@ -177,7 +207,6 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
     &:hover { background: $primary; color: white; border-style: solid; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
   }
 
-  /* ESTADO 3: Edición (Select) */
   .edit-mode-box {
     .custom-select {
       width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom: 10px;
@@ -211,7 +240,7 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
   label { font-size: 0.75rem; color: $text-muted; font-weight: 700; text-transform: uppercase; }
   .producer-row {
     display: flex; align-items: center; gap: 10px;
-    .avatar-prod { width: 36px; height: 36px; background: #f59e0b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .avatar-prod { width: 36px; height: 36px; background: #f59e0b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
     .prod-info { display: flex; flex-direction: column; .name { font-weight: 700; color: $text-dark; font-size: 0.9rem; } .role { font-size: 0.75rem; color: $text-muted; } }
   }
 }
@@ -222,3 +251,14 @@ $dark-panel: #1e293b; // Azul oscuro corporativo
 .slide-down { animation: slideDown 0.3s ease-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* MEDIA QUERIES (MÓVIL) */
+@media (max-width: 768px) {
+  .hero-header {
+    .top-nav { flex-wrap: wrap; gap: 10px; }
+    .hero-content { flex-direction: column; align-items: stretch; .btn-whatsapp { justify-content: center; width: 100%; } }
+  }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
+  
+  .files-grid { grid-template-columns: 1fr; }
+}
