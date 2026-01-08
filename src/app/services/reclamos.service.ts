@@ -57,7 +57,7 @@ export interface IReclamo {
   path_cedula?: string;
   path_poliza?: string;
   path_denuncia?: string;
-  path_fotos?: string;
+  path_fotos?: string[];
   path_medicos?: string;
   path_representacion?: string;
   path_honorarios?: string;
@@ -121,5 +121,9 @@ export class ReclamosService {
 
   agregarMensaje(idReclamo: string, texto: string) {
     return this.http.post<IReclamo>(`${this.apiUrl}/${idReclamo}/mensajes`, { texto });
+  }
+
+  obtenerGaleria(id: string): Observable<{ urls: string[] }> {
+    return this.http.get<{ urls: string[] }>(`${this.apiUrl}/${id}/galeria`);
   }
 }

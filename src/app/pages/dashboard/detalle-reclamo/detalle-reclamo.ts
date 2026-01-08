@@ -59,6 +59,9 @@ export class DetalleReclamoComponent implements OnInit {
   tramitadores: IUser[] = [];
   tramitadorSeleccionado = '';
 
+  galeriaFotos: string[] = [];
+  cargandoFotos = false;
+
   // --- TIMELINE ---
   pasosTimeline = [
     { id: 'Enviado', label: 'Enviado' },
@@ -97,12 +100,30 @@ export class DetalleReclamoComponent implements OnInit {
           this.reclamo.set(data);
           this.syncDatos(data); // Sincronizamos datos y observaciones
           this.generarLegajo(data);
+
+          if (data.path_fotos && data.path_fotos.length > 0) {
+           this.cargarGaleria(data.id);
+          }
         },
         error: () => {
           this.notificacionService.showError('Error al recuperar el expediente.');
           this.volver();
         }
       });
+  }
+
+  cargarGaleria(id: string) {
+    this.cargandoFotos = true;
+    this.reclamosService.obtenerGaleria(id).subscribe({
+      next: (res) => {
+        this.galeriaFotos = res.urls;
+        this.cargandoFotos = false;
+      },
+      error: () => {
+        this.cargandoFotos = false;
+        console.error('Error cargando galería');
+      }
+    });
   }
 
   // Sincroniza datos iniciales (Tramitador y Mensajes)
@@ -132,7 +153,6 @@ export class DetalleReclamoComponent implements OnInit {
       { key: 'cedula', label: 'Cédula', sub: 'Vehículo', path: r.path_cedula },
       { key: 'poliza', label: 'Póliza', sub: 'Seguro', path: r.path_poliza },
       { key: 'denuncia', label: 'Denuncia', sub: 'Administrativa', path: r.path_denuncia },
-      { key: 'fotos', label: 'Fotos', sub: 'Daños/Lugar', path: r.path_fotos, highlight: true },
       { key: 'medicos', label: 'Médicos', sub: 'Certificados', path: r.path_medicos, alert: true },
       
       // Nuevos campos
@@ -151,6 +171,10 @@ export class DetalleReclamoComponent implements OnInit {
 
   private cargarTramitadores(): void {
     this.usersService.getTramitadores().subscribe(u => this.tramitadores = u);
+  }
+
+  abrirFoto(url: string) {
+    window.open(url, '_blank');
   }
 
   // --- LÓGICA DE TRAMITADOR ---

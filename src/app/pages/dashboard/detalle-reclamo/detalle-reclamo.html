@@ -194,6 +194,29 @@
         </div>
       </section>
 
+      <section class="card gallery-card" *ngIf="galeriaFotos.length > 0 || cargandoFotos">
+        <div class="card-header">
+          <h3><lucide-icon [img]="icons.Camera" size="20"></lucide-icon> Evidencia Fotográfica</h3>
+          <span class="count-badge">{{ galeriaFotos.length }} Fotos</span>
+        </div>
+
+        <div *ngIf="cargandoFotos" class="spinner-container">
+          <div class="spinner-mini"></div> Cargando imágenes...
+        </div>
+
+        <div class="gallery-grid" *ngIf="!cargandoFotos">
+          <div class="photo-thumb" 
+               *ngFor="let url of galeriaFotos" 
+               (click)="abrirFoto(url)"
+               title="Ver imagen completa">
+            <img [src]="url" alt="Evidencia">
+            <div class="overlay">
+              <lucide-icon [img]="icons.Eye" size="24"></lucide-icon>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="card docs-card">
         <div class="card-header">
           <h3><lucide-icon [img]="icons.FileText" size="20"></lucide-icon> Legajo Digital</h3>
