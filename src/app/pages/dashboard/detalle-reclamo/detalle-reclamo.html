@@ -268,6 +268,40 @@
         <div class="divider-dark"></div>
 
         <div class="control-section">
+          <label class="section-label">Bitácora de Novedades (Público)</label>
+          
+          <div class="messages-feed" *ngIf="r.mensajes && r.mensajes.length > 0">
+            <div class="msg-bubble" *ngFor="let msg of r.mensajes">
+              <div class="msg-meta">
+                <span class="author">Estudio</span>
+                <span class="date">{{ msg.fecha | date:'dd/MM HH:mm' }}</span>
+              </div>
+              <p class="msg-text">{{ msg.texto }}</p>
+            </div>
+          </div>
+
+          <div class="empty-feed" *ngIf="!r.mensajes || r.mensajes.length === 0">
+            <p>No hay mensajes enviados aún.</p>
+          </div>
+
+          <div class="new-message-area">
+            <input type="text" 
+                   [(ngModel)]="observacionTexto" 
+                   placeholder="Escribir novedad..." 
+                   (keyup.enter)="guardarObservacion()">
+            
+            <button class="btn-send" 
+                    (click)="guardarObservacion()" 
+                    [disabled]="guardandoObservacion || !observacionTexto.trim()">
+              <lucide-icon [img]="icons.Send" size="18" *ngIf="!guardandoObservacion"></lucide-icon>
+              <div class="spinner-mini" *ngIf="guardandoObservacion"></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="divider-dark"></div>
+
+        <div class="control-section">
           <label class="section-label">Progreso</label>
           <div class="status-list">
             <button *ngFor="let p of pasosTimeline"

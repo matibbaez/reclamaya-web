@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 export interface IReclamo {
   id: string;
   codigo_seguimiento: string;
+  mensajes?: { fecha: Date, texto: string, autor: string }[];
   estado: string;
   fecha_creacion: Date;
   updatedAt?: Date;
@@ -15,7 +16,7 @@ export interface IReclamo {
   dni: string;
   email: string;
   telefono: string;
-  domicilio_usuario?: string; // 👈 NUEVO: Faltaba para el HTML
+  domicilio_usuario?: string; 
   cbu?: string;
 
   // Datos Siniestro
@@ -26,10 +27,10 @@ export interface IReclamo {
   patente_propia?: string;
   
   // --- Datos del Tercero (NUEVOS) ---
-  tercero_nombre?: string;       // 👈 Agregado
-  tercero_apellido?: string;     // 👈 Agregado
-  tercero_dni?: string;          // 👈 Agregado
-  tercero_marca_modelo?: string; // 👈 Agregado
+  tercero_nombre?: string;       
+  tercero_apellido?: string;     
+  tercero_dni?: string;          
+  tercero_marca_modelo?: string; 
 
   fecha_hecho: string;
   hora_hecho?: string;
@@ -44,7 +45,7 @@ export interface IReclamo {
   // --- Intervenciones ---
   intervino_policia?: boolean;
   intervino_ambulancia?: boolean;
-  sufrio_lesiones?: boolean; // 👈 NUEVO: Faltaba este booleano
+  sufrio_lesiones?: boolean;
 
   // Relaciones
   usuario_creador?: any;
@@ -116,5 +117,9 @@ export class ReclamosService {
   // ASIGNAR TRAMITADOR
   asignarTramitador(reclamoId: string, tramitadorId: string): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${reclamoId}/asignar`, { tramitadorId });
+  }
+
+  agregarMensaje(idReclamo: string, texto: string) {
+    return this.http.post<IReclamo>(`${this.apiUrl}/${idReclamo}/mensajes`, { texto });
   }
 }

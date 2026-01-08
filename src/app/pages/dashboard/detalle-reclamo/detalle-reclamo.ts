@@ -11,7 +11,7 @@ import {
   Car, AlertTriangle, Stethoscope, ChevronLeft, Calendar, MapPin, 
   Phone, Mail, CheckCircle2, AlertCircle, Clock, UserCog, UserPlus,
   Save, X, Check, File, Briefcase, HardHat, 
-  Siren, Ambulance 
+  Siren, Ambulance, Send
 } from 'lucide-angular';
 
 /* Services */
@@ -36,7 +36,7 @@ export class DetalleReclamoComponent implements OnInit {
     Check: CheckCircle2, Alert: AlertCircle, Clock, 
     UserCog, UserPlus, Save, X, Tick: Check, File,
     Briefcase, HardHat,
-    Siren, Ambulance
+    Siren, Ambulance, Send
   };
 
   private route = inject(ActivatedRoute);
@@ -45,6 +45,10 @@ export class DetalleReclamoComponent implements OnInit {
   private usersService = inject(UsersService);
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService);
+
+  // --- VARIABLES DE OBSERVACIÓN (MENSAJES) ---
+  observacionTexto = '';
+  guardandoObservacion = false;
 
   // --- ESTADO (SIGNALS) ---
   reclamo = signal<IReclamo | null>(null);
@@ -80,6 +84,10 @@ export class DetalleReclamoComponent implements OnInit {
     if (this.authService.esAdmin) this.cargarTramitadores();
   }
 
+  volver() {
+    this.location.back();
+  }
+
   private cargarReclamo(id: string): void {
     this.isLoading.set(true);
     this.reclamosService.getReclamoPorId(id)
@@ -87,7 +95,7 @@ export class DetalleReclamoComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.reclamo.set(data);
-          this.syncTramitador(data);
+          this.syncDatos(data); // Sincronizamos datos y observaciones
           this.generarLegajo(data);
         },
         error: () => {
@@ -97,6 +105,20 @@ export class DetalleReclamoComponent implements OnInit {
       });
   }
 
+  // Sincroniza datos iniciales (Tramitador y Mensajes)
+  private syncDatos(data: IReclamo): void {
+    
+    this.observacionTexto = ''; 
+    
+    // 2. Tramitador asignado
+    if (data.tramitador) {
+      this.tramitadorSeleccionado = data.tramitador.id;
+    } else {
+      this.tramitadorSeleccionado = '';
+    }
+    this.editandoTramitador.set(false);
+  }
+
   private generarLegajo(r: IReclamo): void {
     const iconMap: Record<string, any> = {
       dni: CreditCard, licencia: Car, cedula: FileText, poliza: Shield,
@@ -104,7 +126,6 @@ export class DetalleReclamoComponent implements OnInit {
       representacion: FileText, honorarios: FileText
     };
 
-    // Mapeamos TODOS los documentos posibles que subió en el paso 1
     const docs = [
       { key: 'dni', label: 'DNI', sub: 'Identidad', path: r.path_dni },
       { key: 'licencia', label: 'Licencia', sub: 'Conductor', path: r.path_licencia },
@@ -114,17 +135,15 @@ export class DetalleReclamoComponent implements OnInit {
       { key: 'fotos', label: 'Fotos', sub: 'Daños/Lugar', path: r.path_fotos, highlight: true },
       { key: 'medicos', label: 'Médicos', sub: 'Certificados', path: r.path_medicos, alert: true },
       
-      // --- NUEVOS CAMPOS AGREGADOS ---
+      // Nuevos campos
       { key: 'presupuesto', label: 'Presupuesto', sub: 'Reparación', path: r.path_presupuesto },
       { key: 'cbu', label: 'Comp. CBU', sub: 'Bancario', path: r.path_cbu_archivo },
       { key: 'legal', label: 'Denuncia Penal', sub: 'Judicial', path: r.path_denuncia_penal },
-      // -------------------------------
 
       { key: 'representacion', label: 'Poder', sub: 'Legal', path: r.path_representacion, highlight: true },
       { key: 'honorarios', label: 'Honorarios', sub: 'Convenio', path: r.path_honorarios }
     ];
 
-    // Solo mostramos los que tienen path (fueron subidos)
     this.archivosDisponibles = docs.filter(d => d.path).map(d => ({
       ...d, icon: iconMap[d.key] || FileText
     }));
@@ -134,16 +153,7 @@ export class DetalleReclamoComponent implements OnInit {
     this.usersService.getTramitadores().subscribe(u => this.tramitadores = u);
   }
 
-  private syncTramitador(data: IReclamo): void {
-    if (data.tramitador) {
-      this.tramitadorSeleccionado = data.tramitador.id;
-      this.editandoTramitador.set(false);
-    } else {
-      this.tramitadorSeleccionado = '';
-      this.editandoTramitador.set(false);
-    }
-  }
-
+  // --- LÓGICA DE TRAMITADOR ---
   activarEdicion() { this.editandoTramitador.set(true); }
   
   cancelarEdicion() {
@@ -170,6 +180,7 @@ export class DetalleReclamoComponent implements OnInit {
     });
   }
 
+  // --- LÓGICA DE ESTADOS ---
   cambiarEstado(nuevoEstado: string) {
     const r = this.reclamo();
     if (!r || r.estado === nuevoEstado) return;
@@ -199,6 +210,33 @@ export class DetalleReclamoComponent implements OnInit {
     });
   }
 
+  guardarObservacion() {
+    const r = this.reclamo();
+    if (!r || !this.observacionTexto.trim()) return;
+
+    this.guardandoObservacion = true;
+    
+    // Usamos el NUEVO método agregarMensaje
+    this.reclamosService.agregarMensaje(r.id, this.observacionTexto).subscribe({
+      next: (res) => {
+        this.guardandoObservacion = false;
+        this.observacionTexto = ''; // Limpiamos el input
+        
+        // Mantenemos el tramitador visualmente
+        const currentTramitador = r.tramitador;
+        if (!res.tramitador && currentTramitador) res.tramitador = currentTramitador;
+        
+        this.reclamo.set(res); // Actualizamos la lista en pantalla
+        // Scroll al fondo si quisieras (opcional)
+      },
+      error: () => {
+        this.guardandoObservacion = false;
+        this.notificacionService.showError('Error al enviar.');
+      }
+    });
+  }
+
+  // --- UTILIDADES ---
   contactarWhatsApp() {
     const r = this.reclamo();
     if (!r?.telefono) return;
@@ -232,6 +270,4 @@ export class DetalleReclamoComponent implements OnInit {
       }
     });
   }
-
-  volver() { this.location.back(); }
 }

@@ -79,11 +79,21 @@
           </div>
         </div>
 
+        <div class="updates-container anim-slide-up" *ngIf="resultado.mensajes && resultado.mensajes.length > 0">
+          <div class="updates-header">
+            <lucide-icon [img]="icons.Mail" size="18"></lucide-icon> NOVEDADES DEL ESTUDIO
+          </div>
+          <div class="updates-list">
+            <div class="update-item" *ngFor="let msg of resultado.mensajes">
+              <div class="up-date">{{ msg.fecha | date:'dd/MM' }}</div>
+              <div class="up-text">{{ msg.texto }}</div>
+            </div>
+          </div>
+        </div>
         <div class="timeline-box">
           <div class="timeline-track">
             
             <div class="track-line-bg"></div>
-            
             <div class="track-line-fill" 
                  [style.width]="getProgressWidth()"
                  [class.rejected-bar]="resultado.estado === 'Rechazado'">
@@ -98,7 +108,6 @@
               <div class="t-marker">
                 <div class="dot icon-dot">
                   <span *ngIf="i < pasoActual" class="check-mark">✓</span>
-                  
                   <span *ngIf="resultado.estado === 'Rechazado' && i === pasosTimeline.length - 1">✕</span>
                 </div>
               </div>

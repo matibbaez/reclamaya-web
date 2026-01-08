@@ -34,8 +34,20 @@ $text-muted: #64748b;
   
   display: flex; flex-direction: column;
 
-  h2 { font-size: 2.5rem; line-height: 1.1; margin-bottom: 1rem; font-weight: 700; color: white; }
-  .panel-desc { color: rgba(255, 255, 255, 0.7); font-size: 1rem; line-height: 1.6; margin-bottom: 4rem; }
+  h2 { 
+    font-size: 2.5rem; /* Tamaño original */
+    line-height: 1.1; 
+    margin-bottom: 1rem; 
+    font-weight: 700; 
+    color: white; 
+  }
+  
+  .panel-desc { 
+    color: rgba(255, 255, 255, 0.7); 
+    font-size: 1rem; /* Tamaño original */
+    line-height: 1.6; 
+    margin-bottom: 4rem; 
+  }
 }
 
 .trust-badge {
@@ -52,22 +64,7 @@ $text-muted: #64748b;
   display: flex; justify-content: center; align-items: center; 
 }
 
-.content-wrapper { width: 100%; max-width: 800px; /* Ampliado un poco para los 6 pasos */ }
-
-/* BOTÓN VOLVER */
-.nav-back-link {
-  display: inline-flex; align-items: center; gap: 8px;
-  text-decoration: none; color: $text-muted;
-  font-weight: 600; font-size: 0.95rem;
-  padding: 0.5rem 0; margin-bottom: 2.5rem;
-  transition: color 0.3s ease; cursor: pointer;
-
-  .icon-wrap {
-    display: flex; align-items: center; transition: transform 0.4s ease;
-    svg { width: 20px; height: 20px; }
-  }
-  &:hover { color: $primary; .icon-wrap { transform: translateX(-5px); } }
-}
+.content-wrapper { width: 100%; max-width: 750px; }
 
 /* ESTADO 1: BUSCADOR */
 .search-container { text-align: center; width: 100%; max-width: 500px; margin: 0 auto; }
@@ -93,10 +90,10 @@ $text-muted: #64748b;
 
     input {
       flex: 1; border: none; background: transparent; padding: 0.8rem 1.5rem;
-      font-size: 1.2rem; font-weight: 700; color: $text-dark; outline: none;
+      font-size: 1.2rem; /* Tamaño original */
+      font-weight: 700; color: $text-dark; outline: none;
       text-transform: uppercase; letter-spacing: 1.5px;
-      touch-action: manipulation;
-      min-width: 0; /* Fix flexbox input shrink */
+      min-width: 0;
       &::placeholder { color: #cbd5e1; font-weight: 400; text-transform: none; letter-spacing: 0; }
     }
 
@@ -152,7 +149,10 @@ $text-muted: #64748b;
   }
   .status-details {
     .lbl { font-size: 0.8rem; font-weight: 700; opacity: 0.9; text-transform: uppercase; }
-    h2 { font-size: 1.8rem; margin: 0; font-weight: 800; line-height: 1.1; }
+    h2 { 
+      font-size: 1.8rem; /* Tamaño original */
+      margin: 0; font-weight: 800; line-height: 1.1; 
+    }
   }
 }
 
@@ -164,38 +164,71 @@ $text-muted: #64748b;
   }
 }
 
-/* TIMELINE BOX - AJUSTADO PARA 6 PASOS */
-.timeline-box { padding: 3rem 1.5rem; }
+/* 👇 SECCIÓN DE NOVEDADES (Corregidos márgenes y fuente) */
+.updates-container {
+  /* Margin corregido: Arriba 2rem, Derecha 2rem, Abajo 2rem, Izquierda 2rem */
+  margin: 2rem; 
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.updates-header {
+  background: #f8fafc; padding: 12px 20px; 
+  font-size: 0.85rem; font-weight: 800; 
+  color: #64748b; text-transform: uppercase; letter-spacing: 1px;
+  display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #e2e8f0;
+  
+  lucide-icon { color: $primary; }
+}
+
+.updates-list {
+  padding: 0 20px;
+}
+
+.update-item {
+  display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f1f5f9;
+  
+  &:last-child { border-bottom: none; }
+
+  .up-date { 
+    font-size: 0.75rem; font-weight: 700; color: $primary; 
+    background: #eff6ff; padding: 4px 10px; border-radius: 6px; height: fit-content; white-space: nowrap;
+  }
+  .up-text { 
+    font-size: 0.95rem; /* Tamaño coherente con el resto */
+    color: $text-dark; line-height: 1.5; font-weight: 500;
+  }
+}
+
+/* TIMELINE BOX */
+.timeline-box { padding: 2rem; }
 
 .timeline-track {
   position: relative; display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;
 }
 
-/* CÁLCULO MATEMÁTICO PARA CENTRAR LA LÍNEA:
-   Tenemos 6 items. Cada item ocupa 100% / 6 = 16.66% del ancho.
-   El centro del primer item está en la mitad de su ancho: 16.66% / 2 = 8.33%.
-   La línea debe empezar en 8.33% y terminar en 8.33% (desde la derecha).
-*/
 .track-line-bg, .track-line-fill {
   position: absolute; top: 20px; left: 8.33%; right: 8.33%; height: 3px; background: #e2e8f0; z-index: -1;
 }
 .track-line-fill { 
     background: $primary; width: 0%; transition: width 0.6s ease; right: auto; 
-    
-    /* Si está rechazado, la barra se pone roja */
     &.rejected-bar { background-color: $danger; }
 }
 
 .t-step {
-  flex: 1; /* Esto hace que todos los pasos tengan el mismo ancho dinámico */
+  flex: 1; 
   display: flex; flex-direction: column; align-items: center; text-align: center;
   position: relative;
   
   .t-marker {
     width: 40px; height: 40px; background: white; border: 2px solid #e2e8f0; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; margin-bottom: 0.8rem; transition: all 0.3s;
+    
     .dot { width: 10px; height: 10px; background: #cbd5e1; border-radius: 50%; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
-    .icon-dot { font-size: 0.7rem; font-weight: 900; color: white; width: 100%; height: 100%; border-radius: 50%; }
+    .icon-dot { font-size: 0.7rem; font-weight: 900; color: white; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
   }
 
   .t-content {
@@ -247,6 +280,11 @@ $text-muted: #64748b;
     width: 100%; padding: 2rem 1.5rem 5rem 1.5rem; 
   }
 
+  /* Ajuste de márgenes en móvil para que no se pegue */
+  .updates-container {
+    margin: 1.5rem 1rem;
+  }
+
   .status-card-main {
     flex-direction: column; text-align: center; gap: 1rem; padding: 1.5rem;
   }
@@ -283,10 +321,6 @@ $text-muted: #64748b;
       background: #e2e8f0; z-index: 1; transform: translateX(-50%);
     }
     
-    /* Si el paso actual está completo, pintamos la línea */
     &.completed:not(:last-child)::after { background: $primary; }
-    
-    /* Si está rechazado, la línea no conecta hacia abajo necesariamente, o se queda gris/roja según lógica. 
-       Para simplicidad, dejamos gris salvo que esté completo el paso. */
   }
 }

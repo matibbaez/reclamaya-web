@@ -4,15 +4,20 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+// 👇 Importamos Lucide Angular para los íconos
+import { LucideAngularModule, Mail } from 'lucide-angular';
 
 @Component({
   selector: 'app-consultar-tramite',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule], // Agregado Lucide
   templateUrl: './consultar-tramite.html',
   styleUrl: './consultar-tramite.scss'
 })
 export class ConsultarTramiteComponent {
+
+  // Íconos para el template
+  readonly icons = { Mail };
 
   private fb = inject(FormBuilder);
   private reclamosService = inject(ReclamosService);
@@ -25,7 +30,6 @@ export class ConsultarTramiteComponent {
   isLoading = false;
   errorMensaje = '';
 
-  // ESTADOS DEL PDF (Secuenciales)
   readonly pasosTimeline = [
     { id: 'Enviado', label: 'Enviado' },
     { id: 'Recepcionado', label: 'Recepcionado' },
@@ -71,27 +75,21 @@ export class ConsultarTramiteComponent {
 
   private calcularEstadoVisual(estadoBackend: string) {
     if (estadoBackend === 'Rechazado') {
-        this.pasoActual = -1; // Estado especial
+        this.pasoActual = -1; 
         this.claseEstado = 'danger';
         return;
     }
 
-    // Buscamos en qué índice del array está el estado actual
     const index = this.pasosTimeline.findIndex(p => p.id === estadoBackend);
-    
-    // Si no lo encuentra (por error), asumimos 0
     this.pasoActual = index >= 0 ? index : 0;
 
-    // Colores del banner
     if (this.pasoActual < 2) this.claseEstado = 'info';
     else if (this.pasoActual < 4) this.claseEstado = 'warning';
     else this.claseEstado = 'success';
   }
 
   getProgressWidth() {
-    // Si es rechazado, llenamos la barra completa (se pintará roja por CSS)
     if (this.resultado?.estado === 'Rechazado') return '100%';
-    
     const totalPasos = this.pasosTimeline.length - 1;
     const percent = (this.pasoActual / totalPasos) * 100;
     return `${percent}%`;

@@ -274,3 +274,61 @@ $dark-panel: #1e293b;
   
   .files-grid { grid-template-columns: 1fr; }
 }
+
+/* BITÁCORA DE MENSAJES */
+.messages-feed {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px 8px 0 0;
+  padding: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  /* Scrollbar fina */
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+}
+
+.msg-bubble {
+  background: rgba(255,255,255,0.05);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-left: 3px solid $primary;
+  
+  .msg-meta {
+    display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px;
+    .author { font-weight: 700; color: $primary; }
+    .date { color: rgba(255,255,255,0.4); }
+  }
+  .msg-text { font-size: 0.9rem; color: #e2e8f0; margin: 0; line-height: 1.4; }
+}
+
+.empty-feed {
+  background: rgba(0,0,0,0.2); padding: 1.5rem; text-align: center; border-radius: 8px 8px 0 0;
+  p { font-size: 0.85rem; color: rgba(255,255,255,0.4); margin: 0; font-style: italic; }
+}
+
+.new-message-area {
+  display: flex;
+  background: white; /* Contraste */
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  padding: 4px;
+
+  input {
+    flex: 1; border: none; padding: 0 12px; outline: none; font-size: 0.9rem;
+    color: $text-dark;
+    &::placeholder { color: #94a3b8; }
+  }
+
+  .btn-send {
+    background: $primary; border: none; color: white; width: 40px; height: 36px;
+    border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+    &:hover:not(:disabled) { background: darken($primary, 5%); }
+    &:disabled { background: #cbd5e1; cursor: default; }
+  }
+}
