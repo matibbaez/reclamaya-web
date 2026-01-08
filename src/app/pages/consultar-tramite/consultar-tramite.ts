@@ -23,6 +23,7 @@ export class ConsultarTramiteComponent {
   private reclamosService = inject(ReclamosService);
 
   consultaForm = this.fb.group({
+    dni: ['', [Validators.required, Validators.pattern(/^[0-9]{7,11}$/)]], 
     codigo: ['', [Validators.required, Validators.minLength(6)]]
   });
 
@@ -44,20 +45,24 @@ export class ConsultarTramiteComponent {
   isInputFocused = false; 
 
   onSubmit() {
-    if (this.consultaForm.invalid) return;
+    if (this.consultaForm.invalid) {
+        this.consultaForm.markAllAsTouched(); // Para mostrar errores rojos si intenta enviar vacío
+        return;
+    }
 
     this.isLoading = true;
     this.resultado = null;
     this.errorMensaje = '';
 
-    const codigo = this.consultaForm.value.codigo!;
+    const { codigo, dni } = this.consultaForm.value; // Extraemos ambos
 
-    this.reclamosService.consultarEstado(codigo)
+    // 👇 Llamamos con los dos parámetros
+    this.reclamosService.consultarEstado(codigo!, dni!)
       .pipe(
         catchError((err) => {
           this.isLoading = false;
           if (err.status === 404) {
-            this.errorMensaje = 'No encontramos un expediente con ese código. Verificalo e intentá nuevamente.';
+            this.errorMensaje = 'No encontramos coincidencias. Verificá que el DNI y el Código sean correctos.';
           } else {
             this.errorMensaje = 'Ocurrió un error de conexión. Intentá más tarde.';
           }

@@ -7,6 +7,7 @@ export interface IReclamo {
   id: string;
   codigo_seguimiento: string;
   mensajes?: { fecha: Date, texto: string, autor: string }[];
+  notas_internas?: { fecha: Date, texto: string, autor: string }[];
   estado: string;
   fecha_creacion: Date;
   updatedAt?: Date;
@@ -100,8 +101,8 @@ export class ReclamosService {
   }
 
   // 2. CONSULTAR (Público)
-  consultarEstado(codigo: string): Observable<IReclamo> {
-    return this.http.get<IReclamo>(`${this.apiUrl}/consultar/${codigo}`);
+  consultarEstado(codigo: string, dni: string): Observable<IReclamo> {
+    return this.http.get<IReclamo>(`${this.apiUrl}/consultar/${codigo}?dni=${dni}`);
   }
 
   // 3. VER TODOS (Admin)
@@ -121,6 +122,10 @@ export class ReclamosService {
 
   agregarMensaje(idReclamo: string, texto: string) {
     return this.http.post<IReclamo>(`${this.apiUrl}/${idReclamo}/mensajes`, { texto });
+  }
+
+  agregarNotaInterna(idReclamo: string, texto: string) {
+    return this.http.post<IReclamo>(`${this.apiUrl}/${idReclamo}/notas-internas`, { texto });
   }
 
   obtenerGaleria(id: string): Observable<{ urls: string[] }> {

@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
+import { NgOptimizedImage } from '@angular/common';
 import Swal from 'sweetalert2';
 
 /* Lucide Icons */
@@ -23,7 +24,7 @@ import { UsersService, IUser } from '../../../services/users.service';
 @Component({
   selector: 'app-detalle-reclamo',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, NgOptimizedImage, FormsModule, LucideAngularModule],
   templateUrl: './detalle-reclamo.html',
   styleUrls: ['./detalle-reclamo.scss']
 })
@@ -46,7 +47,11 @@ export class DetalleReclamoComponent implements OnInit {
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService);
 
-  // --- VARIABLES DE OBSERVACIÓN (MENSAJES) ---
+  // --- VARIABLES DE MENSAJES ---
+  tabActual: 'publico' | 'interno' = 'publico'; // Control de Pestañas
+  notaInternaTexto = ''; // Input separado para no confundir
+  guardandoNotaInterna = false;
+
   observacionTexto = '';
   guardandoObservacion = false;
 
@@ -85,6 +90,10 @@ export class DetalleReclamoComponent implements OnInit {
 
     this.cargarReclamo(id);
     if (this.authService.esAdmin) this.cargarTramitadores();
+  }
+
+  cambiarTab(tab: 'publico' | 'interno') {
+    this.tabActual = tab;
   }
 
   volver() {
@@ -230,6 +239,31 @@ export class DetalleReclamoComponent implements OnInit {
           },
           error: () => this.notificacionService.showError('Error al actualizar estado.')
         });
+      }
+    });
+  }
+
+  guardarNotaInterna() {
+    const r = this.reclamo();
+    if (!r || !this.notaInternaTexto.trim()) return;
+
+    this.guardandoNotaInterna = true;
+    
+    this.reclamosService.agregarNotaInterna(r.id, this.notaInternaTexto).subscribe({
+      next: (res) => {
+        this.guardandoNotaInterna = false;
+        this.notaInternaTexto = ''; 
+        
+        // Mantenemos tramitador visualmente
+        const currentTramitador = r.tramitador;
+        if (!res.tramitador && currentTramitador) res.tramitador = currentTramitador;
+        
+        this.reclamo.set(res);
+        this.notificacionService.showSuccess('Nota interna guardada.');
+      },
+      error: () => {
+        this.guardandoNotaInterna = false;
+        this.notificacionService.showError('Error al guardar nota.');
       }
     });
   }

@@ -206,10 +206,16 @@
 
         <div class="gallery-grid" *ngIf="!cargandoFotos">
           <div class="photo-thumb" 
-               *ngFor="let url of galeriaFotos" 
+               *ngFor="let url of galeriaFotos; let i = index" 
                (click)="abrirFoto(url)"
                title="Ver imagen completa">
-            <img [src]="url" alt="Evidencia">
+            
+            <img [ngSrc]="url" 
+                 fill
+                 [priority]="i < 2" 
+                 alt="Evidencia"
+                 style="object-fit: cover;">
+            
             <div class="overlay">
               <lucide-icon [img]="icons.Eye" size="24"></lucide-icon>
             </div>
@@ -290,36 +296,81 @@
 
         <div class="divider-dark"></div>
 
-        <div class="control-section">
-          <label class="section-label">Bitácora de Novedades (Público)</label>
+        <div class="control-section communication-panel">
           
-          <div class="messages-feed" *ngIf="r.mensajes && r.mensajes.length > 0">
-            <div class="msg-bubble" *ngFor="let msg of r.mensajes">
-              <div class="msg-meta">
-                <span class="author">Estudio</span>
-                <span class="date">{{ msg.fecha | date:'dd/MM HH:mm' }}</span>
+          <div class="tabs-header">
+            <button class="tab-btn" 
+                    [class.active]="tabActual === 'publico'"
+                    (click)="cambiarTab('publico')">
+              <lucide-icon [img]="icons.Mail" size="16"></lucide-icon> Cliente
+            </button>
+            <button class="tab-btn internal" 
+                    [class.active]="tabActual === 'interno'"
+                    (click)="cambiarTab('interno')">
+              <lucide-icon [img]="icons.Shield" size="16"></lucide-icon> Interno
+            </button>
+          </div>
+          
+          <div class="tab-content" *ngIf="tabActual === 'publico'">
+            <div class="info-banner">
+              <small>Visible por el cliente en la web.</small>
+            </div>
+
+            <div class="messages-feed" *ngIf="r.mensajes && r.mensajes.length > 0">
+              <div class="msg-bubble" *ngFor="let msg of r.mensajes">
+                <div class="msg-meta">
+                  <span class="author">Estudio</span>
+                  <span class="date">{{ msg.fecha | date:'dd/MM HH:mm' }}</span>
+                </div>
+                <p class="msg-text">{{ msg.texto }}</p>
               </div>
-              <p class="msg-text">{{ msg.texto }}</p>
+            </div>
+
+            <div class="empty-feed" *ngIf="!r.mensajes || r.mensajes.length === 0">
+              <p>No hay mensajes públicos.</p>
+            </div>
+
+            <div class="new-message-area">
+              <input type="text" 
+                     [(ngModel)]="observacionTexto" 
+                     placeholder="Mensaje para el cliente..." 
+                     (keyup.enter)="guardarObservacion()">
+              <button class="btn-send" (click)="guardarObservacion()" [disabled]="guardandoObservacion">
+                <lucide-icon [img]="icons.Send" size="18"></lucide-icon>
+              </button>
             </div>
           </div>
 
-          <div class="empty-feed" *ngIf="!r.mensajes || r.mensajes.length === 0">
-            <p>No hay mensajes enviados aún.</p>
+          <div class="tab-content internal-mode" *ngIf="tabActual === 'interno'">
+            <div class="info-banner warning">
+              <small>🔒 Solo visible por el equipo.</small>
+            </div>
+
+            <div class="messages-feed internal-feed" *ngIf="r.notas_internas && r.notas_internas.length > 0">
+              <div class="msg-bubble internal" *ngFor="let nota of r.notas_internas">
+                <div class="msg-meta">
+                  <span class="author">{{ nota.autor || 'Interno' }}</span>
+                  <span class="date">{{ nota.fecha | date:'dd/MM HH:mm' }}</span>
+                </div>
+                <p class="msg-text">{{ nota.texto }}</p>
+              </div>
+            </div>
+
+            <div class="empty-feed internal" *ngIf="!r.notas_internas || r.notas_internas.length === 0">
+              <p>No hay notas internas.</p>
+            </div>
+
+            <div class="new-message-area internal">
+              <input type="text" 
+                     [(ngModel)]="notaInternaTexto" 
+                     placeholder="Nota interna (no visible)..." 
+                     (keyup.enter)="guardarNotaInterna()">
+              <button class="btn-send internal" (click)="guardarNotaInterna()" [disabled]="guardandoNotaInterna">
+                <lucide-icon [img]="icons.Save" size="18"></lucide-icon>
+              </button>
+            </div>
           </div>
 
-          <div class="new-message-area">
-            <input type="text" 
-                   [(ngModel)]="observacionTexto" 
-                   placeholder="Escribir novedad..." 
-                   (keyup.enter)="guardarObservacion()">
-            
-            <button class="btn-send" 
-                    (click)="guardarObservacion()" 
-                    [disabled]="guardandoObservacion || !observacionTexto.trim()">
-              <lucide-icon [img]="icons.Send" size="18" *ngIf="!guardandoObservacion"></lucide-icon>
-              <div class="spinner-mini" *ngIf="guardandoObservacion"></div>
-            </button>
-          </div>
         </div>
 
         <div class="divider-dark"></div>

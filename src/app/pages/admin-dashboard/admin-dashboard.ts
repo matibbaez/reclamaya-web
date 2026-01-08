@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { LucideAngularModule, Users, FileText, TrendingUp, ArrowRight, AlertCircle, Search, ArrowUpDown, Filter,} from 'lucide-angular';
-
+import { ChangeDetectionStrategy } from '@angular/core';
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../services/auth.service';
@@ -12,7 +12,8 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterModule, LucideAngularModule],
   templateUrl: './admin-dashboard.html',
-  styleUrls: ['./admin-dashboard.scss']
+  styleUrls: ['./admin-dashboard.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminDashboardComponent implements OnInit {
 

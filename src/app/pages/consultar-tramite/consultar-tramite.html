@@ -4,11 +4,11 @@
     <div class="panel-content">
       <h2>Portal de Seguimiento</h2>
       <p class="panel-desc">
-        Ingresá tu código para ver el estado de tu gestión en tiempo real. Transparencia total las 24hs.
+        Ingresá tus datos para ver el estado de tu gestión en tiempo real. Transparencia total las 24hs.
       </p>
       
       <div class="trust-badge">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
         <span>Datos encriptados y seguros.</span>
       </div>
     </div>
@@ -24,26 +24,34 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
           </div>
           <h3>Consultar Estado</h3>
-          <p>Utilizá el código que te enviamos por correo electrónico.</p>
+          <p>Ingresá tu DNI y el código de seguimiento.</p>
         </div>
 
-        <form [formGroup]="consultaForm" (ngSubmit)="onSubmit()" class="search-form">
-          <div class="input-group-hero" [class.focused]="isInputFocused">
-            <input type="text" 
-                   formControlName="codigo" 
-                   placeholder="EJ: A1B2C3" 
-                   maxlength="10"
-                   (focus)="isInputFocused = true"
-                   (blur)="isInputFocused = false">
-            
-            <button type="submit" [disabled]="consultaForm.invalid || isLoading" class="btn-search">
-              <span *ngIf="!isLoading">Buscar</span>
-              <div *ngIf="isLoading" class="spinner-mini"></div>
-            </button>
+        <form [formGroup]="consultaForm" (ngSubmit)="onSubmit()" class="search-form-dual">
+          
+          <div class="inputs-row">
+            <div class="input-group-hero">
+              <input type="tel" 
+                     formControlName="dni" 
+                     placeholder="TU DNI / CUIT" 
+                     maxlength="11">
+            </div>
+
+            <div class="input-group-hero">
+              <input type="text" 
+                     formControlName="codigo" 
+                     placeholder="CÓDIGO (EJ: A1B2C3)" 
+                     maxlength="10">
+            </div>
           </div>
           
-          <div *ngIf="consultaForm.get('codigo')?.touched && consultaForm.get('codigo')?.invalid" class="error-msg">
-            Ingresá un código válido (mínimo 6 caracteres).
+          <button type="submit" [disabled]="consultaForm.invalid || isLoading" class="btn-search-full">
+            <span *ngIf="!isLoading">Consultar Ahora</span>
+            <div *ngIf="isLoading" class="spinner-mini"></div>
+          </button>
+
+          <div *ngIf="consultaForm.touched && consultaForm.invalid" class="error-msg">
+            Por favor completá ambos campos correctamente.
           </div>
         </form>
 
@@ -90,14 +98,11 @@
             </div>
           </div>
         </div>
+
         <div class="timeline-box">
           <div class="timeline-track">
-            
             <div class="track-line-bg"></div>
-            <div class="track-line-fill" 
-                 [style.width]="getProgressWidth()"
-                 [class.rejected-bar]="resultado.estado === 'Rechazado'">
-            </div>
+            <div class="track-line-fill" [style.width]="getProgressWidth()" [class.rejected-bar]="resultado.estado === 'Rechazado'"></div>
 
             <div *ngFor="let paso of pasosTimeline; let i = index" 
                  class="t-step"
@@ -116,9 +121,7 @@
                 <h4 *ngIf="resultado.estado === 'Rechazado' && i === pasosTimeline.length - 1">Rechazado</h4>
                 <h4 *ngIf="!(resultado.estado === 'Rechazado' && i === pasosTimeline.length - 1)">{{ paso.label }}</h4>
               </div>
-
             </div>
-
           </div>
         </div>
 
@@ -129,7 +132,6 @@
         </div>
 
       </div>
-
     </div>
   </main>
 </div>

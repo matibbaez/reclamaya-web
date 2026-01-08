@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { TerminosModalComponent } from '../../components/terminos-modal/terminos-modal';
 import { ReclamosService } from '../../services/reclamos.service';
 import { NotificacionService } from '../../services/notificacion';
+import { ImageCompressService } from '../../services/image-compress.service';
 
 @Component({
   selector: 'app-iniciar-reclamo',
@@ -20,6 +21,7 @@ export class IniciarReclamoComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private notificacionService = inject(NotificacionService);
+  private imageCompressService = inject(ImageCompressService);
 
   mostrarTerminos = true; 
   isLoading = false;
@@ -302,36 +304,44 @@ export class IniciarReclamoComponent implements OnInit {
     }
   }
 
-  // --- CONFIRMAR RECLAMO CORREGIDO ---
-  confirmarReclamo() {
+  async confirmarReclamo() {
     this.isLoading = true;
     const v = this.reclamoForm.value;
     const formData = new FormData();
 
-    Object.keys(v).forEach(key => {
+    // Hacemos un bucle asíncrono manual para poder esperar la compresión
+    for (const key of Object.keys(v)) {
         // @ts-ignore
         const value = v[key];
 
-        // 1. CASO ESPECIAL: FOTOS (FileList)
+        // 1. CASO ESPECIAL: FOTOS (FileList) - AQUÍ ESTABA EL PROBLEMA
         if (key === 'fileFotos' && value instanceof FileList) {
-            for (let i = 0; i < value.length; i++) {
-                // Importante: 'fileFotos' es el nombre que espera el backend en @UploadedFiles()
-                formData.append('fileFotos', value[i]);
-            }
+            // Convertimos FileList a Array para poder usar map
+            const fotosArray = Array.from(value);
+            
+            // Comprimimos todas en paralelo
+            const compressedFiles = await Promise.all(
+                fotosArray.map(file => this.imageCompressService.compressFile(file))
+            );
+
+            // Adjuntamos CADA foto comprimida individualmente
+            compressedFiles.forEach(file => {
+                formData.append('fileFotos', file);
+            });
         } 
-        // 2. CASO ARCHIVOS ÚNICOS
+        // 2. CASO ARCHIVOS ÚNICOS (También comprimimos si son imágenes)
         else if (key.startsWith('file') && value instanceof File) {
-            formData.append(key, value);
+            const compressedFile = await this.imageCompressService.compressFile(value);
+            formData.append(key, compressedFile);
         } 
-        // 3. CASO BOOLEANOS
+        // 3. RESTO DE DATOS
         else if (typeof value === 'boolean') {
              formData.append(key, String(value));
         } 
-        // 4. CASO TEXTO/OTROS
         else if (value !== null && value !== undefined && value !== '') {
              formData.append(key, value);
         }
-    });
+    }
 
     this.reclamosService.crearReclamo(formData).subscribe({
       next: (res: any) => {
