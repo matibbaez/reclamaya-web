@@ -9,6 +9,7 @@ import { ExitoComponent } from './pages/exito/exito';
 import { CuentaPendienteComponent } from './pages/cuenta-pendiente/cuenta-pendiente';
 import { MisReferidosComponent } from './pages/dashboard/mis-referidos/mis-referidos';
 import { DetalleReclamoComponent } from './pages/dashboard/detalle-reclamo/detalle-reclamo';
+import { LegalesComponent } from './pages/legales/legales';
 import { authGuard } from './auth/auth-guard';
 import { adminGuard } from './auth/admin.guard';
 
@@ -65,6 +66,8 @@ export const routes: Routes = [
     component: ExitoComponent,
     data: { animation: 'ExitoPage' } 
   },
+
+  { path: 'legales', component: LegalesComponent },
 
   { 
     path: 'cuenta-pendiente', 

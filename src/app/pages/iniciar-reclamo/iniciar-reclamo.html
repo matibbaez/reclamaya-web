@@ -141,7 +141,9 @@
                     <span class="sub-label">Lesiones físicas.</span>
                   </div>
                   <label class="switch">
-                    <input type="checkbox" formControlName="sufrio_lesiones">
+                    <input type="checkbox" 
+                          formControlName="sufrio_lesiones" 
+                          (change)="actualizarValidaciones(f['rol_victima'].value || '')">
                     <span class="slider round"></span>
                   </label>
                 </div>
@@ -187,8 +189,10 @@
                        [class.error-border]="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
                 
                 <div *ngIf="f['nombre'].invalid && (f['nombre'].dirty || f['nombre'].touched)">
-                  <small class="error-msg" *ngIf="f['nombre'].errors?.['required']">Obligatorio.</small>
+                  <small class="error-msg" *ngIf="f['nombre'].errors?.['required']">El nombre es obligatorio.</small>
                   <small class="error-msg" *ngIf="f['nombre'].errors?.['minlength']">Mínimo 3 caracteres.</small>
+                  <small class="error-msg" *ngIf="f['nombre'].errors?.['pattern']">Caracteres inválidos.</small>
+                  <small class="error-msg" *ngIf="f['nombre'].errors?.['whitespace']">No puede contener solo espacios.</small>
                 </div>
               </div>
 
@@ -257,10 +261,22 @@
                   <label>Fecha</label>
                   <input type="date" formControlName="fecha_hecho" class="input-modern"
                          [class.error-border]="f['fecha_hecho'].invalid && (f['fecha_hecho'].dirty || f['fecha_hecho'].touched)">
+                  
+                  <div *ngIf="f['fecha_hecho'].invalid && (f['fecha_hecho'].dirty || f['fecha_hecho'].touched)">
+                     <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['required']">La fecha es obligatoria.</small>
+                     <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['futuro']">No puede ser una fecha futura.</small>
+                     <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['prescripto']">El reclamo ha prescrito (más de 3 años).</small>
                   </div>
+                </div>
+
                 <div class="input-group">
                   <label>Hora Aprox.</label>
-                  <input type="time" formControlName="hora_hecho" class="input-modern">
+                  <input type="time" formControlName="hora_hecho" class="input-modern"
+                         [class.error-border]="f['hora_hecho'].invalid && (f['hora_hecho'].dirty || f['hora_hecho'].touched)">
+                  
+                  <div *ngIf="f['hora_hecho'].invalid && (f['hora_hecho'].dirty || f['hora_hecho'].touched)">
+                     <small class="error-msg">La hora es obligatoria.</small>
+                  </div>
                 </div>
               </div>
 
@@ -268,7 +284,13 @@
                 <label>Lugar del Hecho</label>
                 <input type="text" formControlName="lugar_hecho" class="input-modern" placeholder="Calle y Altura o Intersección"
                        [class.error-border]="f['lugar_hecho'].invalid && (f['lugar_hecho'].dirty || f['lugar_hecho'].touched)">
+                
+                <div *ngIf="f['lugar_hecho'].invalid && (f['lugar_hecho'].dirty || f['lugar_hecho'].touched)">
+                   <small class="error-msg" *ngIf="f['lugar_hecho'].errors?.['required']">El lugar es obligatorio.</small>
+                   <small class="error-msg" *ngIf="f['lugar_hecho'].errors?.['minlength']">Debe ser más descriptivo (mín 5 letras).</small>
+                   <small class="error-msg" *ngIf="f['lugar_hecho'].errors?.['whitespace']">No puede contener solo espacios.</small>
                 </div>
+              </div>
               
               <div class="grid-2">
                 <div class="input-group">
@@ -556,8 +578,8 @@
                          [class.uploaded]="f['filePresupuesto'].value"
                          [class.error-border]="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">
                       <div class="card-header-file">
-                        <label>Presupuesto o Franquicia</label>
-                        <span class="file-hint">Carta de franquicia o presupuesto de reparación.</span>
+                        <label>Presupuesto / Franquicia / Factura</label>
+                        <span class="file-hint">Presupuesto de reparación, Carta de Franquicia o Factura (si ya reparaste).</span>
                       </div>
                       <div class="upload-area">
                         <input type="file" id="filePresupuesto" hidden (change)="onFileChange($event, 'filePresupuesto')">
@@ -576,25 +598,34 @@
                     </div>
                 </ng-container>
 
-                <div class="file-upload-card highlight"
+                <div class="file-upload-card highlight" 
                      [class.uploaded]="f['fileFotos'].value"
                      [class.error-border]="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
                   
                   <div class="card-header-file">
                     <label>Fotos de los Daños</label>
-                    <span class="file-hint">Fotos claras de los daños y del lugar del hecho.</span>
+                    <span class="file-hint">
+                        Importante: Que se vean los daños y la patente.<br>
+                        Podés seleccionar hasta 5 fotos a la vez.
+                    </span>
                   </div>
 
                   <div class="upload-area">
-                    <input type="file" id="fileFotos" hidden (change)="onFileChange($event, 'fileFotos')">
+                    <input type="file" id="fileFotos" hidden multiple (change)="onFileChange($event, 'fileFotos')">
+                    
                     <label for="fileFotos" class="drop-zone">
                       <div *ngIf="!f['fileFotos'].value" class="placeholder-content">
-                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg></div>
-                        <span>Subir Fotos</span>
+                        <div class="icon-upload">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                        </div>
+                        <span>Subir Fotos (Máx 5)</span>
                       </div>
+
                       <div *ngIf="f['fileFotos'].value" class="file-preview">
                         <div class="icon-check">✓</div>
-                        <span class="filename">{{ getFileName('fileFotos') }}</span>
+                        <span class="filename">
+                          {{ $any(f['fileFotos'].value)?.length }} foto(s) seleccionada(s)
+                        </span>
                         <span class="change-text">Cambiar fotos</span>
                       </div>
                     </label>
@@ -722,36 +753,44 @@
             <div class="summary-section">
                 <h4 class="summary-title">Archivos Cargados</h4>
                 <div class="files-list-read">
+                    
                     <div class="file-read-item" *ngIf="v.fileDNI">
-                        <span class="check-icon">✓</span> DNI
+                        <span class="check-icon">✓</span> DNI: <small class="fname">{{ $any(v.fileDNI).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.fileLicencia">
-                        <span class="check-icon">✓</span> Licencia
+                        <span class="check-icon">✓</span> Licencia: <small class="fname">{{ $any(v.fileLicencia).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.fileCedula">
-                        <span class="check-icon">✓</span> Cédula
+                        <span class="check-icon">✓</span> Cédula: <small class="fname">{{ $any(v.fileCedula).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.fileSeguro">
-                        <span class="check-icon">✓</span> Cert. Seguro
+                        <span class="check-icon">✓</span> Seguro: <small class="fname">{{ $any(v.fileSeguro).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.fileDenuncia">
-                        <span class="check-icon">✓</span> Denuncia Admin.
+                        <span class="check-icon">✓</span> Denuncia: <small class="fname">{{ $any(v.fileDenuncia).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.filePresupuesto">
-                        <span class="check-icon">✓</span> Presupuesto
+                        <span class="check-icon">✓</span> Presupuesto: <small class="fname">{{ $any(v.filePresupuesto).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.fileMedicos">
-                        <span class="check-icon">✓</span> Cert. Médicos
-                    </div>
-                    <div class="file-read-item highlight" *ngIf="v.fileFotos">
-                        <span class="check-icon">✓</span> Fotos Daños
+                        <span class="check-icon">✓</span> Médicos: <small class="fname">{{ $any(v.fileMedicos).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.fileCBU">
-                        <span class="check-icon">✓</span> Comprobante CBU
+                        <span class="check-icon">✓</span> CBU: <small class="fname">{{ $any(v.fileCBU).name }}</small>
                     </div>
                     <div class="file-read-item" *ngIf="v.fileDenunciaPenal">
-                        <span class="check-icon">✓</span> Denuncia Penal
+                        <span class="check-icon">✓</span> D. Penal: <small class="fname">{{ $any(v.fileDenunciaPenal).name }}</small>
                     </div>
+
+                    <div class="file-read-item highlight photo-block" *ngIf="v.fileFotos">
+                        <div class="ph-head">
+                            <span class="check-icon">✓</span> Fotos Daños ({{ $any(v.fileFotos)?.length }})
+                        </div>
+                        <ul class="photo-names-list">
+                            <li *ngFor="let name of fotosList">{{ name }}</li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -14,24 +14,24 @@ export class FaqComponent {
 
   faqs = [
     {
-      pregunta: '¿Tengo que pagar algo para iniciar?',
-      respuesta: 'No. En Reclama Ya trabajamos "a resultado". Adelantamos todos los gastos administrativos y legales. Solo cobramos nuestros honorarios (20%) una vez que vos tenés el dinero de la indemnización en tu cuenta. Si no ganamos, no pagás nada.'
+      pregunta: '¿Es un servicio gratuito?',
+      respuesta: 'No cobramos gastos de inicio en etapa administrativa. Impulsamos el reclamo nosotros mismos para negociar la mayor indemnización. Se cobrarán honorarios a resultado del 20% de la indemnización, una vez acreditado el capital en tu cuenta. Si no cobrás, nosotros tampoco.'
     },
     {
-      pregunta: '¿Cuánto tiempo demora el cobro?',
-      respuesta: 'Depende de cada aseguradora, pero nuestro sistema digital acelera los tiempos. Un reclamo administrativo promedio suele resolverse entre 30 y 60 días hábiles desde que presentamos toda la documentación completa.'
+      pregunta: '¿Qué pasa si la oferta no cumple mis expectativas?',
+      respuesta: 'Ningún problema. En ese caso pedimos una reevaluación a la aseguradora para que el monto ofrecido repare los daños sufridos, o bien te informaremos los pasos a seguir para avanzar a una instancia de mayor tenor legal.'
     },
     {
-      pregunta: 'Chocaron mi auto estacionado, ¿puedo reclamar?',
-      respuesta: 'Sí, absolutamente. Si tenés los datos del tercero (patente y aseguradora), podemos iniciar el reclamo aunque no hayas estado presente en el momento del impacto. Es fundamental que tengas fotos de los daños.'
+      pregunta: '¿Qué pasa si la aseguradora demora en contestar?',
+      respuesta: 'Nuestro sistema actualiza constantemente los tiempos de demora de cada aseguradora. Estamos atentos para realizar el reclamo respectivo en caso de retraso, manteniéndote informado en todo momento.'
     },
     {
-      pregunta: '¿Qué documentación necesito?',
-      respuesta: 'Lo básico para arrancar es: DNI, Licencia de Conducir, Cédula Verde o Azul y Fotos de los daños. Si no tenés seguro vigente, nuestro sistema genera tu Declaración Jurada automáticamente.'
+      pregunta: '¿Qué pasa si no termino de cargar la documentación?',
+      respuesta: 'No hay problema. Podés subir la documentación que tengas a mano y continuar la carga más tarde. Tené en cuenta que hay documentación obligatoria para avanzar, la cual está detallada en el sistema.'
     },
     {
-      pregunta: '¿Puedo revocar a mi abogado actual?',
-      respuesta: 'Sí. Es tu derecho elegir quién te representa. Nosotros nos encargamos de la gestión de revocación de forma ética y profesional, notificando al abogado anterior para que puedas traer tu caso con nosotros sin estrés.'
+      pregunta: '¿Qué sucede con la documentación que subí al finalizar?',
+      respuesta: 'El sistema funciona como una base de datos segura. Cada documento quedará cargado, resguardado bajo estrictas políticas de privacidad y seguridad, disponible para vos o tus asegurados en cualquier momento.'
     }
   ];
 

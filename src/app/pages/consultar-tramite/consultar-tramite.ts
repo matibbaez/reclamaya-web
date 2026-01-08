@@ -9,7 +9,7 @@ import { of } from 'rxjs';
   selector: 'app-consultar-tramite',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './consultar-tramite.html', // Asegurate que coincida el nombre
+  templateUrl: './consultar-tramite.html',
   styleUrl: './consultar-tramite.scss'
 })
 export class ConsultarTramiteComponent {
@@ -25,11 +25,18 @@ export class ConsultarTramiteComponent {
   isLoading = false;
   errorMensaje = '';
 
-  // Variables para la vista
+  // ESTADOS DEL PDF (Secuenciales)
+  readonly pasosTimeline = [
+    { id: 'Enviado', label: 'Enviado' },
+    { id: 'Recepcionado', label: 'Recepcionado' },
+    { id: 'Iniciado', label: 'Iniciado' },
+    { id: 'Negociacion', label: 'Negociación' },
+    { id: 'Indemnizando', label: 'Indemnizando' },
+    { id: 'Indemnizado', label: 'Finalizado' } 
+  ];
+
   pasoActual = 0; 
   claseEstado = 'info'; 
-  
-  // Variable para la animación del input
   isInputFocused = false; 
 
   onSubmit() {
@@ -62,41 +69,31 @@ export class ConsultarTramiteComponent {
       });
   }
 
-  // --- EL CEREBRO DE LA LÍNEA DE TIEMPO ---
   private calcularEstadoVisual(estadoBackend: string) {
-    switch (estadoBackend) {
-      case 'Enviado':
-      case 'Recepcionado':
-        this.pasoActual = 0;
-        this.claseEstado = 'info';
-        break;
-      case 'Iniciado':
-      case 'Negociacion':
-        this.pasoActual = 1;
-        this.claseEstado = 'warning';
-        break;
-      case 'Indemnizando':
-        this.pasoActual = 2;
-        this.claseEstado = 'success';
-        break;
-      case 'Indemnizado':
-        this.pasoActual = 3;
-        this.claseEstado = 'success';
-        break;
-      case 'Rechazado':
-        this.pasoActual = 3;
+    if (estadoBackend === 'Rechazado') {
+        this.pasoActual = -1; // Estado especial
         this.claseEstado = 'danger';
-        break;
-      default:
-        this.pasoActual = 0;
-        this.claseEstado = 'info';
+        return;
     }
+
+    // Buscamos en qué índice del array está el estado actual
+    const index = this.pasosTimeline.findIndex(p => p.id === estadoBackend);
+    
+    // Si no lo encuentra (por error), asumimos 0
+    this.pasoActual = index >= 0 ? index : 0;
+
+    // Colores del banner
+    if (this.pasoActual < 2) this.claseEstado = 'info';
+    else if (this.pasoActual < 4) this.claseEstado = 'warning';
+    else this.claseEstado = 'success';
   }
 
-  // Calcula el ancho de la barra de progreso en Desktop
   getProgressWidth() {
-    const step = this.pasoActual; // 0, 1, 2, 3
-    const percent = (step / 3) * 100; // Dividimos por 3 espacios
+    // Si es rechazado, llenamos la barra completa (se pintará roja por CSS)
+    if (this.resultado?.estado === 'Rechazado') return '100%';
+    
+    const totalPasos = this.pasosTimeline.length - 1;
+    const percent = (this.pasoActual / totalPasos) * 100;
     return `${percent}%`;
   }
 

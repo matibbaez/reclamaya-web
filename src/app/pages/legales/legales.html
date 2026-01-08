@@ -1,0 +1,58 @@
+<div class="legales-container fade-in">
+  
+  <header class="legales-header">
+    <h1>Información Legal</h1>
+    <p>Transparencia y seguridad en cada gestión.</p>
+  </header>
+
+  <div class="tabs-container">
+    <button class="tab-btn" [class.active]="activeTab === 'terminos'" (click)="setTab('terminos')">
+      Términos y Condiciones
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'privacidad'" (click)="setTab('privacidad')">
+      Política de Privacidad
+    </button>
+  </div>
+
+  <div class="content-box">
+    
+    <div *ngIf="activeTab === 'terminos'" class="text-content fade-in">
+      <h3>Términos del Servicio</h3>
+      <p class="last-update">Última actualización: Enero 2025</p>
+
+      <h4>1. Condiciones Generales</h4>
+      <p>Este sitio web es operado por Trust Alliance S.R.L. Al visitar nuestro sitio y/o solicitar un servicio, aceptas los siguientes términos y condiciones. Nos reservamos el derecho de rechazar la prestación del servicio a cualquier persona, por cualquier motivo y en cualquier momento.</p>
+
+      <h4>2. Representación y Gestión</h4>
+      <p>El usuario otorga mandato a Reclama Ya para realizar gestiones extrajudiciales y administrativas ante las compañías de seguros. El objetivo es obtener la indemnización correspondiente por el siniestro denunciado.</p>
+
+      <h4>3. Honorarios a Resultado</h4>
+      <p><strong>El servicio no tiene gastos de inicio.</strong> Se pactan honorarios profesionales del 20% (veinte por ciento) del monto total bruto que se obtenga como indemnización. Estos se abonarán únicamente si la gestión es exitosa y una vez que el cliente perciba el dinero.</p>
+
+      <h4>4. Declaración Jurada y Fraude</h4>
+      <p>El usuario declara bajo juramento que los datos y la documentación aportada son reales. Se prohíbe el uso del servicio para intentar obtener una indemnización mediante engaño, falsificación de documentos o falseando la realidad de los hechos (Sección 6 - Usos Prohibidos).</p>
+
+      <h4>5. Propiedad Intelectual</h4>
+      <p>Estás de acuerdo con no reproducir, duplicar, copiar, vender, revender o explotar cualquier parte del Servicio sin el expreso permiso por escrito de nuestra parte.</p>
+    </div>
+
+    <div *ngIf="activeTab === 'privacidad'" class="text-content fade-in">
+      <h3>Política de Privacidad y Seguridad</h3>
+      <p class="last-update">Protección de Datos Personales</p>
+
+      <h4>1. ¿Qué hacemos con tu información?</h4>
+      <p>Cuando solicitás los servicios de Reclama Ya, recolectamos información personal como: nombre, apellido, DNI/CUIT, domicilio, celular, correo electrónico y datos del siniestro. Esta información se utiliza exclusivamente para la gestión del reclamo.</p>
+
+      <h4>2. Consentimiento</h4>
+      <p>Cuando nos proveés tu información personal para iniciar un trámite, implicamos que aceptás la recolección y uso por esa razón específica solamente. Podés anular tu consentimiento en cualquier momento contactándonos a trustalliacesrl@gmail.com.</p>
+
+      <h4>3. Seguridad</h4>
+      <p>Para proteger tu información personal, tomamos precauciones razonables y seguimos las mejores prácticas de la industria para asegurarnos de que no haya pérdida inapropiada, mal uso, acceso no autorizado, divulgación, alteración o destrucción de la misma.</p>
+
+      <h4>4. Servicios de Terceros</h4>
+      <p>En general, los proveedores de terceras partes utilizados por nosotros (como servidores o herramientas de gestión) solo recopilarán, usarán y divulgarán tu información en la medida que sea necesaria para desempeñar los servicios que nos proveen.</p>
+    </div>
+
+  </div>
+
+</div>

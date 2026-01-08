@@ -674,3 +674,48 @@ input:checked + .slider:before { transform: translateX(22px); }
     .card-header-file label { color: $danger; }
   }
 }
+
+/* Estilos para nombres de archivo en confirmación */
+.fname {
+    margin-left: 5px;
+    color: #64748b;
+    font-weight: 500;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Bloque especial para fotos */
+.file-read-item.photo-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 12px; /* Menos radio para que no sea pill */
+    padding: 1rem;
+    width: 100%;
+    
+    .ph-head {
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .photo-names-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        
+        li {
+            font-size: 0.85rem;
+            color: #ea580c; /* Naranja oscuro */
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(251, 146, 60, 0.2);
+            &:last-child { border-bottom: none; }
+            &::before { content: '• '; margin-right: 4px; }
+        }
+    }
+}
