@@ -1,13 +1,18 @@
-// Variables copiadas para consistencia
+/* VARIABLES */
 $bg-dark: #0f172a;
 $bg-light: #f8fafc;
 $primary: #3b82f6;
-$accent: #f59e0b; // NARANJA RECLAMAYA
+$accent: #f59e0b; 
 $text-muted: #64748b;
 
 .faq-section {
   padding: 6rem 0;
   background-color: white; 
+  
+  /* Ajuste Mobile: Menos aire arriba/abajo */
+  @media (max-width: 768px) {
+    padding: 3.5rem 0; 
+  }
 }
 
 .container {
@@ -16,7 +21,7 @@ $text-muted: #64748b;
   padding: 0 1.5rem;
 }
 
-/* HEADER (Igual que Steps para consistencia) */
+/* HEADER */
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
@@ -32,6 +37,13 @@ $text-muted: #64748b;
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    
+    /* Mobile: Badge más chiquito */
+    @media (max-width: 768px) {
+      font-size: 0.7rem;
+      padding: 4px 12px;
+      margin-bottom: 0.8rem;
+    }
   }
 
   h2 {
@@ -39,6 +51,12 @@ $text-muted: #64748b;
     font-weight: 800;
     color: $bg-dark;
     margin-bottom: 1rem;
+    
+    /* Mobile: Título controlado (igual que las otras secciones) */
+    @media (max-width: 768px) {
+      font-size: 1.8rem; 
+      margin-bottom: 0.5rem;
+    }
   }
 
   p {
@@ -47,40 +65,51 @@ $text-muted: #64748b;
     max-width: 600px;
     margin: 0 auto;
     line-height: 1.6;
+    
+    @media (max-width: 768px) {
+      font-size: 0.95rem;
+    }
+  }
+  
+  /* Mobile: Menos espacio entre título y lista */
+  @media (max-width: 768px) {
+    margin-bottom: 2rem; 
   }
 }
 
-/* LISTA DE PREGUNTAS */
+/* LISTA */
 .faq-list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem; // Espacio entre tarjetas
+  gap: 1.25rem;
+  
+  /* Mobile: Preguntas más pegaditas */
+  @media (max-width: 768px) {
+    gap: 0.8rem; 
+  }
 }
 
 .faq-item {
   background: white;
-  border-radius: 16px;
-  // Borde sutil por defecto
+  border-radius: 16px; /* Bordes redondeados modernos */
   border: 1px solid #e2e8f0; 
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
 
-  /* HOVER: Sombra suave y borde azulito */
   &:hover {
     border-color: rgba($primary, 0.3);
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
   }
 
-  /* ESTADO ACTIVO (Abierto) */
+  /* ESTADO ACTIVO */
   &.active {
-    border-color: rgba($accent, 0.5); // Borde naranja suave
-    box-shadow: 0 10px 25px -5px rgba($accent, 0.15); // Glow naranja
+    border-color: rgba($accent, 0.5);
+    box-shadow: 0 10px 25px -5px rgba($accent, 0.15);
     background: #fff;
 
-    // Barra lateral naranja de identidad
     &::before {
       content: '';
       position: absolute;
@@ -90,14 +119,12 @@ $text-muted: #64748b;
     }
 
     .faq-head {
-      background: rgba($accent, 0.03); // Fondo naranja muuuuy sutil en el título
-      
-      .question-text { color: darken($accent, 10%); } // Texto naranja oscuro
-      
+      background: rgba($accent, 0.03);
+      .question-text { color: darken($accent, 10%); }
       .icon-wrapper {
         background: $accent;
         color: white;
-        transform: rotate(180deg); // Flecha para arriba
+        transform: rotate(180deg);
       }
     }
   }
@@ -109,6 +136,12 @@ $text-muted: #64748b;
   justify-content: space-between;
   align-items: center;
   transition: background 0.3s;
+  
+  /* Mobile: Padding mucho más ajustado para reducir altura */
+  @media (max-width: 768px) {
+    padding: 1rem 1.2rem; 
+    min-height: 60px; /* Altura mínima cómoda para el dedo */
+  }
 
   .question-text {
     font-weight: 700;
@@ -116,20 +149,30 @@ $text-muted: #64748b;
     color: $bg-dark;
     transition: color 0.3s;
     margin-right: 1rem;
+    
+    /* Mobile: Texto un pelín más chico */
+    @media (max-width: 768px) {
+      font-size: 0.95rem; 
+      line-height: 1.3;
+    }
   }
 
   .icon-wrapper {
     width: 32px; height: 32px;
     border-radius: 50%;
-    background: #f1f5f9; // Gris clarito por defecto
+    background: #f1f5f9;
     color: $text-muted;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); // Efecto rebote suave
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 
     svg { width: 18px; height: 18px; }
+    
+    /* Mobile: Icono más discreto */
+    @media (max-width: 768px) {
+      width: 28px; height: 28px;
+      svg { width: 16px; height: 16px; }
+    }
   }
 }
 
@@ -138,32 +181,30 @@ $text-muted: #64748b;
   overflow: hidden;
   transition: max-height 0.5s ease-in-out;
   background: white;
+
+  &.show {
+    max-height: 600px;
+  }
   
   .body-content {
-    padding: 0 2rem 2rem 2rem; // Espacio interno
+    padding: 0 2rem 2rem 2rem;
+    
+    /* Mobile: Padding contenido */
+    @media (max-width: 768px) {
+      padding: 0 1.2rem 1.5rem 1.2rem; 
+    }
     
     p {
       color: #475569;
       line-height: 1.7;
       font-size: 1rem;
       margin: 0;
+      
+      @media (max-width: 768px) {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #64748b;
+      }
     }
   }
-
-  &.show {
-    max-height: 300px; // Altura máxima esperada
-  }
-}
-
-// RESPONSIVE
-@media (max-width: 768px) {
-  .section-header h2 { font-size: 2rem; }
-  
-  .faq-head { 
-    padding: 1.25rem 1.5rem; 
-    
-    .question-text { font-size: 1rem; }
-  }
-  
-  .faq-body .body-content { padding: 0 1.5rem 1.5rem 1.5rem; }
 }
