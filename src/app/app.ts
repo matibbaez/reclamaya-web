@@ -46,12 +46,9 @@ export class AppComponent implements OnInit {
     }
     requestAnimationFrame(raf);
 
-    // 3. ¡LA MAGIA! DETECTAMOS CUANDO CAMBIA LA RUTA
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd) // Solo cuando terminó de navegar
+      filter(event => event instanceof NavigationEnd) 
     ).subscribe(() => {
-      // Le decimos a Lenis: "Llevame arriba suavemente"
-      // immediate: false fuerza la animación suave
       lenis.scrollTo(0, { immediate: false });
     });
   }

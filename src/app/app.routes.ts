@@ -38,27 +38,27 @@ export const routes: Routes = [
   { 
     path: 'admin-dashboard', 
     component: AdminDashboardComponent, 
-    canActivate: [adminGuard], // 👈 CAMBIÁ authGuard POR adminGuard
+    canActivate: [adminGuard], 
     data: { animation: 'AdminPage' } 
   },
 
   { 
     path: 'mi-equipo', 
     component: MiEquipoComponent, 
-    canActivate: [adminGuard], // 👈 ESTO TAMBIÉN ES SOLO DE ADMIN
+    canActivate: [adminGuard], 
   },
   
   { 
     path: 'reclamo/:id', 
     component: DetalleReclamoComponent,
-    canActivate: [authGuard], // Protegida (Admin o Productor)
+    canActivate: [authGuard], 
     data: { animation: 'DetallePage' } 
   },
 
   { 
     path: 'mis-referidos', 
     component: MisReferidosComponent, 
-    canActivate: [authGuard], // 🔒 Protegida: requiere login
+    canActivate: [authGuard], 
     data: { animation: 'ReferidosPage' } 
   },
   { 

@@ -4,7 +4,7 @@ export const fadeAnimation = trigger('routeAnimations', [
   transition('* <=> *', [
     // Cuando la página entra (:enter)
     query(':enter', [
-      style({ opacity: 0, transform: 'translateY(20px)' }) // Empieza invisible y 20px abajo
+      style({ opacity: 0, transform: 'translateY(20px)' }) 
     ], { optional: true }),
 
     // La animamos hacia su posición final
