@@ -137,6 +137,17 @@
                   </label>
                 </div>
 
+                <div class="switch-box" *ngIf="esConductor && tieneSeguro">
+                    <div class="switch-info">
+                      <span class="label">¿Ya hiciste la Denuncia?</span>
+                      <span class="sub-label">Administrativa (en tu seguro).</span>
+                    </div>
+                    <label class="switch">
+                      <input type="checkbox" formControlName="hizo_denuncia" (change)="toggleDenuncia($event.target.checked)">
+                      <span class="slider round"></span>
+                    </label>
+                </div>
+
                 <div class="switch-box">
                   <div class="switch-info">
                     <span class="label">¿Sufriste heridas?</span>
@@ -244,19 +255,20 @@
               </div>
             </div>
 
-            <div class="form-section">
-              <h4 class="section-title">Detalles del Siniestro</h4>
-
-              <div class="grid-2" *ngIf="esConductor">
-                <div class="input-group">
-                  <label>Tu Patente</label>
-                  <input type="text" formControlName="patente_propia" class="input-modern uppercase" placeholder="AA123BB"
-                         [class.error-border]="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
-                  <div *ngIf="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
-                     <small class="error-msg">Patente inválida.</small>
-                  </div>
+            <div class="form-section" *ngIf="esConductor">
+              <h4 class="section-title">Datos del Vehículo</h4>
+              <div class="input-group">
+                <label>Tu Patente</label>
+                <input type="text" formControlName="patente_propia" class="input-modern uppercase" placeholder="AA123BB"
+                       [class.error-border]="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
+                <div *ngIf="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
+                    <small class="error-msg">Patente inválida.</small>
                 </div>
               </div>
+            </div>
+
+            <div class="form-section" *ngIf="!hizoDenuncia">
+              <h4 class="section-title">Detalles del Siniestro</h4>
 
               <div class="grid-2">
                 <div class="input-group">
@@ -265,9 +277,9 @@
                          [class.error-border]="f['fecha_hecho'].invalid && (f['fecha_hecho'].dirty || f['fecha_hecho'].touched)">
                   
                   <div *ngIf="f['fecha_hecho'].invalid && (f['fecha_hecho'].dirty || f['fecha_hecho'].touched)">
-                     <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['required']">La fecha es obligatoria.</small>
-                     <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['futuro']">No puede ser una fecha futura.</small>
-                     <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['prescripto']">El reclamo ha prescrito (más de 3 años).</small>
+                      <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['required']">La fecha es obligatoria.</small>
+                      <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['futuro']">No puede ser una fecha futura.</small>
+                      <small class="error-msg" *ngIf="f['fecha_hecho'].errors?.['prescripto']">El reclamo ha prescrito (más de 3 años).</small>
                   </div>
                 </div>
 
@@ -277,7 +289,7 @@
                          [class.error-border]="f['hora_hecho'].invalid && (f['hora_hecho'].dirty || f['hora_hecho'].touched)">
                   
                   <div *ngIf="f['hora_hecho'].invalid && (f['hora_hecho'].dirty || f['hora_hecho'].touched)">
-                     <small class="error-msg">La hora es obligatoria.</small>
+                      <small class="error-msg">La hora es obligatoria.</small>
                   </div>
                 </div>
               </div>
@@ -303,7 +315,7 @@
                     <option *ngFor="let p of provincias" [value]="p">{{ p }}</option>
                   </select>
                   <div *ngIf="f['provincia'].invalid && (f['provincia'].dirty || f['provincia'].touched)">
-                     <small class="error-msg">Requerido.</small>
+                      <small class="error-msg">Requerido.</small>
                   </div>
                 </div>
 
@@ -312,7 +324,7 @@
                   <input type="text" formControlName="localidad" class="input-modern"
                          [class.error-border]="f['localidad'].invalid && (f['localidad'].dirty || f['localidad'].touched)">
                   <div *ngIf="f['localidad'].invalid && (f['localidad'].dirty || f['localidad'].touched)">
-                     <small class="error-msg">Requerido.</small>
+                      <small class="error-msg">Requerido.</small>
                   </div>
                 </div>
               </div>
@@ -660,15 +672,34 @@
                     </div>
                 </div>
 
-                <div class="file-upload-card">
-                    <div class="card-header-file"><label>Comprobante de CBU</label><span class="file-hint">Opcional para acreditar cuenta.</span></div>
+                <div class="file-upload-card"
+                     [class.uploaded]="f['fileCBU'].value"
+                     [class.error-border]="f['fileCBU'].invalid && (f['fileCBU'].dirty || f['fileCBU'].touched)">
+                     
+                    <div class="card-header-file">
+                        <label>Comprobante de CBU / Alias</label>
+                        <span class="file-hint">Captura de pantalla del Homebanking o ticket de cajero donde se vean tus datos.</span>
+                    </div>
+
                     <div class="upload-area">
                         <input type="file" id="fileCBU" hidden (change)="onFileChange($event, 'fileCBU')">
                         <label for="fileCBU" class="drop-zone">
-                            <div *ngIf="!f['fileCBU'].value" class="placeholder-content"><span>Subir archivo</span></div>
-                            <div *ngIf="f['fileCBU'].value" class="file-preview"><div class="icon-check">✓</div><span class="filename">{{ getFileName('fileCBU') }}</span></div>
+                            <div *ngIf="!f['fileCBU'].value" class="placeholder-content">
+                                <div class="icon-upload">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                                </div>
+                                <span>Subir captura</span>
+                            </div>
+                            <div *ngIf="f['fileCBU'].value" class="file-preview">
+                                <div class="icon-check">✓</div>
+                                <span class="filename">{{ getFileName('fileCBU') }}</span>
+                            </div>
                         </label>
                     </div>
+                    
+                    <small class="error-msg" *ngIf="f['fileCBU'].invalid && (f['fileCBU'].dirty || f['fileCBU'].touched)">
+                        ⚠ El comprobante de CBU es obligatorio.
+                    </small>
                 </div>
 
               </div>
@@ -726,16 +757,19 @@
             <div class="summary-section">
                 <h4 class="summary-title">El Siniestro</h4>
                 <div class="summary-grid">
-                    <div class="data-row full">
+                    <div class="data-row full" *ngIf="!v.hizo_denuncia">
                         <label>Lugar:</label> <span>{{ v.lugar_hecho }}, {{ v.localidad }}</span>
                     </div>
-                    <div class="data-row">
+
+                    <div class="data-row" *ngIf="!v.hizo_denuncia">
                         <label>Fecha:</label> <span>{{ v.fecha_hecho }} {{ v.hora_hecho }}</span>
                     </div>
-                    <div class="data-row">
+
+                    <div class="data-row" *ngIf="!v.hizo_denuncia">
                         <label>Policía:</label> <span>{{ v.intervino_policia ? 'Sí' : 'No' }}</span>
                     </div>
-                    <div class="data-row">
+
+                    <div class="data-row" *ngIf="!v.hizo_denuncia">
                         <label>Ambulancia:</label> <span>{{ v.intervino_ambulancia ? 'Sí' : 'No' }}</span>
                     </div>
                     <div class="data-row" *ngIf="esConductor && tieneSeguro">

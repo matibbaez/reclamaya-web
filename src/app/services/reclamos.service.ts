@@ -23,6 +23,7 @@ export interface IReclamo {
   // Datos Siniestro
   rol_victima: string;
   tiene_seguro: boolean;
+  hizo_denuncia?: boolean;
   aseguradora_tercero: string;
   patente_tercero?: string;
   patente_propia?: string;

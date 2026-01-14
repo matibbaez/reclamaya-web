@@ -60,6 +60,7 @@ export class IniciarReclamoComponent implements OnInit {
 
     rol_victima: ['', Validators.required],
     tiene_seguro: [true], 
+    hizo_denuncia: [false],
     sufrio_lesiones: [false], 
     in_itinere: [false],
     posee_art: [false],
@@ -218,6 +219,14 @@ export class IniciarReclamoComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  get hizoDenuncia(): boolean { return this.reclamoForm.get('hizo_denuncia')?.value === true; }
+
+  toggleDenuncia(checked: boolean) {
+    this.reclamoForm.patchValue({ hizo_denuncia: checked });
+    // Forzamos actualización de validaciones
+    this.actualizarValidaciones(this.reclamoForm.get('rol_victima')?.value || 'Conductor');
+  }
+
   toggleSeguro(checked: boolean) {
     this.reclamoForm.patchValue({ tiene_seguro: checked });
     this.actualizarValidaciones(this.reclamoForm.get('rol_victima')?.value || 'Conductor');
@@ -226,8 +235,13 @@ export class IniciarReclamoComponent implements OnInit {
   actualizarValidaciones(rol: string) {
     const c = this.reclamoForm.controls;
     const tieneSeguro = this.reclamoForm.get('tiene_seguro')?.value;
+    const hizoDenuncia = this.reclamoForm.get('hizo_denuncia')?.value; // <--- Nuevo valor
 
-    ['patente_propia', 'patente_tercero', 'relato_hecho', 'fileLicencia', 'fileCedula', 
+    // Lista de campos que vamos a limpiar siempre al inicio para evitar errores acumulados
+    const camposSiniestro = ['fecha_hecho', 'hora_hecho', 'lugar_hecho', 'localidad', 'provincia', 'relato_hecho'];
+    
+    // Limpiamos validadores de todo lo dinámico primero
+    [...camposSiniestro, 'patente_propia', 'patente_tercero', 'fileLicencia', 'fileCedula', 
      'fileSeguro', 'fileDenuncia', 'fileMedicos', 'filePresupuesto',
      'tercero_nombre', 'tercero_apellido', 'tercero_dni', 'tercero_marca_modelo'
     ].forEach(key => {
@@ -236,16 +250,30 @@ export class IniciarReclamoComponent implements OnInit {
         // @ts-ignore
         c[key]?.updateValueAndValidity();
         
+        // Re-asignamos patrón de patente si corresponde
         if (key.includes('patente')) {
             // @ts-ignore
             c[key]?.addValidators(Validators.pattern(this.patentePattern));
         }
     });
 
+    // --- LÓGICA DE DETALLES DEL SINIESTRO ---
+    if (!hizoDenuncia) {
+        // SI NO hizo denuncia, estos datos son OBLIGATORIOS para poder generarla nosotros
+        c.fecha_hecho.setValidators([Validators.required, this.fechaValidator]);
+        c.hora_hecho.setValidators([Validators.required]);
+        c.lugar_hecho.setValidators([Validators.required, Validators.minLength(5), this.noWhitespaceValidator]);
+        c.localidad.setValidators([Validators.required, Validators.minLength(4), this.noWhitespaceValidator]);
+        c.provincia.setValidators([Validators.required]);
+        c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
+    } 
+    // Si hizoDenuncia es true, los campos quedan sin Validators.required (opcionales u ocultos)
+
+    // --- RESTO DE VALIDACIONES (Igual que antes) ---
     if (rol === 'Conductor') {
         c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
     }
-    c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
+    
     c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
     
     if (!tieneSeguro || rol !== 'Conductor') {
@@ -257,13 +285,20 @@ export class IniciarReclamoComponent implements OnInit {
 
     c.fileFotos.setValidators([Validators.required]);
     c.fileDNI.setValidators([Validators.required]);
+    c.fileCBU.setValidators([Validators.required]);
 
     if (rol === 'Conductor') {
         c.fileLicencia.setValidators([Validators.required]);
         c.fileCedula.setValidators([Validators.required]);
         if (tieneSeguro) {
             c.fileSeguro.setValidators([Validators.required]);
-            c.fileDenuncia.setValidators([Validators.required]);
+            
+            // IMPORTANTE: Si YA hizo la denuncia, exigimos el archivo PDF/Foto de la denuncia obligatoriamente
+            // Si NO la hizo, el archivo no es requerido (porque se lo vamos a generar nosotros)
+            if (hizoDenuncia) {
+                 c.fileDenuncia.setValidators([Validators.required]);
+            }
+            
             c.filePresupuesto.setValidators([Validators.required]);
         }
     }
