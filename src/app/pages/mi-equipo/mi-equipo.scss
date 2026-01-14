@@ -9,7 +9,7 @@ $bg-card: #ffffff;
 $bg-page: #f8fafc;
 
 .dashboard-container {
-  padding: 120px 2rem 3rem 2rem;
+  padding: 120px 1.5rem 3rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
@@ -310,3 +310,35 @@ $bg-page: #f8fafc;
 .empty-cell { text-align: center; padding: 3rem; color: $text-light; font-style: italic; }
 
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =========================================
+   SOLUCIÓN SCROLL MOBILE
+   ========================================= */
+
+/* 1. Habilitar el scroll horizontal */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* La clave para que se mueva a los costados */
+  -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
+  margin-bottom: 1rem;
+}
+
+/* 2. Ajustes específicos para celular */
+@media (max-width: 768px) {
+  
+  .dashboard-container {
+    padding: 100px 1rem 2rem 1rem; /* Menos padding lateral en mobile */
+  }
+
+  .modern-table {
+    /* Forzamos que la tabla mida mínimo 800px. 
+       Esto obliga al navegador a activar el scroll horizontal 
+       en vez de apretar todas las columnas */
+    min-width: 800px; 
+    
+    th, td {
+      padding: 10px 15px; /* Achicamos un poco el padding de celdas */
+      font-size: 0.85rem; /* Letra un poco más chica */
+    }
+  }
+}

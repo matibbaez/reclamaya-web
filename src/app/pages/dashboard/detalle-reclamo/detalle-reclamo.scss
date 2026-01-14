@@ -264,15 +264,161 @@ $dark-panel: #1e293b;
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* MEDIA QUERIES (MÓVIL) */
+/* =========================================
+   MEDIA QUERIES (OPTIMIZACIÓN MÓVIL FINAL)
+   ========================================= */
 @media (max-width: 768px) {
-  .hero-header {
-    .top-nav { flex-wrap: wrap; gap: 10px; }
-    .hero-content { flex-direction: column; align-items: stretch; .btn-whatsapp { justify-content: center; width: 100%; } }
-  }
-  .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
   
-  .files-grid { grid-template-columns: 1fr; }
+  /* 1. HERO HEADER: Ajustes de layout */
+  .hero-header {
+    padding: 1rem;
+    
+    .top-nav { 
+      flex-wrap: wrap; 
+      gap: 10px; 
+      margin-bottom: 1rem;
+    }
+
+    .hero-content { 
+      flex-direction: column !important; 
+      align-items: stretch !important; /* Botones full width */
+      gap: 1.5rem;
+
+      .title-group {
+        width: 100%;
+        h1 { font-size: 1.6rem; margin-bottom: 5px; line-height: 1.2; }
+        .meta-row { flex-wrap: wrap; gap: 8px; }
+      }
+
+      .hero-actions .btn-whatsapp { 
+        justify-content: center; 
+        width: 100%; 
+        padding: 12px;
+      }
+    }
+  }
+
+  /* 2. TIMELINE VERTICAL (LISTA DE PASOS) */
+  .timeline-wrapper {
+    margin-top: 2rem;
+    padding-left: 5px; /* Pequeño margen izq */
+
+    /* OCULTAR BARRA HORIZONTAL DE ESCRITORIO */
+    .progress-bar { display: none !important; }
+
+    .steps-container {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 0 !important;
+    }
+
+    .step-item {
+      display: flex !important;
+      flex-direction: row !important; /* Ícono lado a lado con Texto */
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      text-align: left !important;
+      
+      width: 100%;
+      position: relative;
+      padding-bottom: 2rem !important; /* Espacio vertical para la línea */
+      opacity: 1 !important;
+      
+      /* MATAMOS EL ZOOM DEL ESCRITORIO */
+      margin: 0 !important;
+      transform: none !important; 
+
+      /* --- EL CÍRCULO (DOT) --- */
+      .step-dot {
+        width: 32px !important; 
+        height: 32px !important;
+        min-width: 32px; /* Evita que se aplaste */
+        margin: 0 !important; 
+        z-index: 5; /* Arriba de la línea */
+        background: #f8fafc; /* Mismo color del fondo para tapar línea */
+        border-width: 2px !important;
+        box-shadow: none !important; /* Quitamos sombra fea */
+        font-size: 0.85rem;
+      }
+
+      /* --- EL TEXTO (LABEL) --- */
+      .step-label {
+        margin-left: 1rem !important;
+        margin-top: 5px !important; /* Centrado óptico con el círculo */
+        text-align: left !important;
+        font-size: 0.95rem;
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      /* --- LA LÍNEA CONECTORA VERTICAL --- */
+      &::before {
+        content: '';
+        position: absolute;
+        /* Cálculo: (32px ancho dot / 2) - (2px ancho línea / 2) = 15px */
+        left: 15px; 
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: #cbd5e1; /* Gris por defecto */
+        z-index: 1; /* Detrás del círculo */
+      }
+
+      /* Ajuste: La línea del primero no debe subir */
+      &:first-child::before { top: 15px; }
+
+      /* Ajuste: El último no tiene línea hacia abajo */
+      &:last-child {
+        padding-bottom: 0 !important;
+        &::before { display: none !important; }
+      }
+
+      /* --- ESTADOS (COLORES) --- */
+
+      /* 1. COMPLETADO (Ya pasó, pero no es el actual) */
+      &.active:not(.current) {
+        .step-label { color: #1e293b; font-weight: 600; }
+        
+        /* La línea hacia el siguiente se pinta azul */
+        &::before { background-color: #3b82f6; } 
+      }
+
+      /* 2. ACTUAL (Donde estás parado ahora) */
+      &.current {
+        transform: none !important; /* REFUERZO: NO AGRANDAR */
+
+        .step-dot {
+          background: #3b82f6; 
+          color: white; 
+          border-color: #3b82f6;
+          /* Sombra suave tipo glow */
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+        }
+
+        .step-label { 
+          color: #3b82f6; 
+          font-weight: 800; 
+        }
+
+        /* La línea que baja hacia el futuro queda GRIS */
+        &::before { background-color: #cbd5e1 !important; }
+      }
+    }
+  }
+
+  /* 3. GRILLAS Y PANELES GENERALES */
+  .content-grid { grid-template-columns: 1fr !important; gap: 1.5rem; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr !important; gap: 1rem; }
+  .files-grid { grid-template-columns: 1fr !important; }
+  
+  .card { padding: 1.2rem; }
+  
+  /* Badges en fila completa */
+  .context-badges .badge-item {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* BITÁCORA DE MENSAJES */

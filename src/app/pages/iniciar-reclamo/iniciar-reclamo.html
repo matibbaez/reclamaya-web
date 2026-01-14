@@ -601,14 +601,14 @@
                 </ng-container>
 
                 <div class="file-upload-card highlight" 
-                     [class.uploaded]="f['fileFotos'].value"
-                     [class.error-border]="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
+                    [class.uploaded]="f['fileFotos'].value"
+                    [class.error-border]="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
                   
                   <div class="card-header-file">
                     <label>Fotos de los Daños</label>
                     <span class="file-hint">
-                        Importante: Que se vean los daños y la patente.<br>
-                        Podés seleccionar hasta 5 fotos a la vez.
+                        Importante: Que se vean los daños y la patente. <br>
+                        Podés subir hasta 5 fotos.
                     </span>
                   </div>
 
@@ -616,23 +616,37 @@
                     <input type="file" id="fileFotos" hidden multiple (change)="onFileChange($event, 'fileFotos')">
                     
                     <label for="fileFotos" class="drop-zone">
+                      
                       <div *ngIf="!f['fileFotos'].value" class="placeholder-content">
                         <div class="icon-upload">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
                         </div>
-                        <span>Subir Fotos (Máx 5)</span>
+                        <span>Tocar para subir fotos</span>
                       </div>
 
                       <div *ngIf="f['fileFotos'].value" class="file-preview">
-                        <div class="icon-check">✓</div>
-                        <span class="filename">
-                          {{ $any(f['fileFotos'].value)?.length }} foto(s) seleccionada(s)
-                        </span>
-                        <span class="change-text">Cambiar fotos</span>
+                        <div class="status-text">
+                            <div class="icon-check">✓</div>
+                            <span>{{ fotosList.length }} foto(s) seleccionada(s)</span>
+                        </div>
+                        <span class="add-more-text">+ Agregar otra foto</span>
                       </div>
                     </label>
+
+                    <div *ngIf="f['fileFotos'].value" class="uploaded-photos-list">
+                        <div *ngFor="let name of fotosList; let i = index" class="photo-item-row fade-in">
+                            <span class="photo-name">{{ name }}</span>
+                            <button type="button" class="btn-delete-photo" (click)="borrarFoto(i)" title="Eliminar foto">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+
                   </div>
-                  <small class="error-msg" *ngIf="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">⚠ Las fotos son obligatorias.</small>
+                  
+                  <small class="error-msg" *ngIf="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
+                    ⚠ Las fotos son obligatorias.
+                  </small>
                 </div>
 
                 <div class="file-upload-card" *ngIf="f['sufrio_lesiones'].value">

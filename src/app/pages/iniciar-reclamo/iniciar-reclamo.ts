@@ -275,20 +275,44 @@ export class IniciarReclamoComponent implements OnInit {
     this.reclamoForm.updateValueAndValidity();
   }
 
+  // MÉTODO MODIFICADO: ACUMULA LAS FOTOS EN LUGAR DE REEMPLAZARLAS
   onFileChange(event: any, controlName: string) {
+    const input = event.target;
+    
+    // Lógica especial para FOTOS (Acumulativa)
     if (controlName === 'fileFotos') {
-      const files = event.target.files;
-      if (files && files.length > 0) {
-        if (files.length > 5) {
-          this.notificacionService.showError('Máximo 5 fotos permitidas.');
-          return;
-        }
-        // Guardamos el FileList completo
-        this.reclamoForm.patchValue({ [controlName]: files });
+      const newFiles = Array.from(input.files || []) as File[];
+      
+      // AQUÍ ESTÁ EL FIX: Usamos 'as any' para evitar el error 'left-hand side of instanceof...'
+      const currentVal = this.reclamoForm.get('fileFotos')?.value as any;
+      let currentFiles: File[] = [];
+
+      if (currentVal) {
+        currentFiles = (currentVal instanceof FileList) 
+          ? Array.from(currentVal) 
+          : currentVal as File[];
       }
+
+      // Combinamos (spread operator)
+      const combinedFiles = [...currentFiles, ...newFiles];
+
+      // Validamos máximo
+      if (combinedFiles.length > 5) {
+        this.notificacionService.showError(`Máximo 5 fotos. Tenés ${combinedFiles.length}.`);
+        input.value = ''; // Reseteamos input para que pueda intentar de nuevo
+        return;
+      }
+
+      // Guardamos el ARRAY acumulado en el form
+      this.reclamoForm.patchValue({ fileFotos: combinedFiles as any });
+      
+      // Reseteamos el input HTML para permitir volver a cargar la misma foto si se borró
+      // o para que el evento (change) se dispare de nuevo al agregar otra foto
+      input.value = ''; 
       return;
     }
 
+    // Lógica estándar para el resto de archivos (únicos)
     const file = event.target.files[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) { 
@@ -304,37 +328,54 @@ export class IniciarReclamoComponent implements OnInit {
     }
   }
 
+  // MÉTODO NUEVO: Permite borrar una foto individual del array acumulado
+  borrarFoto(index: number) {
+    // AQUÍ ESTÁ EL FIX: Usamos 'as any' para evitar el error
+    const currentVal = this.reclamoForm.get('fileFotos')?.value as any;
+    
+    if (currentVal) {
+      const currentFiles = (currentVal instanceof FileList) 
+          ? Array.from(currentVal) 
+          : currentVal as File[]; 
+      
+      // Borramos por índice
+      currentFiles.splice(index, 1);
+      
+      // Si el array queda vacío, seteamos null para que salte la validación 'required'
+      const newValue = currentFiles.length > 0 ? currentFiles : null;
+      this.reclamoForm.patchValue({ fileFotos: newValue as any });
+    }
+  }
+
+  // MODIFICADO: Soporte para Array<File> en fileFotos
   async confirmarReclamo() {
     this.isLoading = true;
     const v = this.reclamoForm.value;
     const formData = new FormData();
 
-    // Hacemos un bucle asíncrono manual para poder esperar la compresión
     for (const key of Object.keys(v)) {
         // @ts-ignore
         const value = v[key];
 
-        // 1. CASO ESPECIAL: FOTOS (FileList) - AQUÍ ESTABA EL PROBLEMA
-        if (key === 'fileFotos' && value instanceof FileList) {
-            // Convertimos FileList a Array para poder usar map
-            const fotosArray = Array.from(value);
+        // 1. FOTOS (Array o FileList)
+        if (key === 'fileFotos' && (Array.isArray(value) || value instanceof FileList)) {
+            // Unificamos a Array
+            const fotosArray = Array.isArray(value) ? value : Array.from(value);
             
-            // Comprimimos todas en paralelo
             const compressedFiles = await Promise.all(
-                fotosArray.map(file => this.imageCompressService.compressFile(file))
+                fotosArray.map((file: any) => this.imageCompressService.compressFile(file))
             );
 
-            // Adjuntamos CADA foto comprimida individualmente
             compressedFiles.forEach(file => {
                 formData.append('fileFotos', file);
             });
         } 
-        // 2. CASO ARCHIVOS ÚNICOS (También comprimimos si son imágenes)
+        // 2. ARCHIVOS ÚNICOS
         else if (key.startsWith('file') && value instanceof File) {
             const compressedFile = await this.imageCompressService.compressFile(value);
             formData.append(key, compressedFile);
         } 
-        // 3. RESTO DE DATOS
+        // 3. DATOS TEXTO/BOOLEAN
         else if (typeof value === 'boolean') {
              formData.append(key, String(value));
         } 
@@ -356,21 +397,30 @@ export class IniciarReclamoComponent implements OnInit {
     });
   }
 
+  // MODIFICADO: Soporte para Array<File>
   getFileName(controlName: string): string {
-    const file = this.reclamoForm.get(controlName)?.value as any; // Cast a any
+    const file = this.reclamoForm.get(controlName)?.value as any; 
     
+    if (Array.isArray(file)) {
+        return `${file.length} archivos seleccionados`;
+    }
     if (file instanceof FileList) {
         return `${file.length} archivos seleccionados`;
     }
     return (file && file instanceof File) ? file.name : '';
   }
   
+  // MODIFICADO: Soporte para Array<File>
   get fotosList(): string[] {
-    // Agregamos 'as any' para evitar el error de tipo estricto
     const files = this.reclamoForm.get('fileFotos')?.value as any;
     
-    if (files && files instanceof FileList) {
-        // Mapeamos explícitamente
+    if (!files) return [];
+
+    if (Array.isArray(files)) {
+        return files.map((f: any) => f.name);
+    }
+    
+    if (files instanceof FileList) {
         return Array.from(files).map((f: any) => f.name);
     }
     return [];

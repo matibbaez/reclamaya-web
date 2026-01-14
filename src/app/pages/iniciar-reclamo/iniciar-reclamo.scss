@@ -758,3 +758,88 @@ input:checked + .slider:before { transform: translateX(22px); }
         }
     }
 }
+
+/* --- ESTILOS PARA LA LISTA DE FOTOS ACUMULADAS --- */
+
+/* Ajuste para el preview dentro del Dropzone cuando ya hay fotos */
+.file-upload-card .file-preview {
+    flex-direction: column !important; /* Forzamos columna para mostrar texto abajo */
+    gap: 5px;
+    
+    .status-text {
+        font-weight: 600;
+        color: #334155;
+        font-size: 0.95rem;
+        display: flex; 
+        align-items: center; 
+        gap: 6px;
+    }
+
+    .add-more-text {
+        font-size: 0.85rem;
+        color: $primary;
+        font-weight: 500;
+        text-decoration: underline;
+        margin-top: 2px;
+        cursor: pointer;
+    }
+}
+
+/* Contenedor de la lista de fotos debajo del input */
+.uploaded-photos-list {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Cada fila de foto individual */
+.photo-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+
+    &:hover {
+        border-color: #cbd5e1;
+        background-color: #f8fafc;
+    }
+
+    .photo-name {
+        font-size: 0.85rem;
+        color: #475569;
+        font-weight: 500;
+        
+        /* Truncar texto si es muy largo */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80%;
+        display: block;
+    }
+
+    /* Botón de borrar (X) */
+    .btn-delete-photo {
+        background: none;
+        border: none;
+        color: $danger; /* Rojo */
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 4px 8px;
+        line-height: 1;
+        border-radius: 4px;
+        transition: background 0.2s;
+
+        &:hover {
+            background-color: #fef2f2;
+            color: darken($danger, 10%);
+        }
+    }
+}
