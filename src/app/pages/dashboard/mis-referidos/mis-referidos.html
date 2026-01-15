@@ -11,8 +11,8 @@
     
     <div class="header-actions" *ngIf="!authService.esTramitador">
       <a [routerLink]="['/iniciar-reclamo']" 
-         [queryParams]="{ ref: productorId }" 
-         class="btn-new-claim">
+          [queryParams]="{ ref: productorId }" 
+          class="btn-new-claim">
         <span>+</span> Cargar Caso
       </a>
     </div>
@@ -78,7 +78,7 @@
             <button (click)="copiarLink(linkProductores)" class="btn-copy btn-gold"><lucide-icon [img]="icons.Copy" size="16"></lucide-icon></button>
           </div>
           <a [href]="'https://wa.me/?text=Sumate%20a%20mi%20equipo:%20' + linkProductores" target="_blank" class="btn-whatsapp">
-             <lucide-icon [img]="icons.Share2" size="18"></lucide-icon> Invitar
+              <lucide-icon [img]="icons.Share2" size="18"></lucide-icon> Invitar
           </a>
         </div>
     </div>
@@ -154,6 +154,7 @@
           <tr>
             <th>Fecha</th>
             <th>Asegurado</th>
+            <th>Cargado Por</th>
             <th>Código</th>
             <th>Estado</th>
             <th class="text-right"></th>
@@ -174,6 +175,19 @@
                    <span class="font-bold">{{ item.nombre }}</span>
                    <small class="text-muted">{{ item.dni }}</small>
                  </div>
+               </div>
+            </td>
+            
+            <td>
+               <div *ngIf="item.usuario_creador?.id === authService.currentUserValue?.id" 
+                    style="color: #94a3b8; font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
+                   <lucide-icon [img]="icons.CheckCircle2" size="14"></lucide-icon> Mí gestión
+               </div>
+
+               <div *ngIf="item.usuario_creador?.id !== authService.currentUserValue?.id" 
+                    style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #bae6fd; display: inline-flex; align-items: center; gap: 5px;">
+                   <lucide-icon [img]="icons.Users" size="14"></lucide-icon>
+                   {{ item.usuario_creador?.nombre || 'Productor' }}
                </div>
             </td>
             <td><span class="code-pill">{{ item.codigo_seguimiento }}</span></td>

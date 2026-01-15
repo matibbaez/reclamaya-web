@@ -156,11 +156,15 @@ export class DetalleReclamoComponent implements OnInit {
       representacion: FileText, honorarios: FileText
     };
 
+    const esNoSeguro = r.tiene_seguro === false;
+    const etiquetaPoliza = esNoSeguro ? 'Carta No Seguro' : 'Póliza';
+    const subPoliza = esNoSeguro ? 'Declaración Jurada' : 'Seguro Vigente';
+
     const docs = [
       { key: 'dni', label: 'DNI', sub: 'Identidad', path: r.path_dni },
       { key: 'licencia', label: 'Licencia', sub: 'Conductor', path: r.path_licencia },
       { key: 'cedula', label: 'Cédula', sub: 'Vehículo', path: r.path_cedula },
-      { key: 'poliza', label: 'Póliza', sub: 'Seguro', path: r.path_poliza },
+      { key: 'poliza', label: etiquetaPoliza, sub: subPoliza, path: r.path_poliza },
       { key: 'denuncia', label: 'Denuncia', sub: 'Administrativa', path: r.path_denuncia },
       { key: 'medicos', label: 'Médicos', sub: 'Certificados', path: r.path_medicos, alert: true },
       
@@ -174,7 +178,7 @@ export class DetalleReclamoComponent implements OnInit {
     ];
 
     this.archivosDisponibles = docs.filter(d => d.path).map(d => ({
-      ...d, icon: iconMap[d.key] || FileText
+      ...d, icon: (d.key === 'poliza' && esNoSeguro) ? FileText : (iconMap[d.key] || FileText)
     }));
   }
 

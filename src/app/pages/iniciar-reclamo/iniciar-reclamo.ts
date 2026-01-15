@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -6,16 +6,19 @@ import { TerminosModalComponent } from '../../components/terminos-modal/terminos
 import { ReclamosService } from '../../services/reclamos.service';
 import { NotificacionService } from '../../services/notificacion';
 import { ImageCompressService } from '../../services/image-compress.service';
+import { UiSignatureComponent } from '../../components/ui-signature/ui-signature';
 
 @Component({
   selector: 'app-iniciar-reclamo',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, TerminosModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TerminosModalComponent, UiSignatureComponent],
   templateUrl: './iniciar-reclamo.html',
   styleUrl: './iniciar-reclamo.scss'
 })
 export class IniciarReclamoComponent implements OnInit {
 
+  @ViewChild('firmaPad') firmaPad!: UiSignatureComponent;
+  errorFirma = false;
   private fb = inject(FormBuilder);
   private reclamosService = inject(ReclamosService); 
   private router = inject(Router);
@@ -23,6 +26,7 @@ export class IniciarReclamoComponent implements OnInit {
   private notificacionService = inject(NotificacionService);
   private imageCompressService = inject(ImageCompressService);
 
+  docActivo: 'poder' | 'honorarios' | 'no_seguro' = 'poder';
   mostrarTerminos = true; 
   isLoading = false;
   pasoActual = 0; 
@@ -120,6 +124,38 @@ export class IniciarReclamoComponent implements OnInit {
         this.reclamoForm.patchValue({ codigo_ref: referido });
       }
     });
+  }
+
+  get textoPoder(): string {
+    return `CARTA PODER - REPRESENTACIÓN LETRADA
+    
+    Por la presente, yo, ${this.v.nombre}, titular del DNI Nº ${this.v.dni}, otorgo poder suficiente a los letrados de RECLAMA YA para que actúen en mi nombre y representación ante la compañía aseguradora correspondiente, organismos administrativos y/o judiciales, en relación al siniestro denunciado.
+
+    Faculto a los mismos para presentar documentación, realizar denuncias, tramitar el reclamo y percibir indemnizaciones.`;
+  }
+
+  get textoHonorarios(): string {
+    return `CONVENIO DE HONORARIOS PROFESIONALES
+
+    Entre el cliente, ${this.v.nombre}, y RECLAMA YA, se acuerda lo siguiente:
+
+    PRIMERO: Los honorarios profesionales por la gestión extrajudicial del reclamo se pactan en el 20% (veinte por ciento) del monto total bruto que se obtenga como indemnización por parte de la compañía aseguradora.
+
+    SEGUNDO: Dicho porcentaje será abonado una vez que el cliente perciba efectivamente la indemnización.
+
+    TERCERO: En caso de no obtenerse indemnización alguna, el cliente no deberá abonar honorarios (resultado negativo).`;
+  }
+
+  get textoNoSeguro(): string {
+    return `DECLARACIÓN JURADA - INEXISTENCIA DE SEGURO
+
+    Por la presente, declaro bajo juramento que al momento del siniestro ocurrido el día ${this.v.fecha_hecho} en ${this.v.lugar_hecho}, mi vehículo NO poseía cobertura de seguro vigente.
+
+    Asimismo, ratifico el relato de los hechos declarado en este formulario.`;
+  }
+
+  onFirmaRealizada() {
+    this.errorFirma = false;
   }
 
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
@@ -232,50 +268,53 @@ export class IniciarReclamoComponent implements OnInit {
     this.actualizarValidaciones(this.reclamoForm.get('rol_victima')?.value || 'Conductor');
   }
 
+  // En iniciar-reclamo.ts
+
   actualizarValidaciones(rol: string) {
     const c = this.reclamoForm.controls;
     const tieneSeguro = this.reclamoForm.get('tiene_seguro')?.value;
-    const hizoDenuncia = this.reclamoForm.get('hizo_denuncia')?.value; // <--- Nuevo valor
+    const hizoDenuncia = this.reclamoForm.get('hizo_denuncia')?.value;
 
-    // Lista de campos que vamos a limpiar siempre al inicio para evitar errores acumulados
+    // 1. Lista de campos dinámicos
     const camposSiniestro = ['fecha_hecho', 'hora_hecho', 'lugar_hecho', 'localidad', 'provincia', 'relato_hecho'];
     
-    // Limpiamos validadores de todo lo dinámico primero
-    [...camposSiniestro, 'patente_propia', 'patente_tercero', 'fileLicencia', 'fileCedula', 
-     'fileSeguro', 'fileDenuncia', 'fileMedicos', 'filePresupuesto',
-     'tercero_nombre', 'tercero_apellido', 'tercero_dni', 'tercero_marca_modelo'
-    ].forEach(key => {
+    // Campos que siempre vamos a resetear primero
+    const camposDinamicos = [
+        ...camposSiniestro, 
+        'patente_propia', 'patente_tercero', 
+        'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 'fileMedicos', 'filePresupuesto',
+        'tercero_nombre', 'tercero_apellido', 'tercero_dni', 'tercero_marca_modelo'
+    ];
+
+    // Limpiamos validadores previos
+    camposDinamicos.forEach(key => {
         // @ts-ignore
         c[key]?.clearValidators();
         // @ts-ignore
-        c[key]?.updateValueAndValidity();
-        
-        // Re-asignamos patrón de patente si corresponde
-        if (key.includes('patente')) {
-            // @ts-ignore
-            c[key]?.addValidators(Validators.pattern(this.patentePattern));
-        }
+        c[key]?.updateValueAndValidity({ emitEvent: false }); // No emitimos evento todavía para no saturar
     });
 
-    // --- LÓGICA DE DETALLES DEL SINIESTRO ---
+    // --- REGLAS DE VALIDACIÓN ---
+
+    // 2. Detalles del Siniestro (Si no hizo denuncia, son obligatorios)
     if (!hizoDenuncia) {
-        // SI NO hizo denuncia, estos datos son OBLIGATORIOS para poder generarla nosotros
         c.fecha_hecho.setValidators([Validators.required, this.fechaValidator]);
         c.hora_hecho.setValidators([Validators.required]);
         c.lugar_hecho.setValidators([Validators.required, Validators.minLength(5), this.noWhitespaceValidator]);
         c.localidad.setValidators([Validators.required, Validators.minLength(4), this.noWhitespaceValidator]);
         c.provincia.setValidators([Validators.required]);
         c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
-    } 
-    // Si hizoDenuncia es true, los campos quedan sin Validators.required (opcionales u ocultos)
+    }
 
-    // --- RESTO DE VALIDACIONES (Igual que antes) ---
+    // 3. Patente Propia (Obligatoria para Conductor)
     if (rol === 'Conductor') {
         c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
     }
     
+    // 4. Patente Tercero (SIEMPRE Obligatoria)
     c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
     
+    // 5. Datos Tercero (Si no hay seguro o no es conductor, son obligatorios)
     if (!tieneSeguro || rol !== 'Conductor') {
         c.tercero_nombre.setValidators([Validators.required]);
         c.tercero_apellido.setValidators([Validators.required]);
@@ -283,23 +322,20 @@ export class IniciarReclamoComponent implements OnInit {
         c.tercero_marca_modelo.setValidators([Validators.required]);
     }
 
+    // 6. Archivos (Obligatorios según caso)
     c.fileFotos.setValidators([Validators.required]);
     c.fileDNI.setValidators([Validators.required]);
     c.fileCBU.setValidators([Validators.required]);
 
     if (rol === 'Conductor') {
-        c.fileLicencia.setValidators([Validators.required]);
-        c.fileCedula.setValidators([Validators.required]);
+      c.fileLicencia.setValidators([Validators.required]);
+      c.fileCedula.setValidators([Validators.required]);
+      c.filePresupuesto.setValidators([Validators.required]);
         if (tieneSeguro) {
             c.fileSeguro.setValidators([Validators.required]);
-            
-            // IMPORTANTE: Si YA hizo la denuncia, exigimos el archivo PDF/Foto de la denuncia obligatoriamente
-            // Si NO la hizo, el archivo no es requerido (porque se lo vamos a generar nosotros)
             if (hizoDenuncia) {
-                 c.fileDenuncia.setValidators([Validators.required]);
+                c.fileDenuncia.setValidators([Validators.required]);
             }
-            
-            c.filePresupuesto.setValidators([Validators.required]);
         }
     }
     
@@ -307,6 +343,17 @@ export class IniciarReclamoComponent implements OnInit {
         c.fileMedicos.setValidators([Validators.required]);
     }
 
+    // --- CORRECCIÓN FINAL ---
+    // Aplicamos los cambios llamando a updateValueAndValidity() en CADA campo modificado
+    camposDinamicos.forEach(key => {
+        // @ts-ignore
+        c[key]?.updateValueAndValidity({ emitEvent: false });
+    });
+    
+    // Aseguradora tercero no es dinámico, pero aseguramos su validación
+    c.aseguradora_tercero.updateValueAndValidity();
+
+    // Actualizamos el estado general del formulario
     this.reclamoForm.updateValueAndValidity();
   }
 
@@ -383,34 +430,39 @@ export class IniciarReclamoComponent implements OnInit {
   }
 
   // MODIFICADO: Soporte para Array<File> en fileFotos
-  async confirmarReclamo() {
+  async confirmarConFirma() {
+    // Validar si firmó
+    if (this.firmaPad.isEmpty()) {
+      this.errorFirma = true;
+      this.notificacionService.showError('Por favor, firme en el recuadro para continuar.');
+      return;
+    }
+
     this.isLoading = true;
     const v = this.reclamoForm.value;
     const formData = new FormData();
 
+    // A. AGREGAR LA FIRMA AL FORMDATA
+    const firmaBlob = await this.firmaPad.getSignatureBlob();
+    // Le ponemos nombre 'fileFirma' para que el backend lo reciba
+    formData.append('fileFirma', firmaBlob, 'firma_digital.png'); 
+
+    // B. LÓGICA DE DATOS (IGUAL A LA TUYA PERO DENTRO DE ESTE PROCESO)
     for (const key of Object.keys(v)) {
         // @ts-ignore
         const value = v[key];
 
-        // 1. FOTOS (Array o FileList)
         if (key === 'fileFotos' && (Array.isArray(value) || value instanceof FileList)) {
-            // Unificamos a Array
             const fotosArray = Array.isArray(value) ? value : Array.from(value);
-            
             const compressedFiles = await Promise.all(
                 fotosArray.map((file: any) => this.imageCompressService.compressFile(file))
             );
-
-            compressedFiles.forEach(file => {
-                formData.append('fileFotos', file);
-            });
+            compressedFiles.forEach(file => formData.append('fileFotos', file));
         } 
-        // 2. ARCHIVOS ÚNICOS
         else if (key.startsWith('file') && value instanceof File) {
             const compressedFile = await this.imageCompressService.compressFile(value);
             formData.append(key, compressedFile);
         } 
-        // 3. DATOS TEXTO/BOOLEAN
         else if (typeof value === 'boolean') {
              formData.append(key, String(value));
         } 
@@ -419,6 +471,7 @@ export class IniciarReclamoComponent implements OnInit {
         }
     }
 
+    // C. ENVIAR
     this.reclamosService.crearReclamo(formData).subscribe({
       next: (res: any) => {
         this.isLoading = false;

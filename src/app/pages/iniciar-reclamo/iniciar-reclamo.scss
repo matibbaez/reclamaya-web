@@ -843,3 +843,49 @@ input:checked + .slider:before { transform: translateX(22px); }
         }
     }
 }
+
+/* Estilos para las Pestañas de Documentos */
+.tab-btn {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #334155;
+  }
+
+  &.active-tab {
+    background: #2563eb; /* Azul corporativo */
+    color: white;
+    border-color: #2563eb;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+  }
+}
+
+/* Estilo del visor tipo "Papel Legal" */
+.doc-viewer {
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #cbd5e1 !important; /* Borde izquierdo más grueso */
+  
+  /* Scrollbar bonita */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}

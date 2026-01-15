@@ -258,11 +258,11 @@
             <div class="form-section" *ngIf="esConductor">
               <h4 class="section-title">Datos del Vehículo</h4>
               <div class="input-group">
-                <label>Tu Patente</label>
+                <label>Tu Patente <span class="text-red-500">*</span></label>
                 <input type="text" formControlName="patente_propia" class="input-modern uppercase" placeholder="AA123BB"
                        [class.error-border]="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
                 <div *ngIf="f['patente_propia'].invalid && (f['patente_propia'].dirty || f['patente_propia'].touched)">
-                    <small class="error-msg">Patente inválida.</small>
+                    <small class="error-msg">Patente inválida o requerida.</small>
                 </div>
               </div>
             </div>
@@ -374,35 +374,35 @@
             <div class="form-section">
               <h4 class="section-title">Datos del Tercero (Quien te chocó)</h4>
               
+              
+              <div class="grid-2">
+                <div class="input-group">
+                  <label>Aseguradora Tercero <span class="text-red-500">*</span></label>
+                  <select formControlName="aseguradora_tercero" class="input-modern"
+                  [class.error-border]="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
+                  <option value="" disabled selected>Seleccioná...</option>
+                  <option *ngFor="let a of aseguradoras" [value]="a">{{ a }}</option>
+                </select>
+                <div *ngIf="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
+                  <small class="error-msg">Seleccioná una aseguradora.</small>
+                </div>
+              </div>
+              
+              <div class="input-group">
+                  <label>Patente Tercero <span class="text-red-500">*</span></label>
+                  <input type="text" formControlName="patente_tercero" class="input-modern uppercase" placeholder="AA999ZZ"
+                  [class.error-border]="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
+                  <div *ngIf="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
+                    <small class="error-msg">Formato inválido.</small>
+                  </div>
+                </div>
+              </div>
               <div class="info-pill mb-4" *ngIf="esConductor && tieneSeguro">
                   <small class="info-notice-dark">
                       ℹ️ Si estos datos figuran en tu Denuncia Administrativa, no es obligatorio cargarlos manual.
                   </small>
               </div>
-
-              <div class="grid-2">
-                <div class="input-group">
-                  <label>Aseguradora Tercero <span class="text-red-500">*</span></label>
-                  <select formControlName="aseguradora_tercero" class="input-modern"
-                          [class.error-border]="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
-                    <option value="" disabled selected>Seleccioná...</option>
-                    <option *ngFor="let a of aseguradoras" [value]="a">{{ a }}</option>
-                  </select>
-                  <div *ngIf="f['aseguradora_tercero'].invalid && (f['aseguradora_tercero'].dirty || f['aseguradora_tercero'].touched)">
-                     <small class="error-msg">Seleccioná una aseguradora.</small>
-                  </div>
-                </div>
-                
-                <div class="input-group">
-                  <label>Patente Tercero <span class="text-red-500">*</span></label>
-                  <input type="text" formControlName="patente_tercero" class="input-modern uppercase" placeholder="AA999ZZ"
-                         [class.error-border]="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
-                  <div *ngIf="f['patente_tercero'].invalid && (f['patente_tercero'].dirty || f['patente_tercero'].touched)">
-                     <small class="error-msg">Formato inválido.</small>
-                  </div>
-                </div>
-              </div>
-
+              
               <div class="grid-2" style="margin-top: 15px;">
                   <div class="input-group">
                       <label>
@@ -588,30 +588,30 @@
                       <small class="error-msg" *ngIf="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">⚠ Requerido.</small>
                     </div>
 
-                    <div class="file-upload-card"
-                         [class.uploaded]="f['filePresupuesto'].value"
-                         [class.error-border]="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">
-                      <div class="card-header-file">
-                        <label>Presupuesto / Franquicia / Factura</label>
-                        <span class="file-hint">Presupuesto de reparación, Carta de Franquicia o Factura (si ya reparaste).</span>
-                      </div>
-                      <div class="upload-area">
-                        <input type="file" id="filePresupuesto" hidden (change)="onFileChange($event, 'filePresupuesto')">
-                        <label for="filePresupuesto" class="drop-zone">
-                          <div *ngIf="!f['filePresupuesto'].value" class="placeholder-content">
-                            <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
-                            <span>Subir archivo</span>
-                          </div>
-                          <div *ngIf="f['filePresupuesto'].value" class="file-preview">
-                            <div class="icon-check">✓</div>
-                            <span class="filename">{{ getFileName('filePresupuesto') }}</span>
-                          </div>
-                        </label>
-                      </div>
-                      <small class="error-msg" *ngIf="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">⚠ Requerido.</small>
+                  </ng-container>
+                  <div class="file-upload-card"
+                       [class.uploaded]="f['filePresupuesto'].value"
+                       [class.error-border]="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">
+                    <div class="card-header-file">
+                      <label>Presupuesto / Franquicia / Factura</label>
+                      <span class="file-hint">Presupuesto de reparación, Carta de Franquicia o Factura (si ya reparaste).</span>
                     </div>
-                </ng-container>
-
+                    <div class="upload-area">
+                      <input type="file" id="filePresupuesto" hidden (change)="onFileChange($event, 'filePresupuesto')">
+                      <label for="filePresupuesto" class="drop-zone">
+                        <div *ngIf="!f['filePresupuesto'].value" class="placeholder-content">
+                          <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                          <span>Subir archivo</span>
+                        </div>
+                        <div *ngIf="f['filePresupuesto'].value" class="file-preview">
+                          <div class="icon-check">✓</div>
+                          <span class="filename">{{ getFileName('filePresupuesto') }}</span>
+                        </div>
+                      </label>
+                    </div>
+                    <small class="error-msg" *ngIf="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">⚠ Requerido.</small>
+                  </div>
+                  
                 <div class="file-upload-card highlight" 
                     [class.uploaded]="f['fileFotos'].value"
                     [class.error-border]="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
@@ -845,11 +845,66 @@
             </div>
         </div>
 
+        <div class="signature-section fade-in" style="margin: 2rem 0;">
+        
+          <div class="header-center" style="margin-bottom: 1.5rem; text-align: center;">
+              <h3>Documentación a Firmar</h3>
+              <p style="font-size: 0.9rem; color: #64748b;">
+                  Leé atentamente los documentos. Tu firma aplica a todos ellos.
+              </p>
+          </div>
+
+          <div class="docs-tabs" style="display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+              
+              <button type="button" 
+                  (click)="docActivo = 'poder'"
+                  [class.active-tab]="docActivo === 'poder'"
+                  class="tab-btn">
+                  Poder
+              </button>
+
+              <button type="button" 
+                  (click)="docActivo = 'honorarios'"
+                  [class.active-tab]="docActivo === 'honorarios'"
+                  class="tab-btn">
+                  Honorarios
+              </button>
+
+              <button *ngIf="esConductor && !tieneSeguro"
+                  type="button" 
+                  (click)="docActivo = 'no_seguro'"
+                  [class.active-tab]="docActivo === 'no_seguro'"
+                  class="tab-btn">
+                  ⚠️ Decl. No Seguro
+              </button>
+          </div>
+
+          <div class="doc-viewer" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; height: 200px; overflow-y: auto; margin-bottom: 1.5rem; font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; line-height: 1.5; color: #334155; white-space: pre-wrap;">
+              <ng-container [ngSwitch]="docActivo">
+                  <div *ngSwitchCase="'poder'">{{ textoPoder }}</div>
+                  <div *ngSwitchCase="'honorarios'">{{ textoHonorarios }}</div>
+                  <div *ngSwitchCase="'no_seguro'">{{ textoNoSeguro }}</div>
+              </ng-container>
+          </div>
+
+          <div class="signature-wrapper" style="background: white; padding: 1rem; border-radius: 12px; border: 2px dashed #cbd5e1; max-width: 600px; margin: 0 auto; position: relative;">
+              <p style="position: absolute; top: -12px; left: 20px; background: white; padding: 0 10px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+                  Tu Firma Aquí 👇
+              </p>
+              <app-ui-signature #firmaPad (firmaHecha)="onFirmaRealizada()"></app-ui-signature>
+          </div>
+          
+          <p *ngIf="errorFirma" style="color: #ef4444; text-align: center; margin-top: 1rem; font-weight: 600; background: #fee2e2; padding: 0.5rem; border-radius: 6px;">
+              ⚠ Es obligatorio firmar para aceptar los términos y continuar.
+          </p>
+
+      </div>
+
         <div class="buttons-row">
             <button class="btn-secondary" (click)="editarDatos()">
                 Editar
             </button>
-            <button class="btn-submit-glow" (click)="confirmarReclamo()" [disabled]="isLoading">
+            <button class="btn-submit-glow" (click)="confirmarConFirma()" [disabled]="isLoading">
                 <span *ngIf="!isLoading">Confirmar y Enviar</span>
                 <div *ngIf="isLoading" class="spinner-loader"></div> 
             </button>
