@@ -357,15 +357,13 @@ export class IniciarReclamoComponent implements OnInit {
     this.reclamoForm.updateValueAndValidity();
   }
 
-  // MÉTODO MODIFICADO: ACUMULA LAS FOTOS EN LUGAR DE REEMPLAZARLAS
-  onFileChange(event: any, controlName: string) {
+  async onFileChange(event: any, controlName: string) {
     const input = event.target;
     
-    // Lógica especial para FOTOS (Acumulativa)
+    // CASO A: FOTOS (Múltiples + Acumulativas)
     if (controlName === 'fileFotos') {
       const newFiles = Array.from(input.files || []) as File[];
       
-      // AQUÍ ESTÁ EL FIX: Usamos 'as any' para evitar el error 'left-hand side of instanceof...'
       const currentVal = this.reclamoForm.get('fileFotos')?.value as any;
       let currentFiles: File[] = [];
 
@@ -375,38 +373,65 @@ export class IniciarReclamoComponent implements OnInit {
           : currentVal as File[];
       }
 
-      // Combinamos (spread operator)
-      const combinedFiles = [...currentFiles, ...newFiles];
-
-      // Validamos máximo
-      if (combinedFiles.length > 5) {
-        this.notificacionService.showError(`Máximo 5 fotos. Tenés ${combinedFiles.length}.`);
-        input.value = ''; // Reseteamos input para que pueda intentar de nuevo
+      if (currentFiles.length + newFiles.length > 5) {
+        this.notificacionService.showError(`Máximo 5 fotos.`);
+        input.value = '';
         return;
       }
 
-      // Guardamos el ARRAY acumulado en el form
-      this.reclamoForm.patchValue({ fileFotos: combinedFiles as any });
+      // Activamos loading visual porque comprimir puede tardar un poco
+      this.isLoading = true; 
+
+      try {
+        // Comprimimos las fotos NUEVAS en paralelo
+        const compressedNewFiles = await Promise.all(
+          newFiles.map(file => this.imageCompressService.compressFile(file))
+        );
+
+        // Combinamos las viejas (que ya estaban comprimidas) con las nuevas
+        const combinedFiles = [...currentFiles, ...compressedNewFiles];
+
+        // Guardamos
+        this.reclamoForm.patchValue({ fileFotos: combinedFiles as any });
+      } catch (e) {
+        console.error("Error comprimiendo fotos", e);
+        // Si falla, guardamos las originales para no bloquear al usuario
+        this.reclamoForm.patchValue({ fileFotos: [...currentFiles, ...newFiles] as any });
+      } finally {
+        this.isLoading = false;
+      }
       
-      // Reseteamos el input HTML para permitir volver a cargar la misma foto si se borró
-      // o para que el evento (change) se dispare de nuevo al agregar otra foto
-      input.value = ''; 
+      input.value = ''; // Reset para permitir cargar más
       return;
     }
 
-    // Lógica estándar para el resto de archivos (únicos)
+    // CASO B: ARCHIVOS ÚNICOS (DNI, Cédula, etc.)
     const file = event.target.files[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) { 
-        this.notificacionService.showError('Archivo muy pesado (Máx 10MB).');
+      if (file.size > 50 * 1024 * 1024) { 
+        this.notificacionService.showError('Archivo muy pesado (Máx 50MB).');
         event.target.value = ''; return;
       }
-      const tiposValidos = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
-      if (!tiposValidos.includes(file.type)) {
-         this.notificacionService.showError('Formato inválido. Solo JPG, PNG o PDF.');
-         event.target.value = ''; return;
+
+      this.isLoading = true; // Feedback visual
+
+      try {
+        // Comprimimos el archivo (El servicio ya detecta si es PDF e ignora)
+        const compressedFile = await this.imageCompressService.compressFile(file);
+        
+        // Guardamos
+        this.reclamoForm.patchValue({ [controlName]: compressedFile });
+        
+        // Forzamos check visual
+        this.reclamoForm.get(controlName)?.updateValueAndValidity();
+
+      } catch (error) {
+        console.error('Error al procesar archivo:', error);
+        // Fallback al original
+        this.reclamoForm.patchValue({ [controlName]: file });
+      } finally {
+        this.isLoading = false;
       }
-      this.reclamoForm.patchValue({ [controlName]: file });
     }
   }
 
@@ -431,7 +456,6 @@ export class IniciarReclamoComponent implements OnInit {
 
   // MODIFICADO: Soporte para Array<File> en fileFotos
   async confirmarConFirma() {
-    // Validar si firmó
     if (this.firmaPad.isEmpty()) {
       this.errorFirma = true;
       this.notificacionService.showError('Por favor, firme en el recuadro para continuar.');
@@ -442,26 +466,22 @@ export class IniciarReclamoComponent implements OnInit {
     const v = this.reclamoForm.value;
     const formData = new FormData();
 
-    // A. AGREGAR LA FIRMA AL FORMDATA
+    // A. FIRMA
     const firmaBlob = await this.firmaPad.getSignatureBlob();
-    // Le ponemos nombre 'fileFirma' para que el backend lo reciba
     formData.append('fileFirma', firmaBlob, 'firma_digital.png'); 
 
-    // B. LÓGICA DE DATOS (IGUAL A LA TUYA PERO DENTRO DE ESTE PROCESO)
+    // B. DATOS
     for (const key of Object.keys(v)) {
         // @ts-ignore
         const value = v[key];
 
-        if (key === 'fileFotos' && (Array.isArray(value) || value instanceof FileList)) {
-            const fotosArray = Array.isArray(value) ? value : Array.from(value);
-            const compressedFiles = await Promise.all(
-                fotosArray.map((file: any) => this.imageCompressService.compressFile(file))
-            );
-            compressedFiles.forEach(file => formData.append('fileFotos', file));
+        if (key === 'fileFotos' && Array.isArray(value)) {
+           // Como ya comprimimos en onFileChange, aquí solo adjuntamos
+           value.forEach(file => formData.append('fileFotos', file));
         } 
         else if (key.startsWith('file') && value instanceof File) {
-            const compressedFile = await this.imageCompressService.compressFile(value);
-            formData.append(key, compressedFile);
+           // Ya está comprimido
+           formData.append(key, value);
         } 
         else if (typeof value === 'boolean') {
              formData.append(key, String(value));
