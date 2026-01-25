@@ -889,3 +889,100 @@ input:checked + .slider:before { transform: translateX(22px); }
     background: #94a3b8;
   }
 }
+
+/* En tu SCSS */
+.info-box-blue {
+  background-color: #eff6ff; /* blue-50 */
+  border-left: 4px solid #3b82f6; /* blue-500 */
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem; /* text-sm */
+  color: #1e40af; /* blue-800 */
+}
+
+.info-box-yellow {
+  background-color: #fefce8; /* yellow-50 */
+  border-left: 4px solid #eab308; /* yellow-500 */
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #854d0e; /* yellow-800 */
+}
+
+/* Contenedor del botón "Agregar otra" */
+.add-more-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 0;
+  border-top: 1px dashed #e2e8f0; /* Separador sutil arriba */
+  margin-top: 10px;
+  width: 100%;
+
+  .btn-add-another {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    
+    /* Estilo de Botón "Pill" */
+    background-color: #3b82f6; /* Azul marca */
+    color: white;
+    padding: 8px 16px;
+    border-radius: 9999px; /* Redondo completo */
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    
+    /* Sombra suave */
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    transition: all 0.2s ease;
+
+    .plus-icon {
+      font-size: 1.1rem;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    &:hover {
+      background-color: #2563eb; /* Azul más oscuro al pasar mouse */
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  /* Texto de límite (ej: 2 archivos cargados) */
+  .text-green-600 {
+    color: #16a34a;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background-color: #dcfce7;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    
+    &::before {
+      content: '✓';
+      font-weight: bold;
+    }
+  }
+}
+
+/* Ajuste para que la drop-zone no se vea "clicleable" entera cuando ya hay botón */
+.drop-zone.has-files {
+  border-style: solid; /* Borde sólido en vez de dashed cuando ya hay algo */
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+  cursor: default; /* El cursor normal para no confundir */
+  
+  /* Pero el botón de adentro sí tiene manito */
+  .btn-add-another {
+    cursor: pointer;
+  }
+}

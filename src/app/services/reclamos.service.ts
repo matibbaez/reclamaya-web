@@ -54,9 +54,9 @@ export interface IReclamo {
   tramitador?: any;
 
   // --- Archivos (Paths) ---
-  path_dni?: string;
-  path_licencia?: string;
-  path_cedula?: string;
+  path_dni?: string | string[];
+  path_licencia?: string | string[];
+  path_cedula?: string | string[];
   path_poliza?: string;
   path_denuncia?: string;
   path_fotos?: string[];
@@ -92,8 +92,10 @@ export class ReclamosService {
   }
 
   // Obtener la URL firmada para descargar/ver un archivo
-  getArchivoUrl(id: string, tipo: string): Observable<{ url: string }> {
-    return this.http.get<{ url: string }>(`${this.apiUrl}/descargar/${id}/${tipo}`);
+  getArchivoUrl(id: string, tipo: string, index?: number): Observable<{ url: string }> {
+    // Si hay índice, lo mandamos como query param: ?index=0
+    const query = index !== undefined ? `?index=${index}` : '';
+    return this.http.get<{ url: string }>(`${this.apiUrl}/descargar/${id}/${tipo}${query}`);
   }
 
   // Actualizar estado

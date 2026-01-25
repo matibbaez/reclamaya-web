@@ -19,6 +19,7 @@ export class IniciarReclamoComponent implements OnInit {
 
   @ViewChild('firmaPad') firmaPad!: UiSignatureComponent;
   errorFirma = false;
+  
   private fb = inject(FormBuilder);
   private reclamosService = inject(ReclamosService); 
   private router = inject(Router);
@@ -55,13 +56,15 @@ export class IniciarReclamoComponent implements OnInit {
   reclamoForm = this.fb.group({
     codigo_ref: [''],
     
+    // --- DATOS PERSONALES ---
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.nombrePattern), this.noWhitespaceValidator]],
     dni: ['', [Validators.required, Validators.pattern(this.dniPattern)]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.pattern(this.telPattern)]],
     domicilio_usuario: ['', [Validators.required, this.noWhitespaceValidator]],
-    cbu: ['', [Validators.pattern(this.cbuPattern)]],
+    cbu: ['', [Validators.pattern(this.cbuPattern)]], // Ahora es requerido dinámicamente según archivo, pero validamos formato si escriben
 
+    // --- DATOS SINIESTRO ---
     rol_victima: ['', Validators.required],
     tiene_seguro: [true], 
     hizo_denuncia: [false],
@@ -80,24 +83,27 @@ export class IniciarReclamoComponent implements OnInit {
     intervino_ambulancia: [false],
     patente_propia: ['', [Validators.pattern(this.patentePattern)]], 
 
+    // --- TERCERO ---
     aseguradora_tercero: ['', Validators.required],
     patente_tercero: ['', [Validators.pattern(this.patentePattern)]],
-    
     tercero_nombre: [''],
     tercero_apellido: [''],
     tercero_dni: [''],
     tercero_marca_modelo: [''],
 
-    fileDNI: [null],
-    fileLicencia: [null],
-    fileCedula: [null],
-    fileSeguro: [null],
-    fileDenuncia: [null],
-    filePresupuesto: [null],
-    fileFotos: [null], 
-    fileMedicos: [null],
-    fileCBU: [null],
-    fileDenunciaPenal: [null]
+    // --- ARCHIVOS (Null o Array<File>) ---
+    fileDNI: [null],           // Múltiple
+    fileLicencia: [null],      // Múltiple
+    fileCedula: [null],        // Múltiple
+    fileFotos: [null],         // Múltiple
+    fileComplementaria: [null],// Múltiple (NUEVO)
+    
+    fileSeguro: [null],        // Único
+    fileDenuncia: [null],      // Único
+    filePresupuesto: [null],   // Único
+    fileMedicos: [null],       // Único
+    fileCBU: [null],           // Único
+    fileDenunciaPenal: [null]  // Único
   });
 
   ngOnInit(): void {
@@ -111,6 +117,7 @@ export class IniciarReclamoComponent implements OnInit {
       tercero_nombre: '', tercero_apellido: '', tercero_dni: '', tercero_marca_modelo: '',
       fileDNI: null, fileLicencia: null, fileCedula: null, fileSeguro: null, fileDenuncia: null,
       filePresupuesto: null, fileFotos: null, fileMedicos: null, fileCBU: null, fileDenunciaPenal: null,
+      fileComplementaria: null,
       codigo_ref: ''
     };
 
@@ -126,42 +133,25 @@ export class IniciarReclamoComponent implements OnInit {
     });
   }
 
+  // --- GETTERS DE TEXTOS LEGALES ---
   get textoPoder(): string {
-    return `CARTA PODER - REPRESENTACIÓN LETRADA
-    
-    Por la presente, yo, ${this.v.nombre}, titular del DNI Nº ${this.v.dni}, otorgo poder suficiente a los letrados de RECLAMA YA para que actúen en mi nombre y representación ante la compañía aseguradora correspondiente, organismos administrativos y/o judiciales, en relación al siniestro denunciado.
-
-    Faculto a los mismos para presentar documentación, realizar denuncias, tramitar el reclamo y percibir indemnizaciones.`;
+    return `CARTA PODER - REPRESENTACIÓN LETRADA\n\nPor la presente, yo, ${this.v.nombre}, titular del DNI Nº ${this.v.dni}, otorgo poder suficiente a los letrados de RECLAMA YA para que actúen en mi nombre y representación ante la compañía aseguradora correspondiente, organismos administrativos y/o judiciales, en relación al siniestro denunciado.\n\nFaculto a los mismos para presentar documentación, realizar denuncias, tramitar el reclamo y percibir indemnizaciones.`;
   }
 
   get textoHonorarios(): string {
-    return `CONVENIO DE HONORARIOS PROFESIONALES
-
-    Entre el cliente, ${this.v.nombre}, y RECLAMA YA, se acuerda lo siguiente:
-
-    PRIMERO: Los honorarios profesionales por la gestión extrajudicial del reclamo se pactan en el 20% (veinte por ciento) del monto total bruto que se obtenga como indemnización por parte de la compañía aseguradora.
-
-    SEGUNDO: Dicho porcentaje será abonado una vez que el cliente perciba efectivamente la indemnización.
-
-    TERCERO: En caso de no obtenerse indemnización alguna, el cliente no deberá abonar honorarios (resultado negativo).`;
+    return `CONVENIO DE HONORARIOS PROFESIONALES\n\nEntre el cliente, ${this.v.nombre}, y RECLAMA YA, se acuerda lo siguiente:\n\nPRIMERO: Los honorarios profesionales por la gestión extrajudicial del reclamo se pactan en el 20% (veinte por ciento) del monto total bruto que se obtenga como indemnización por parte de la compañía aseguradora.\n\nSEGUNDO: Dicho porcentaje será abonado una vez que el cliente perciba efectivamente la indemnización.\n\nTERCERO: En caso de no obtenerse indemnización alguna, el cliente no deberá abonar honorarios (resultado negativo).`;
   }
 
   get textoNoSeguro(): string {
-    return `DECLARACIÓN JURADA - INEXISTENCIA DE SEGURO
-
-    Por la presente, declaro bajo juramento que al momento del siniestro ocurrido el día ${this.v.fecha_hecho} en ${this.v.lugar_hecho}, mi vehículo NO poseía cobertura de seguro vigente.
-
-    Asimismo, ratifico el relato de los hechos declarado en este formulario.`;
+    return `DECLARACIÓN JURADA - INEXISTENCIA DE SEGURO\n\nPor la presente, declaro bajo juramento que al momento del siniestro ocurrido el día ${this.v.fecha_hecho} en ${this.v.lugar_hecho}, mi vehículo NO poseía cobertura de seguro vigente.\n\nAsimismo, ratifico el relato de los hechos declarado en este formulario.`;
   }
 
-  onFirmaRealizada() {
-    this.errorFirma = false;
-  }
+  // --- VALIDATORS HELPERS ---
+  onFirmaRealizada() { this.errorFirma = false; }
 
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
     const isWhitespace = (control.value || '').trim().length === 0;
-    const isValid = !isWhitespace;
-    return isValid ? null : { 'whitespace': true };
+    return !isWhitespace ? null : { 'whitespace': true };
   }
 
   fechaValidator(control: AbstractControl): ValidationErrors | null {
@@ -169,7 +159,7 @@ export class IniciarReclamoComponent implements OnInit {
     const fecha = new Date(control.value);
     const hoy = new Date();
     const limitePasado = new Date();
-    limitePasado.setFullYear(hoy.getFullYear() - 3);
+    limitePasado.setFullYear(hoy.getFullYear() - 3); // 3 años prescripción
     if (fecha > hoy) return { futuro: true };
     if (fecha < limitePasado) return { prescripto: true };
     return null;
@@ -178,6 +168,7 @@ export class IniciarReclamoComponent implements OnInit {
   get f() { return this.reclamoForm.controls; }
   get v() { return this.reclamoForm.value; }
 
+  // --- NAVEGACIÓN Y STEPS ---
   aceptarTerminos() { this.mostrarTerminos = false; }
   cancelarTerminos() { this.router.navigate(['/']); }
 
@@ -242,10 +233,13 @@ export class IniciarReclamoComponent implements OnInit {
       this.notificacionService.showError('Faltan datos obligatorios o documentos.');
       return;
     }
-    if (!this.reclamoForm.get('fileFotos')?.value) {
-        this.notificacionService.showError('Las fotos del daño son obligatorias.');
-        return;
+    
+    // Validar fotos SOLO si no es Peatón (Peatón las tiene opcionales en complementaria)
+    if (!this.reclamoForm.get('fileFotos')?.value && this.esConductor) {
+       this.notificacionService.showError('Las fotos del daño son obligatorias para vehículos.');
+       return;
     }
+
     this.pasoActual = 3;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -255,11 +249,14 @@ export class IniciarReclamoComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // --- LOGICA TOGGLES ---
   get hizoDenuncia(): boolean { return this.reclamoForm.get('hizo_denuncia')?.value === true; }
+  get esConductor(): boolean { return this.reclamoForm.get('rol_victima')?.value === 'Conductor'; }
+  get tieneSeguro(): boolean { return this.reclamoForm.get('tiene_seguro')?.value === true; }
+  get isInItinere(): boolean { return this.reclamoForm.get('in_itinere')?.value === true; }
 
   toggleDenuncia(checked: boolean) {
     this.reclamoForm.patchValue({ hizo_denuncia: checked });
-    // Forzamos actualización de validaciones
     this.actualizarValidaciones(this.reclamoForm.get('rol_victima')?.value || 'Conductor');
   }
 
@@ -268,21 +265,17 @@ export class IniciarReclamoComponent implements OnInit {
     this.actualizarValidaciones(this.reclamoForm.get('rol_victima')?.value || 'Conductor');
   }
 
-  // En iniciar-reclamo.ts
-
+  // --- ACTUALIZACIÓN DINÁMICA DE VALIDACIONES ---
   actualizarValidaciones(rol: string) {
     const c = this.reclamoForm.controls;
     const tieneSeguro = this.reclamoForm.get('tiene_seguro')?.value;
     const hizoDenuncia = this.reclamoForm.get('hizo_denuncia')?.value;
 
-    // 1. Lista de campos dinámicos
-    const camposSiniestro = ['fecha_hecho', 'hora_hecho', 'lugar_hecho', 'localidad', 'provincia', 'relato_hecho'];
-    
-    // Campos que siempre vamos a resetear primero
+    // 1. Campos a resetear validación
     const camposDinamicos = [
-        ...camposSiniestro, 
+        'fecha_hecho', 'hora_hecho', 'lugar_hecho', 'localidad', 'provincia', 'relato_hecho',
         'patente_propia', 'patente_tercero', 
-        'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 'fileMedicos', 'filePresupuesto',
+        'fileLicencia', 'fileCedula', 'fileSeguro', 'fileDenuncia', 'fileMedicos', 'filePresupuesto', 'fileFotos',
         'tercero_nombre', 'tercero_apellido', 'tercero_dni', 'tercero_marca_modelo'
     ];
 
@@ -291,170 +284,191 @@ export class IniciarReclamoComponent implements OnInit {
         // @ts-ignore
         c[key]?.clearValidators();
         // @ts-ignore
-        c[key]?.updateValueAndValidity({ emitEvent: false }); // No emitimos evento todavía para no saturar
+        c[key]?.updateValueAndValidity({ emitEvent: false });
     });
 
-    // --- REGLAS DE VALIDACIÓN ---
-
-    // 2. Detalles del Siniestro (Si no hizo denuncia, son obligatorios)
+    // 2. Detalles del Siniestro (Si NO hizo denuncia en su seguro, estos datos son CRÍTICOS)
     if (!hizoDenuncia) {
-        c.fecha_hecho.setValidators([Validators.required, this.fechaValidator]);
-        c.hora_hecho.setValidators([Validators.required]);
-        c.lugar_hecho.setValidators([Validators.required, Validators.minLength(5), this.noWhitespaceValidator]);
-        c.localidad.setValidators([Validators.required, Validators.minLength(4), this.noWhitespaceValidator]);
-        c.provincia.setValidators([Validators.required]);
-        c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
+       c.fecha_hecho.setValidators([Validators.required, this.fechaValidator]);
+       c.hora_hecho.setValidators([Validators.required]);
+       c.lugar_hecho.setValidators([Validators.required, Validators.minLength(5), this.noWhitespaceValidator]);
+       c.localidad.setValidators([Validators.required, Validators.minLength(4), this.noWhitespaceValidator]);
+       c.provincia.setValidators([Validators.required]);
+       c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
     }
 
-    // 3. Patente Propia (Obligatoria para Conductor)
-    if (rol === 'Conductor') {
-        c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
-    }
-    
-    // 4. Patente Tercero (SIEMPRE Obligatoria)
+    // 3. Documentación y Datos según ROL
+    c.fileDNI.setValidators([Validators.required]);
+    c.fileCBU.setValidators([Validators.required]);
     c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
-    
-    // 5. Datos Tercero (Si no hay seguro o no es conductor, son obligatorios)
+
+    if (rol === 'Conductor') {
+       // CONDUCTOR: Necesita todo lo del auto
+       c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
+       c.fileLicencia.setValidators([Validators.required]);
+       c.fileCedula.setValidators([Validators.required]);
+       c.fileFotos.setValidators([Validators.required]); 
+       c.filePresupuesto.setValidators([Validators.required]); // Factura o Presupuesto
+
+       if (tieneSeguro) {
+           c.fileSeguro.setValidators([Validators.required]);
+           if (hizoDenuncia) {
+               c.fileDenuncia.setValidators([Validators.required]);
+           }
+       }
+    } else {
+       // PEATÓN / ACOMPAÑANTE / CICLISTA
+       // NO pide patente propia, ni licencia, ni cédula, ni fotos obligatorias (van en complementaria)
+       c.fileMedicos.setValidators([Validators.required]);
+    }
+
+    // 4. Datos del Tercero (Si no hay seguro propio o es peatón, necesitamos saber a quién reclamar sí o sí)
     if (!tieneSeguro || rol !== 'Conductor') {
         c.tercero_nombre.setValidators([Validators.required]);
         c.tercero_apellido.setValidators([Validators.required]);
         c.tercero_dni.setValidators([Validators.required, Validators.pattern(this.dniPattern)]);
         c.tercero_marca_modelo.setValidators([Validators.required]);
     }
-
-    // 6. Archivos (Obligatorios según caso)
-    c.fileFotos.setValidators([Validators.required]);
-    c.fileDNI.setValidators([Validators.required]);
-    c.fileCBU.setValidators([Validators.required]);
-
-    if (rol === 'Conductor') {
-      c.fileLicencia.setValidators([Validators.required]);
-      c.fileCedula.setValidators([Validators.required]);
-      c.filePresupuesto.setValidators([Validators.required]);
-        if (tieneSeguro) {
-            c.fileSeguro.setValidators([Validators.required]);
-            if (hizoDenuncia) {
-                c.fileDenuncia.setValidators([Validators.required]);
-            }
-        }
-    }
     
+    // Si marcó lesiones manualmente (aunque sea conductor)
     if (this.reclamoForm.get('sufrio_lesiones')?.value) {
         c.fileMedicos.setValidators([Validators.required]);
     }
 
-    // --- CORRECCIÓN FINAL ---
-    // Aplicamos los cambios llamando a updateValueAndValidity() en CADA campo modificado
+    // Aplicar cambios
     camposDinamicos.forEach(key => {
         // @ts-ignore
         c[key]?.updateValueAndValidity({ emitEvent: false });
     });
-    
-    // Aseguradora tercero no es dinámico, pero aseguramos su validación
     c.aseguradora_tercero.updateValueAndValidity();
-
-    // Actualizamos el estado general del formulario
     this.reclamoForm.updateValueAndValidity();
   }
 
+  // --- MANEJO DE ARCHIVOS (Múltiples y Únicos) ---
   async onFileChange(event: any, controlName: string) {
     const input = event.target;
+    if (!input.files || input.files.length === 0) return;
+
+    // Campos que permiten MÚLTIPLES archivos
+    const isMultiple = ['fileFotos', 'fileDNI', 'fileLicencia', 'fileCedula', 'fileComplementaria'].includes(controlName);
     
-    // CASO A: FOTOS (Múltiples + Acumulativas)
+    // --- CAMBIO AQUÍ: Definimos límites específicos ---
+    let maxFiles = 5; // Por defecto (ej: complementaria)
+    
     if (controlName === 'fileFotos') {
-      const newFiles = Array.from(input.files || []) as File[];
-      
-      const currentVal = this.reclamoForm.get('fileFotos')?.value as any;
-      let currentFiles: File[] = [];
-
-      if (currentVal) {
-        currentFiles = (currentVal instanceof FileList) 
-          ? Array.from(currentVal) 
-          : currentVal as File[];
-      }
-
-      if (currentFiles.length + newFiles.length > 5) {
-        this.notificacionService.showError(`Máximo 5 fotos.`);
-        input.value = '';
-        return;
-      }
-
-      // Activamos loading visual porque comprimir puede tardar un poco
-      this.isLoading = true; 
-
-      try {
-        // Comprimimos las fotos NUEVAS en paralelo
-        const compressedNewFiles = await Promise.all(
-          newFiles.map(file => this.imageCompressService.compressFile(file))
-        );
-
-        // Combinamos las viejas (que ya estaban comprimidas) con las nuevas
-        const combinedFiles = [...currentFiles, ...compressedNewFiles];
-
-        // Guardamos
-        this.reclamoForm.patchValue({ fileFotos: combinedFiles as any });
-      } catch (e) {
-        console.error("Error comprimiendo fotos", e);
-        // Si falla, guardamos las originales para no bloquear al usuario
-        this.reclamoForm.patchValue({ fileFotos: [...currentFiles, ...newFiles] as any });
-      } finally {
-        this.isLoading = false;
-      }
-      
-      input.value = ''; // Reset para permitir cargar más
-      return;
+        maxFiles = 7; // Fotos del choque
+    } else if (['fileDNI', 'fileLicencia', 'fileCedula'].includes(controlName)) {
+        maxFiles = 2; // Documentos personales (Frente y Dorso)
     }
+    // -------------------------------------------------
 
-    // CASO B: ARCHIVOS ÚNICOS (DNI, Cédula, etc.)
-    const file = event.target.files[0];
-    if (file) {
-      if (file.size > 50 * 1024 * 1024) { 
-        this.notificacionService.showError('Archivo muy pesado (Máx 50MB).');
-        event.target.value = ''; return;
-      }
-
-      this.isLoading = true; // Feedback visual
-
-      try {
-        // Comprimimos el archivo (El servicio ya detecta si es PDF e ignora)
-        const compressedFile = await this.imageCompressService.compressFile(file);
-        
-        // Guardamos
-        this.reclamoForm.patchValue({ [controlName]: compressedFile });
-        
-        // Forzamos check visual
-        this.reclamoForm.get(controlName)?.updateValueAndValidity();
-
-      } catch (error) {
-        console.error('Error al procesar archivo:', error);
-        // Fallback al original
-        this.reclamoForm.patchValue({ [controlName]: file });
-      } finally {
-        this.isLoading = false;
-      }
-    }
-  }
-
-  // MÉTODO NUEVO: Permite borrar una foto individual del array acumulado
-  borrarFoto(index: number) {
-    // AQUÍ ESTÁ EL FIX: Usamos 'as any' para evitar el error
-    const currentVal = this.reclamoForm.get('fileFotos')?.value as any;
+    // 1. PROCESAR ARCHIVOS NUEVOS
+    const newFiles = Array.from(input.files) as File[];
     
-    if (currentVal) {
-      const currentFiles = (currentVal instanceof FileList) 
-          ? Array.from(currentVal) 
-          : currentVal as File[]; 
+    this.isLoading = true; 
+
+    try {
+      // Comprimimos todo lo que entra
+      const compressedNewFiles = await Promise.all(
+        newFiles.map(file => this.imageCompressService.compressFile(file))
+      );
+
+      if (isMultiple) {
+        // --- LÓGICA ACUMULATIVA ---
+        const currentVal = this.reclamoForm.get(controlName)?.value as any;
+        let currentFiles: File[] = [];
+
+        if (currentVal) {
+            currentFiles = (currentVal instanceof FileList) 
+              ? Array.from(currentVal) 
+              : (Array.isArray(currentVal) ? currentVal : [currentVal]);
+        }
+        
+        // Validar Cantidad
+        if (currentFiles.length + compressedNewFiles.length > maxFiles) {
+            this.notificacionService.showError(`Máximo ${maxFiles} archivos permitidos para este campo.`);
+            // No agregamos los nuevos, mantenemos los viejos
+        } else {
+            // Combinar
+            const combinedFiles = [...currentFiles, ...compressedNewFiles];
+            this.reclamoForm.patchValue({ [controlName]: combinedFiles as any });
+        }
+
+      } else {
+        // --- LÓGICA ARCHIVO ÚNICO (Reemplazo) ---
+        if (newFiles.length > 1) {
+            this.notificacionService.showError('Solo se permite un archivo para este campo.');
+        }
+        this.reclamoForm.patchValue({ [controlName]: compressedNewFiles[0] });
+      }
       
-      // Borramos por índice
-      currentFiles.splice(index, 1);
-      
-      // Si el array queda vacío, seteamos null para que salte la validación 'required'
-      const newValue = currentFiles.length > 0 ? currentFiles : null;
-      this.reclamoForm.patchValue({ fileFotos: newValue as any });
+      // Forzar validación visual
+      this.reclamoForm.get(controlName)?.updateValueAndValidity();
+
+    } catch (e) {
+      console.error("Error procesando archivos", e);
+      this.notificacionService.showError('Error al procesar la imagen. Intente con otra.');
+    } finally {
+      this.isLoading = false;
+      input.value = ''; 
     }
   }
 
-  // MODIFICADO: Soporte para Array<File> en fileFotos
+  // Método genérico para borrar un archivo de un array
+  borrarArchivo(controlName: string, index: number) {
+     const currentVal = this.reclamoForm.get(controlName)?.value as any;
+     
+     if (currentVal) {
+        let currentFiles: File[] = [];
+        if (Array.isArray(currentVal)) {
+            currentFiles = [...currentVal]; // Clonar para mutar
+        } else if (currentVal instanceof FileList) {
+            currentFiles = Array.from(currentVal);
+        } else {
+            // Era un archivo único, si borran index 0, se vacía
+            this.reclamoForm.patchValue({ [controlName]: null });
+            return;
+        }
+
+        currentFiles.splice(index, 1);
+        
+        // Si queda vacío, ponemos null para que salte required si corresponde
+        const newValue = currentFiles.length > 0 ? currentFiles : null;
+        this.reclamoForm.patchValue({ [controlName]: newValue as any });
+     }
+  }
+
+  // Alias para compatibilidad con el HTML viejo si usa 'borrarFoto'
+  borrarFoto(index: number) {
+      this.borrarArchivo('fileFotos', index);
+  }
+
+  // Helper para el HTML: Obtener lista de nombres para mostrar "tags"
+  getFilesList(controlName: string): string[] {
+      const files = this.reclamoForm.get(controlName)?.value as any;
+      if (!files) return [];
+      
+      if (Array.isArray(files)) return files.map((f: any) => f.name);
+      if (files instanceof FileList) return Array.from(files).map((f: any) => f.name);
+      if (files instanceof File) return [files.name];
+      
+      return [];
+  }
+
+  // Helper simple para mostrar nombre único (para inputs simples)
+  getFileName(controlName: string): string {
+     const list = this.getFilesList(controlName);
+     if (list.length === 0) return '';
+     if (list.length === 1) return list[0];
+     return `${list.length} archivos seleccionados`;
+  }
+  
+  // Getter específico para fotos (usado en tu HTML actual)
+  get fotosList(): string[] {
+      return this.getFilesList('fileFotos');
+  }
+
+  // --- ENVÍO DEL FORMULARIO ---
   async confirmarConFirma() {
     if (this.firmaPad.isEmpty()) {
       this.errorFirma = true;
@@ -470,24 +484,30 @@ export class IniciarReclamoComponent implements OnInit {
     const firmaBlob = await this.firmaPad.getSignatureBlob();
     formData.append('fileFirma', firmaBlob, 'firma_digital.png'); 
 
-    // B. DATOS
+    // B. DATOS TEXTO Y ARCHIVOS
     for (const key of Object.keys(v)) {
         // @ts-ignore
         const value = v[key];
 
-        if (key === 'fileFotos' && Array.isArray(value)) {
-           // Como ya comprimimos en onFileChange, aquí solo adjuntamos
-           value.forEach(file => formData.append('fileFotos', file));
-        } 
-        else if (key.startsWith('file') && value instanceof File) {
-           // Ya está comprimido
-           formData.append(key, value);
-        } 
+        if (!value) continue; // Skip null/undefined/empty
+
+        // Caso: Array de Archivos (Fotos, DNI, Licencia, Cedula, Complementaria)
+        if (Array.isArray(value) && value.length > 0 && value[0] instanceof File) {
+            value.forEach((file: File) => {
+                formData.append(key, file); // Multer recibe array con el mismo keyname
+            });
+        }
+        // Caso: Archivo Único (Poliza, CBU, etc)
+        else if (value instanceof File) {
+            formData.append(key, value);
+        }
+        // Caso: Booleanos
         else if (typeof value === 'boolean') {
              formData.append(key, String(value));
-        } 
-        else if (value !== null && value !== undefined && value !== '') {
-             formData.append(key, value);
+        }
+        // Caso: Textos / Números
+        else {
+             formData.append(key, String(value));
         }
     }
 
@@ -499,42 +519,9 @@ export class IniciarReclamoComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.notificacionService.showError('Error de conexión. Intente nuevamente.');
+        this.notificacionService.showError('Error de conexión o datos inválidos.');
         console.error(err);
       }
     });
   }
-
-  // MODIFICADO: Soporte para Array<File>
-  getFileName(controlName: string): string {
-    const file = this.reclamoForm.get(controlName)?.value as any; 
-    
-    if (Array.isArray(file)) {
-        return `${file.length} archivos seleccionados`;
-    }
-    if (file instanceof FileList) {
-        return `${file.length} archivos seleccionados`;
-    }
-    return (file && file instanceof File) ? file.name : '';
-  }
-  
-  // MODIFICADO: Soporte para Array<File>
-  get fotosList(): string[] {
-    const files = this.reclamoForm.get('fileFotos')?.value as any;
-    
-    if (!files) return [];
-
-    if (Array.isArray(files)) {
-        return files.map((f: any) => f.name);
-    }
-    
-    if (files instanceof FileList) {
-        return Array.from(files).map((f: any) => f.name);
-    }
-    return [];
-  }
-
-  get esConductor(): boolean { return this.reclamoForm.get('rol_victima')?.value === 'Conductor'; }
-  get tieneSeguro(): boolean { return this.reclamoForm.get('tiene_seguro')?.value === true; }
-  get isInItinere(): boolean { return this.reclamoForm.get('in_itinere')?.value === true; }
 }

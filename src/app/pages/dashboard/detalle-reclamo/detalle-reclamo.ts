@@ -153,33 +153,66 @@ export class DetalleReclamoComponent implements OnInit {
     const iconMap: Record<string, any> = {
       dni: CreditCard, licencia: Car, cedula: FileText, poliza: Shield,
       denuncia: AlertTriangle, fotos: Camera, medicos: Stethoscope,
-      representacion: FileText, honorarios: FileText
+      representacion: FileText, honorarios: FileText, 
+      presupuesto: FileText, cbu: CreditCard, legal: Shield, complementaria: FileText
     };
 
     const esNoSeguro = r.tiene_seguro === false;
     const etiquetaPoliza = esNoSeguro ? 'Carta No Seguro' : 'Póliza';
     const subPoliza = esNoSeguro ? 'Declaración Jurada' : 'Seguro Vigente';
 
-    const docs = [
-      { key: 'dni', label: 'DNI', sub: 'Identidad', path: r.path_dni },
-      { key: 'licencia', label: 'Licencia', sub: 'Conductor', path: r.path_licencia },
-      { key: 'cedula', label: 'Cédula', sub: 'Vehículo', path: r.path_cedula },
-      { key: 'poliza', label: etiquetaPoliza, sub: subPoliza, path: r.path_poliza },
-      { key: 'denuncia', label: 'Denuncia', sub: 'Administrativa', path: r.path_denuncia },
-      { key: 'medicos', label: 'Médicos', sub: 'Certificados', path: r.path_medicos, alert: true },
+    // Definimos qué campos buscar y sus etiquetas base
+    const definiciones = [
+      { key: 'dni', label: 'DNI', sub: 'Identidad' },
+      { key: 'licencia', label: 'Licencia', sub: 'Conductor' },
+      { key: 'cedula', label: 'Cédula', sub: 'Vehículo' },
       
-      // Nuevos campos
-      { key: 'presupuesto', label: 'Presupuesto', sub: 'Reparación', path: r.path_presupuesto },
-      { key: 'cbu', label: 'Comp. CBU', sub: 'Bancario', path: r.path_cbu_archivo },
-      { key: 'legal', label: 'Denuncia Penal', sub: 'Judicial', path: r.path_denuncia_penal },
+      { key: 'poliza', label: etiquetaPoliza, sub: subPoliza },
+      { key: 'denuncia', label: 'Denuncia', sub: 'Administrativa' },
+      { key: 'presupuesto', label: 'Presupuesto', sub: 'Reparación' },
+      { key: 'medicos', label: 'Médicos', sub: 'Certificados', alert: true },
+      { key: 'cbu', label: 'Comp. CBU', sub: 'Bancario' },
+      { key: 'legal', label: 'Denuncia Penal', sub: 'Judicial' },
+      { key: 'complementaria', label: 'Doc. Extra', sub: 'Adicional' }, // <--- Agregado
 
-      { key: 'representacion', label: 'Poder', sub: 'Legal', path: r.path_representacion, highlight: true },
-      { key: 'honorarios', label: 'Honorarios', sub: 'Convenio', path: r.path_honorarios }
+      { key: 'representacion', label: 'Poder', sub: 'Legal', highlight: true },
+      { key: 'honorarios', label: 'Honorarios', sub: 'Convenio' }
     ];
 
-    this.archivosDisponibles = docs.filter(d => d.path).map(d => ({
-      ...d, icon: (d.key === 'poliza' && esNoSeguro) ? FileText : (iconMap[d.key] || FileText)
-    }));
+    this.archivosDisponibles = [];
+
+    definiciones.forEach(def => {
+       // @ts-ignore: Acceso dinámico a las propiedades del reclamo
+       const rawValue = r['path_' + def.key];
+
+       if (!rawValue) return; // Si es null/undefined, saltamos
+
+       // CASO 1: Es un ARRAY (Múltiples archivos: DNI, Licencia, etc)
+       if (Array.isArray(rawValue)) {
+          rawValue.forEach((pathItem, index) => {
+             this.archivosDisponibles.push({
+                key: def.key,
+                label: `${def.label} (${index + 1})`, // Ej: DNI (1), DNI (2)
+                sub: def.sub,
+                path: pathItem,
+                isMultiple: true, // Flag para saber cómo pedir la url
+                index: index,     // Guardamos el índice
+                icon: (def.key === 'poliza' && esNoSeguro) ? FileText : (iconMap[def.key] || FileText),
+                highlight: def.highlight,
+                alert: def.alert
+             });
+          });
+       } 
+       // CASO 2: Es un STRING (Archivo único: Póliza, etc)
+       else if (typeof rawValue === 'string') {
+          this.archivosDisponibles.push({
+             ...def,
+             path: rawValue,
+             isMultiple: false,
+             icon: (def.key === 'poliza' && esNoSeguro) ? FileText : (iconMap[def.key] || FileText)
+          });
+       }
+    });
   }
 
   private cargarTramitadores(): void {
@@ -307,10 +340,12 @@ export class DetalleReclamoComponent implements OnInit {
     window.open(`https://wa.me/549${tel}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
-  verArchivo(tipo: string) {
+  // Recibimos 'doc' que es el objeto completo { key, index, isMultiple, ... }
+  verArchivo(doc: any) {
     const r = this.reclamo();
     if (!r) return;
     
+    // Abrimos ventana precarga
     const nuevaVentana = window.open('', '_blank');
     const htmlCarga = `
       <!DOCTYPE html><html lang="es"><head><title>Cargando...</title>
@@ -324,8 +359,11 @@ export class DetalleReclamoComponent implements OnInit {
       nuevaVentana.document.close(); 
     }
 
-    this.reclamosService.getArchivoUrl(r.id, tipo).subscribe({
-      next: res => { if (nuevaVentana) nuevaVentana.location.href = res.url; },
+    // Llamamos al servicio pasando el índice si existe
+    this.reclamosService.getArchivoUrl(r.id, doc.key, doc.index).subscribe({
+      next: res => { 
+        if (nuevaVentana) nuevaVentana.location.href = res.url; 
+      },
       error: () => { 
         if (nuevaVentana) nuevaVentana.close();
         this.notificacionService.showError('No se pudo abrir el archivo.');
