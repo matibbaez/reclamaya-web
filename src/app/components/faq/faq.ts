@@ -25,10 +25,10 @@ export class FaqComponent {
       pregunta: '¿Qué pasa si la aseguradora demora en contestar?',
       respuesta: 'Nuestro sistema actualiza constantemente los tiempos de demora de cada aseguradora. Estamos atentos para realizar el reclamo respectivo en caso de retraso, manteniéndote informado en todo momento.'
     },
-    {
-      pregunta: '¿Qué pasa si no termino de cargar la documentación?',
-      respuesta: 'No hay problema. Podés subir la documentación que tengas a mano y continuar la carga más tarde. Tené en cuenta que hay documentación obligatoria para avanzar, la cual está detallada en el sistema.'
-    },
+    // {
+    //   pregunta: '¿Qué pasa si no termino de cargar la documentación?',
+    //   respuesta: 'No hay problema. Podés subir la documentación que tengas a mano y continuar la carga más tarde. Tené en cuenta que hay documentación obligatoria para avanzar, la cual está detallada en el sistema.'
+    // },
     {
       pregunta: '¿Qué sucede con la documentación que subí al finalizar?',
       respuesta: 'El sistema funciona como una base de datos segura. Cada documento quedará cargado, resguardado bajo estrictas políticas de privacidad y seguridad, disponible para vos o tus asegurados en cualquier momento.'
