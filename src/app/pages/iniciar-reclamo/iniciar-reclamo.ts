@@ -134,16 +134,39 @@ export class IniciarReclamoComponent implements OnInit {
   }
 
   // --- GETTERS DE TEXTOS LEGALES ---
+
   get textoPoder(): string {
-    return `CARTA PODER - REPRESENTACIÓN LETRADA\n\nPor la presente, yo, ${this.v.nombre}, titular del DNI Nº ${this.v.dni}, otorgo poder suficiente a los letrados de RECLAMA YA para que actúen en mi nombre y representación ante la compañía aseguradora correspondiente, organismos administrativos y/o judiciales, en relación al siniestro denunciado.\n\nFaculto a los mismos para presentar documentación, realizar denuncias, tramitar el reclamo y percibir indemnizaciones.`;
+    return `SE PRESENTA – DESIGNA LETRADO – CONSTITUYE DOMICILIO
+
+      ${this.v.nombre}, DNI ${this.v.dni}, por derecho propio, conjuntamente con mi abogado patrocinante, el Dr. Agustín Exequiel Simonelli, Tº 141, Fº 755, CPACF, CUIT 20-36045548-4, constituyendo domicilio legal en Gallo 1435 piso 9 de Capital Federal, teléfono 11-3336-0425, ante quien corresponda me presento y respetuosamente digo:
+
+      Que vengo a presentarme, designando como único letrado patrocinante al Dr. Agustín Exequiel Simonelli, cuyos datos personales se consignaron anteriormente, otorgándole poder suficiente para realizar todas las gestiones extrajudiciales y administrativas necesarias ante la compañía aseguradora correspondiente, a fin de obtener la indemnización por los daños materiales y/o físicos sufridos.`;
   }
 
   get textoHonorarios(): string {
-    return `CONVENIO DE HONORARIOS PROFESIONALES\n\nEntre el cliente, ${this.v.nombre}, y RECLAMA YA, se acuerda lo siguiente:\n\nPRIMERO: Los honorarios profesionales por la gestión extrajudicial del reclamo se pactan en el 20% (veinte por ciento) del monto total bruto que se obtenga como indemnización por parte de la compañía aseguradora.\n\nSEGUNDO: Dicho porcentaje será abonado una vez que el cliente perciba efectivamente la indemnización.\n\nTERCERO: En caso de no obtenerse indemnización alguna, el cliente no deberá abonar honorarios (resultado negativo).`;
+    const fecha = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' });
+    
+    return `CONVENIO DE HONORARIOS PROFESIONALES
+
+      En la ciudad de Buenos Aires, a los ${fecha}, ENTRE: ${this.v.nombre}, DNI ${this.v.dni}, en adelante “EL CLIENTE”, por una parte, y el señor AGUSTIN EXEQUIEL SIMONELLI, Tº141 Fº755 C.P.A.C.F, CUIT: 20-36045548-4, por otra, en adelante “EL LETRADO”, se conviene celebrar el presente convenio:
+
+      PRIMERO: EL CLIENTE encarga a EL LETRADO y este acepta la labor profesional de letrado patrocinante en el reclamo extrajudicial y/o judicial que iniciará EL CLIENTE por el siniestro denunciado.
+
+      SEGUNDO: El honorario básico de los profesionales se conviene en el 20% (VEINTE POR CIENTO) del monto total que por todo concepto se recaude del pleito o gestión. Dicho porcentaje incorpora todo gasto de letrado, cotizaciones, certificados, tasas, aranceles e impuestos.
+
+      TERCERO: El pago de honorarios deberá realizarlo EL CLIENTE al LETRADO en efectivo o transferencia bancaria únicamente al momento de percibir el monto que se recaude (Resultado Positivo).`;
   }
 
   get textoNoSeguro(): string {
-    return `DECLARACIÓN JURADA - INEXISTENCIA DE SEGURO\n\nPor la presente, declaro bajo juramento que al momento del siniestro ocurrido el día ${this.v.fecha_hecho} en ${this.v.lugar_hecho}, mi vehículo NO poseía cobertura de seguro vigente.\n\nAsimismo, ratifico el relato de los hechos declarado en este formulario.`;
+    const fecha = new Date().toLocaleDateString('es-AR');
+    
+    return `DECLARACIÓN JURADA - INEXISTENCIA DE SEGURO
+      Buenos Aires, ${fecha}
+
+      Por la presente, yo, ${this.v.nombre}, titular del DNI Nº ${this.v.dni}, declaro bajo juramento que al momento del siniestro ocurrido el día ${this.v.fecha_hecho} en ${this.v.lugar_hecho}, mi vehículo NO poseía cobertura de seguro vigente por cuestiones ajenas a mi voluntad.
+
+      Asimismo, describo los hechos ocurridos de la siguiente manera:
+      "${this.v.relato_hecho || 'No especificado'}"`;
   }
 
   // --- VALIDATORS HELPERS ---
