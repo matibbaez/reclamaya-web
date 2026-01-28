@@ -372,32 +372,37 @@ export class IniciarReclamoComponent implements OnInit {
     const input = event.target;
     if (!input.files || input.files.length === 0) return;
 
-    // Campos que permiten MÚLTIPLES archivos
-    const isMultiple = ['fileFotos', 'fileDNI', 'fileLicencia', 'fileCedula', 'fileComplementaria'].includes(controlName);
+    // 1. DEFINIR QUÉ CAMPOS SON MÚLTIPLES
+    // Antes solo eran unos pocos, ahora son TODOS los de documentación.
+    // Simplemente verificamos si NO es la firma (o podrías listar todos).
+    const isMultiple = [
+        'fileFotos', 
+        'fileDNI', 'fileLicencia', 'fileCedula', 
+        'fileSeguro', 'fileDenuncia', 
+        'fileMedicos', 'filePresupuesto', 
+        'fileCBU', 'fileDenunciaPenal', 
+        'fileComplementaria'
+    ].includes(controlName);
     
-    // --- CAMBIO AQUÍ: Definimos límites específicos ---
-    let maxFiles = 5; // Por defecto (ej: complementaria)
+    // 2. DEFINIR LÍMITES
+    let maxFiles = 4; // Límite estándar para documentos (DNI, Póliza, etc.)
     
     if (controlName === 'fileFotos') {
-        maxFiles = 7; // Fotos del choque
-    } else if (['fileDNI', 'fileLicencia', 'fileCedula'].includes(controlName)) {
-        maxFiles = 2; // Documentos personales (Frente y Dorso)
-    }
-    // -------------------------------------------------
+        maxFiles = 7; // Excepción para fotos del daño
+    } 
+    // Nota: Eliminamos los "if" específicos de DNI/Licencia porque ahora todos caen en 4.
 
-    // 1. PROCESAR ARCHIVOS NUEVOS
+    // 3. PROCESAR ARCHIVOS
     const newFiles = Array.from(input.files) as File[];
-    
     this.isLoading = true; 
 
     try {
-      // Comprimimos todo lo que entra
       const compressedNewFiles = await Promise.all(
         newFiles.map(file => this.imageCompressService.compressFile(file))
       );
 
       if (isMultiple) {
-        // --- LÓGICA ACUMULATIVA ---
+        // --- LÓGICA ACUMULATIVA (Para todos los documentos ahora) ---
         const currentVal = this.reclamoForm.get(controlName)?.value as any;
         let currentFiles: File[] = [];
 
@@ -407,30 +412,28 @@ export class IniciarReclamoComponent implements OnInit {
               : (Array.isArray(currentVal) ? currentVal : [currentVal]);
         }
         
-        // Validar Cantidad
+        // Validar Cantidad Total
         if (currentFiles.length + compressedNewFiles.length > maxFiles) {
             this.notificacionService.showError(`Máximo ${maxFiles} archivos permitidos para este campo.`);
-            // No agregamos los nuevos, mantenemos los viejos
+            // Opcional: Podrías agregar los que quepan, pero bloquear es más seguro.
         } else {
-            // Combinar
             const combinedFiles = [...currentFiles, ...compressedNewFiles];
             this.reclamoForm.patchValue({ [controlName]: combinedFiles as any });
         }
 
       } else {
-        // --- LÓGICA ARCHIVO ÚNICO (Reemplazo) ---
+        // --- LÓGICA ARCHIVO ÚNICO (Por si queda alguno o futuro uso) ---
         if (newFiles.length > 1) {
             this.notificacionService.showError('Solo se permite un archivo para este campo.');
         }
         this.reclamoForm.patchValue({ [controlName]: compressedNewFiles[0] });
       }
       
-      // Forzar validación visual
       this.reclamoForm.get(controlName)?.updateValueAndValidity();
 
     } catch (e) {
       console.error("Error procesando archivos", e);
-      this.notificacionService.showError('Error al procesar la imagen. Intente con otra.');
+      this.notificacionService.showError('Error al procesar el archivo. Intente nuevamente.');
     } finally {
       this.isLoading = false;
       input.value = ''; 

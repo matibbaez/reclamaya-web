@@ -28,7 +28,7 @@ export interface IReclamo {
   patente_tercero?: string;
   patente_propia?: string;
   
-  // --- Datos del Tercero (NUEVOS) ---
+  // --- Datos del Tercero ---
   tercero_nombre?: string;       
   tercero_apellido?: string;     
   tercero_dni?: string;          
@@ -54,20 +54,22 @@ export interface IReclamo {
   tramitador?: any;
 
   // --- Archivos (Paths) ---
-  path_dni?: string | string[];
-  path_licencia?: string | string[];
-  path_cedula?: string | string[];
-  path_poliza?: string;
-  path_denuncia?: string;
+  path_dni?: string[];
+  path_licencia?: string[];
+  path_cedula?: string[];
+  
+  path_poliza?: string[];      
+  path_denuncia?: string[];    
   path_fotos?: string[];
-  path_medicos?: string;
+  path_medicos?: string[];     
+  
   path_representacion?: string;
   path_honorarios?: string;
 
-  // 👇 LOS QUE TE DABAN ERROR (NUEVOS)
-  path_presupuesto?: string;
-  path_cbu_archivo?: string;
-  path_denuncia_penal?: string;
+  path_presupuesto?: string[];    
+  path_cbu_archivo?: string[];    
+  path_denuncia_penal?: string[]; 
+  path_complementaria?: string[]; 
 }
 
 @Injectable({
@@ -92,8 +94,8 @@ export class ReclamosService {
   }
 
   // Obtener la URL firmada para descargar/ver un archivo
+  // Acepta index opcional para descargar archivos específicos de un array
   getArchivoUrl(id: string, tipo: string, index?: number): Observable<{ url: string }> {
-    // Si hay índice, lo mandamos como query param: ?index=0
     const query = index !== undefined ? `?index=${index}` : '';
     return this.http.get<{ url: string }>(`${this.apiUrl}/descargar/${id}/${tipo}${query}`);
   }

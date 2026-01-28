@@ -19,8 +19,8 @@ export class AuthService {
   
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = environment.apiUrl;
-  // private apiUrl = 'http://localhost:3000'; 
+  // private apiUrl = environment.apiUrl;
+  private apiUrl = 'http://localhost:3000'; 
 
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;

@@ -48,8 +48,8 @@ export class DetalleReclamoComponent implements OnInit {
   public authService = inject(AuthService);
 
   // --- VARIABLES DE MENSAJES ---
-  tabActual: 'publico' | 'interno' = 'publico'; // Control de Pestañas
-  notaInternaTexto = ''; // Input separado para no confundir
+  tabActual: 'publico' | 'interno' = 'publico'; 
+  notaInternaTexto = ''; 
   guardandoNotaInterna = false;
 
   observacionTexto = '';
@@ -107,7 +107,7 @@ export class DetalleReclamoComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.reclamo.set(data);
-          this.syncDatos(data); // Sincronizamos datos y observaciones
+          this.syncDatos(data); 
           this.generarLegajo(data);
 
           if (data.path_fotos && data.path_fotos.length > 0) {
@@ -135,12 +135,8 @@ export class DetalleReclamoComponent implements OnInit {
     });
   }
 
-  // Sincroniza datos iniciales (Tramitador y Mensajes)
   private syncDatos(data: IReclamo): void {
-    
     this.observacionTexto = ''; 
-    
-    // 2. Tramitador asignado
     if (data.tramitador) {
       this.tramitadorSeleccionado = data.tramitador.id;
     } else {
@@ -149,6 +145,7 @@ export class DetalleReclamoComponent implements OnInit {
     this.editandoTramitador.set(false);
   }
 
+  // --- GENERACIÓN DEL LEGAJO DIGITAL (CORREGIDO) ---
   private generarLegajo(r: IReclamo): void {
     const iconMap: Record<string, any> = {
       dni: CreditCard, licencia: Car, cedula: FileText, poliza: Shield,
@@ -157,11 +154,17 @@ export class DetalleReclamoComponent implements OnInit {
       presupuesto: FileText, cbu: CreditCard, legal: Shield, complementaria: FileText
     };
 
+    // MAPEO DE PROPIEDADES ESPECIALES (IMPORTANTE)
+    // Relaciona la "key" del array con el nombre real de la propiedad en IReclamo
+    const propertyMap: Record<string, string> = {
+        'cbu': 'path_cbu_archivo',
+        'legal': 'path_denuncia_penal'
+    };
+
     const esNoSeguro = r.tiene_seguro === false;
     const etiquetaPoliza = esNoSeguro ? 'Carta No Seguro' : 'Póliza';
     const subPoliza = esNoSeguro ? 'Declaración Jurada' : 'Seguro Vigente';
 
-    // Definimos qué campos buscar y sus etiquetas base
     const definiciones = [
       { key: 'dni', label: 'DNI', sub: 'Identidad' },
       { key: 'licencia', label: 'Licencia', sub: 'Conductor' },
@@ -173,7 +176,7 @@ export class DetalleReclamoComponent implements OnInit {
       { key: 'medicos', label: 'Médicos', sub: 'Certificados', alert: true },
       { key: 'cbu', label: 'Comp. CBU', sub: 'Bancario' },
       { key: 'legal', label: 'Denuncia Penal', sub: 'Judicial' },
-      { key: 'complementaria', label: 'Doc. Extra', sub: 'Adicional' }, // <--- Agregado
+      { key: 'complementaria', label: 'Doc. Extra', sub: 'Adicional' },
 
       { key: 'representacion', label: 'Poder', sub: 'Legal', highlight: true },
       { key: 'honorarios', label: 'Honorarios', sub: 'Convenio' }
@@ -182,28 +185,31 @@ export class DetalleReclamoComponent implements OnInit {
     this.archivosDisponibles = [];
 
     definiciones.forEach(def => {
-       // @ts-ignore: Acceso dinámico a las propiedades del reclamo
-       const rawValue = r['path_' + def.key];
+       // CORRECCIÓN AQUÍ: Usamos el mapa o el default 'path_' + key
+       const propName = propertyMap[def.key] || ('path_' + def.key);
+       
+       // @ts-ignore
+       const rawValue = r[propName];
 
-       if (!rawValue) return; // Si es null/undefined, saltamos
+       if (!rawValue) return; 
 
-       // CASO 1: Es un ARRAY (Múltiples archivos: DNI, Licencia, etc)
+       // CASO 1: ARRAY DE ARCHIVOS
        if (Array.isArray(rawValue)) {
           rawValue.forEach((pathItem, index) => {
              this.archivosDisponibles.push({
-                key: def.key,
-                label: `${def.label} (${index + 1})`, // Ej: DNI (1), DNI (2)
+                key: def.key,  // Para la API usamos la key original (ej: 'cbu')
+                label: `${def.label} (${index + 1})`,
                 sub: def.sub,
                 path: pathItem,
-                isMultiple: true, // Flag para saber cómo pedir la url
-                index: index,     // Guardamos el índice
+                isMultiple: true,
+                index: index,     // Índice para descargar el correcto
                 icon: (def.key === 'poliza' && esNoSeguro) ? FileText : (iconMap[def.key] || FileText),
                 highlight: def.highlight,
                 alert: def.alert
              });
           });
        } 
-       // CASO 2: Es un STRING (Archivo único: Póliza, etc)
+       // CASO 2: STRING ÚNICO
        else if (typeof rawValue === 'string') {
           this.archivosDisponibles.push({
              ...def,
@@ -290,11 +296,8 @@ export class DetalleReclamoComponent implements OnInit {
       next: (res) => {
         this.guardandoNotaInterna = false;
         this.notaInternaTexto = ''; 
-        
-        // Mantenemos tramitador visualmente
         const currentTramitador = r.tramitador;
         if (!res.tramitador && currentTramitador) res.tramitador = currentTramitador;
-        
         this.reclamo.set(res);
         this.notificacionService.showSuccess('Nota interna guardada.');
       },
@@ -311,18 +314,13 @@ export class DetalleReclamoComponent implements OnInit {
 
     this.guardandoObservacion = true;
     
-    // Usamos el NUEVO método agregarMensaje
     this.reclamosService.agregarMensaje(r.id, this.observacionTexto).subscribe({
       next: (res) => {
         this.guardandoObservacion = false;
-        this.observacionTexto = ''; // Limpiamos el input
-        
-        // Mantenemos el tramitador visualmente
+        this.observacionTexto = ''; 
         const currentTramitador = r.tramitador;
         if (!res.tramitador && currentTramitador) res.tramitador = currentTramitador;
-        
-        this.reclamo.set(res); // Actualizamos la lista en pantalla
-        // Scroll al fondo si quisieras (opcional)
+        this.reclamo.set(res); 
       },
       error: () => {
         this.guardandoObservacion = false;
@@ -340,12 +338,10 @@ export class DetalleReclamoComponent implements OnInit {
     window.open(`https://wa.me/549${tel}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
-  // Recibimos 'doc' que es el objeto completo { key, index, isMultiple, ... }
   verArchivo(doc: any) {
     const r = this.reclamo();
     if (!r) return;
     
-    // Abrimos ventana precarga
     const nuevaVentana = window.open('', '_blank');
     const htmlCarga = `
       <!DOCTYPE html><html lang="es"><head><title>Cargando...</title>
@@ -359,7 +355,8 @@ export class DetalleReclamoComponent implements OnInit {
       nuevaVentana.document.close(); 
     }
 
-    // Llamamos al servicio pasando el índice si existe
+    // Al backend le mandamos la "KEY" original ('cbu', 'legal', etc) para que el mapaColumnas funcione
+    // Pero pasamos el index si es múltiple
     this.reclamosService.getArchivoUrl(r.id, doc.key, doc.index).subscribe({
       next: res => { 
         if (nuevaVentana) nuevaVentana.location.href = res.url; 

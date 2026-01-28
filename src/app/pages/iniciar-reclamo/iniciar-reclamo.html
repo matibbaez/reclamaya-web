@@ -472,23 +472,19 @@
                     <input type="file" id="fileDNI" hidden multiple (change)="onFileChange($event, 'fileDNI')" accept="image/*,application/pdf">
                     
                     <label for="fileDNI" class="drop-zone" [class.has-files]="f['fileDNI'].value">
-                      
                       <div *ngIf="!f['fileDNI'].value" class="placeholder-content">
-                        <div class="icon-upload">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
-                        </div>
+                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
                         <span>Subir DNI</span>
                         <span class="text-xs text-gray-400 mt-1 block">(Frente y Dorso)</span>
                       </div>
 
                       <div *ngIf="f['fileDNI'].value" class="add-more-container">
-                        <div class="btn-add-another" *ngIf="getFilesList('fileDNI').length < 2">
+                        <div class="btn-add-another" *ngIf="getFilesList('fileDNI').length < 4">
                             <span class="plus-icon">+</span>
-                            <span>Agregar Dorso/Frente</span>
+                            <span>Agregar otro</span>
                         </div>
-                        
-                        <div *ngIf="getFilesList('fileDNI').length >= 2" class="text-green-600 font-semibold text-sm">
-                            ¡Listo! (2 archivos cargados)
+                        <div *ngIf="getFilesList('fileDNI').length >= 4" class="text-green-600 font-semibold text-sm">
+                            ¡Listo!
                         </div>
                       </div>
                     </label>
@@ -499,11 +495,11 @@
                               <span class="icon-img">📄</span>
                               <span class="photo-name">{{ name }}</span>
                             </div>
-                            <button type="button" class="btn-delete-photo" (click)="borrarArchivo('fileDNI', i)" title="Eliminar archivo">✕</button>
+                            <button type="button" class="btn-delete-photo" (click)="borrarArchivo('fileDNI', i)" title="Eliminar">✕</button>
                         </div>
                     </div>
                   </div>
-                  <small class="error-msg" *ngIf="f['fileDNI'].invalid && (f['fileDNI'].dirty || f['fileDNI'].touched)">⚠ Requerido (Frente y Dorso).</small>
+                  <small class="error-msg" *ngIf="f['fileDNI'].invalid && (f['fileDNI'].dirty || f['fileDNI'].touched)">Requerido (Frente y Dorso).</small>
                 </div>
 
                 <div class="file-upload-card" *ngIf="esConductor"
@@ -519,20 +515,18 @@
                     <input type="file" id="fileLicencia" hidden multiple (change)="onFileChange($event, 'fileLicencia')" accept="image/*,application/pdf">
                     
                     <label for="fileLicencia" class="drop-zone" [class.has-files]="f['fileLicencia'].value">
-                      
                       <div *ngIf="!f['fileLicencia'].value" class="placeholder-content">
                         <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
                         <span>Subir Licencia</span>
-                        <span class="text-xs text-gray-400 mt-1 block">(Frente y Dorso)</span>
                       </div>
 
                       <div *ngIf="f['fileLicencia'].value" class="add-more-container">
-                        <div class="btn-add-another" *ngIf="getFilesList('fileLicencia').length < 2">
+                        <div class="btn-add-another" *ngIf="getFilesList('fileLicencia').length < 4">
                             <span class="plus-icon">+</span>
-                            <span>Agregar Dorso/Frente</span>
+                            <span>Agregar otro</span>
                         </div>
-                        <div *ngIf="getFilesList('fileLicencia').length >= 2" class="text-green-600 font-semibold text-sm">
-                            ¡Listo! (2 archivos cargados)
+                        <div *ngIf="getFilesList('fileLicencia').length >= 4" class="text-green-600 font-semibold text-sm">
+                            ¡Listo!
                         </div>
                       </div>
                     </label>
@@ -563,20 +557,18 @@
                     <input type="file" id="fileCedula" hidden multiple (change)="onFileChange($event, 'fileCedula')" accept="image/*,application/pdf">
                     
                     <label for="fileCedula" class="drop-zone" [class.has-files]="f['fileCedula'].value">
-                      
                       <div *ngIf="!f['fileCedula'].value" class="placeholder-content">
                         <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
                         <span>Subir Cédula</span>
-                        <span class="text-xs text-gray-400 mt-1 block">(Frente y Dorso)</span>
                       </div>
 
                       <div *ngIf="f['fileCedula'].value" class="add-more-container">
-                        <div class="btn-add-another" *ngIf="getFilesList('fileCedula').length < 2">
+                        <div class="btn-add-another" *ngIf="getFilesList('fileCedula').length < 4">
                             <span class="plus-icon">+</span>
-                            <span>Agregar Dorso/Frente</span>
+                            <span>Agregar otro</span>
                         </div>
-                        <div *ngIf="getFilesList('fileCedula').length >= 2" class="text-green-600 font-semibold text-sm">
-                            ¡Listo! (2 archivos cargados)
+                        <div *ngIf="getFilesList('fileCedula').length >= 4" class="text-green-600 font-semibold text-sm">
+                            ¡Listo!
                         </div>
                       </div>
                     </label>
@@ -595,82 +587,130 @@
                 </div>
 
                 <ng-container *ngIf="esConductor && tieneSeguro">
-                    
-                    <div class="file-upload-card"
-                         [class.uploaded]="f['fileSeguro'].value"
-                         [class.error-border]="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">
-                      <div class="card-header-file">
-                        <label>Certificado de Cobertura</label>
-                        <span class="file-hint">Vigente al momento del hecho.</span>
-                      </div>
-                      <div class="upload-area">
-                        <input type="file" id="fileSeguro" hidden (change)="onFileChange($event, 'fileSeguro')">
-                        <label for="fileSeguro" class="drop-zone">
-                          <div *ngIf="!f['fileSeguro'].value" class="placeholder-content">
-                            <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
-                            <span>Subir archivo</span>
-                          </div>
-                          <div *ngIf="f['fileSeguro'].value" class="file-preview">
-                            <div class="icon-check">✓</div>
-                            <span class="filename">{{ getFileName('fileSeguro') }}</span>
-                          </div>
-                        </label>
-                      </div>
-                      <small class="error-msg" *ngIf="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">⚠ Requerido.</small>
-                    </div>
-
-                    <div class="file-upload-card"
-                         [class.uploaded]="f['fileDenuncia'].value"
-                         [class.error-border]="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">
-                      <div class="card-header-file">
-                        <label>Denuncia Administrativa</label>
-                        <span class="file-hint">Presentada ante tu propia aseguradora.</span>
-                      </div>
-                      <div class="upload-area">
-                        <input type="file" id="fileDenuncia" hidden (change)="onFileChange($event, 'fileDenuncia')">
-                        <label for="fileDenuncia" class="drop-zone">
-                          <div *ngIf="!f['fileDenuncia'].value" class="placeholder-content">
-                            <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
-                            <span>Subir archivo</span>
-                          </div>
-                          <div *ngIf="f['fileDenuncia'].value" class="file-preview">
-                            <div class="icon-check">✓</div>
-                            <span class="filename">{{ getFileName('fileDenuncia') }}</span>
-                          </div>
-                        </label>
-                      </div>
-                      <small class="error-msg" *ngIf="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">⚠ Requerido.</small>
-                    </div>
-
-                  </ng-container>
+        
                   <div class="file-upload-card"
-                      [class.uploaded]="f['filePresupuesto'].value"
-                      [class.error-border]="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">
-                    
+                      [class.uploaded]="f['fileSeguro'].value"
+                      [class.error-border]="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">
                     <div class="card-header-file">
-                      <label>Presupuesto / Carta de Franquicia / Factura</label>
-                      <div class="info-box-blue">
-                        <p>• <strong>Presupuesto</strong> de daños materiales.</p>
-                        <p>• Si tenés "Todo Riesgo", adjuntá <strong>Carta de Franquicia</strong>.</p>
-                        <p>• Si ya reparaste, adjuntá <strong>Factura de reparación</strong>.</p>
-                      </div>
+                      <label>Certificado de Cobertura</label>
+                      <span class="file-hint">Vigente al momento del hecho (Póliza completa).</span>
                     </div>
-
                     <div class="upload-area">
-                      <input type="file" id="filePresupuesto" hidden (change)="onFileChange($event, 'filePresupuesto')">
-                      <label for="filePresupuesto" class="drop-zone">
-                        <div *ngIf="!f['filePresupuesto'].value" class="placeholder-content">
+                      <input type="file" id="fileSeguro" hidden multiple (change)="onFileChange($event, 'fileSeguro')">
+                      <label for="fileSeguro" class="drop-zone" [class.has-files]="f['fileSeguro'].value">
+                        <div *ngIf="!f['fileSeguro'].value" class="placeholder-content">
                           <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
-                          <span>Subir archivo</span>
+                          <span>Subir Póliza</span>
                         </div>
-                        <div *ngIf="f['filePresupuesto'].value" class="file-preview">
-                          <div class="icon-check">✓</div>
-                          <span class="filename">{{ getFileName('filePresupuesto') }}</span>
+                        
+                        <div *ngIf="f['fileSeguro'].value" class="add-more-container">
+                          <div class="btn-add-another" *ngIf="getFilesList('fileSeguro').length < 4">
+                              <span class="plus-icon">+</span>
+                              <span>Agregar pág. extra</span>
+                          </div>
+                          <div *ngIf="getFilesList('fileSeguro').length >= 4" class="text-green-600 font-semibold text-sm">
+                              ¡Listo!
+                          </div>
                         </div>
                       </label>
+
+                      <div *ngIf="f['fileSeguro'].value" class="uploaded-photos-list">
+                          <div *ngFor="let name of getFilesList('fileSeguro'); let i = index" class="photo-item-row fade-in">
+                              <div class="photo-info">
+                                <span class="icon-img">📑</span>
+                                <span class="photo-name">{{ name }}</span>
+                              </div>
+                              <button type="button" class="btn-delete-photo" (click)="borrarArchivo('fileSeguro', i)">✕</button>
+                          </div>
+                      </div>
                     </div>
-                    <small class="error-msg" *ngIf="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">⚠ Requerido.</small>
+                    <small class="error-msg" *ngIf="f['fileSeguro'].invalid && (f['fileSeguro'].dirty || f['fileSeguro'].touched)">⚠ Requerido.</small>
                   </div>
+
+                  <div class="file-upload-card"
+                      [class.uploaded]="f['fileDenuncia'].value"
+                      [class.error-border]="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">
+                    <div class="card-header-file">
+                      <label>Denuncia Administrativa</label>
+                      <span class="file-hint">Presentada ante tu aseguradora (Frente y Dorso).</span>
+                    </div>
+                    <div class="upload-area">
+                      <input type="file" id="fileDenuncia" hidden multiple (change)="onFileChange($event, 'fileDenuncia')">
+                      <label for="fileDenuncia" class="drop-zone" [class.has-files]="f['fileDenuncia'].value">
+                        <div *ngIf="!f['fileDenuncia'].value" class="placeholder-content">
+                          <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                          <span>Subir Denuncia</span>
+                        </div>
+                        
+                        <div *ngIf="f['fileDenuncia'].value" class="add-more-container">
+                          <div class="btn-add-another" *ngIf="getFilesList('fileDenuncia').length < 4">
+                              <span class="plus-icon">+</span>
+                              <span>Agregar pág. extra</span>
+                          </div>
+                          <div *ngIf="getFilesList('fileDenuncia').length >= 4" class="text-green-600 font-semibold text-sm">
+                              ¡Listo!
+                          </div>
+                        </div>
+                      </label>
+
+                      <div *ngIf="f['fileDenuncia'].value" class="uploaded-photos-list">
+                          <div *ngFor="let name of getFilesList('fileDenuncia'); let i = index" class="photo-item-row fade-in">
+                              <div class="photo-info">
+                                <span class="icon-img">📋</span>
+                                <span class="photo-name">{{ name }}</span>
+                              </div>
+                              <button type="button" class="btn-delete-photo" (click)="borrarArchivo('fileDenuncia', i)">✕</button>
+                          </div>
+                      </div>
+                    </div>
+                    <small class="error-msg" *ngIf="f['fileDenuncia'].invalid && (f['fileDenuncia'].dirty || f['fileDenuncia'].touched)">⚠ Requerido.</small>
+                  </div>
+                </ng-container>
+
+                <div class="file-upload-card"
+                    [class.uploaded]="f['filePresupuesto'].value"
+                    [class.error-border]="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">
+                  
+                  <div class="card-header-file">
+                    <label>Presupuesto / Carta de Franquicia / Factura</label>
+                    <div class="info-box-blue">
+                      <p>• <strong>Presupuesto</strong> de daños materiales.</p>
+                      <p>• Si tenés "Todo Riesgo", adjuntá <strong>Carta de Franquicia</strong>.</p>
+                      <p>• Si ya reparaste, adjuntá <strong>Factura de reparación</strong>.</p>
+                    </div>
+                  </div>
+
+                  <div class="upload-area">
+                    <input type="file" id="filePresupuesto" hidden multiple (change)="onFileChange($event, 'filePresupuesto')">
+                    <label for="filePresupuesto" class="drop-zone" [class.has-files]="f['filePresupuesto'].value">
+                      <div *ngIf="!f['filePresupuesto'].value" class="placeholder-content">
+                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
+                        <span>Subir Archivos</span>
+                      </div>
+                      
+                      <div *ngIf="f['filePresupuesto'].value" class="add-more-container">
+                          <div class="btn-add-another" *ngIf="getFilesList('filePresupuesto').length < 4">
+                              <span class="plus-icon">+</span>
+                              <span>Agregar otro</span>
+                          </div>
+                          <div *ngIf="getFilesList('filePresupuesto').length >= 4" class="text-green-600 font-semibold text-sm">
+                              ¡Listo!
+                          </div>
+                      </div>
+                    </label>
+
+                    <div *ngIf="f['filePresupuesto'].value" class="uploaded-photos-list">
+                      <div *ngFor="let name of getFilesList('filePresupuesto'); let i = index" class="photo-item-row fade-in">
+                          <div class="photo-info">
+                            <span class="icon-img">🧾</span>
+                            <span class="photo-name">{{ name }}</span>
+                          </div>
+                          <button type="button" class="btn-delete-photo" (click)="borrarArchivo('filePresupuesto', i)">✕</button>
+                      </div>
+                    </div>
+                  </div>
+                  <small class="error-msg" *ngIf="f['filePresupuesto'].invalid && (f['filePresupuesto'].dirty || f['filePresupuesto'].touched)">⚠ Requerido.</small>
+                </div>
                   
                 <div class="file-upload-card highlight" *ngIf="f['rol_victima']?.value !== 'Peaton'"
                     [class.uploaded]="f['fileFotos'].value"
@@ -687,20 +727,20 @@
                   <div class="upload-area">
                     <input type="file" id="fileFotos" hidden multiple (change)="onFileChange($event, 'fileFotos')">
                     
-                    <label for="fileFotos" class="drop-zone">
+                    <label for="fileFotos" class="drop-zone" [class.has-files]="f['fileFotos'].value">
                       <div *ngIf="!f['fileFotos'].value" class="placeholder-content">
-                        <div class="icon-upload">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
-                        </div>
+                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg></div>
                         <span>Tocar para subir fotos</span>
                       </div>
 
-                      <div *ngIf="f['fileFotos'].value" class="file-preview">
-                        <div class="status-text">
-                            <div class="icon-check">✓</div>
-                            <span>{{ fotosList.length }} foto(s) seleccionada(s)</span>
+                      <div *ngIf="f['fileFotos'].value" class="add-more-container">
+                        <div class="btn-add-another" *ngIf="fotosList.length < 7">
+                            <span class="plus-icon">+</span>
+                            <span>Agregar otra foto</span>
                         </div>
-                        <span class="add-more-text">+ Agregar otra foto</span>
+                        <div *ngIf="fotosList.length >= 7" class="text-green-600 font-semibold text-sm">
+                            ¡Máximo alcanzado!
+                        </div>
                       </div>
                     </label>
 
@@ -711,21 +751,39 @@
                         </div>
                     </div>
                   </div>
-                  
                   <small class="error-msg" *ngIf="f['fileFotos'].invalid && (f['fileFotos'].dirty || f['fileFotos'].touched)">
                     ⚠ Las fotos son obligatorias.
                   </small>
                 </div>
 
                 <div class="file-upload-card" *ngIf="f['sufrio_lesiones'].value">
-                    <div class="card-header-file"><label>Certificados Médicos</label><span class="file-hint">Historia clínica, alta, placas.</span></div>
-                    <div class="upload-area">
-                        <input type="file" id="fileMedicos" hidden (change)="onFileChange($event, 'fileMedicos')">
-                        <label for="fileMedicos" class="drop-zone">
-                            <div *ngIf="!f['fileMedicos'].value" class="placeholder-content"><span>Subir archivo</span></div>
-                            <div *ngIf="f['fileMedicos'].value" class="file-preview"><div class="icon-check">✓</div><span class="filename">{{ getFileName('fileMedicos') }}</span></div>
-                        </label>
+                  <div class="card-header-file">
+                      <label>Certificados Médicos</label>
+                      <span class="file-hint">Historia clínica, alta, placas. Subí todo lo que tengas.</span>
+                  </div>
+                  <div class="upload-area">
+                    <input type="file" id="fileMedicos" hidden multiple (change)="onFileChange($event, 'fileMedicos')">
+                    <label for="fileMedicos" class="drop-zone" [class.has-files]="f['fileMedicos'].value">
+                        <div *ngIf="!f['fileMedicos'].value" class="placeholder-content"><span>Subir archivos</span></div>
+                        
+                        <div *ngIf="f['fileMedicos'].value" class="add-more-container">
+                            <div class="btn-add-another" *ngIf="getFilesList('fileMedicos').length < 4">
+                                <span class="plus-icon">+</span>
+                                <span>Agregar otro</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <div *ngIf="f['fileMedicos'].value" class="uploaded-photos-list">
+                        <div *ngFor="let name of getFilesList('fileMedicos'); let i = index" class="photo-item-row fade-in">
+                          <div class="photo-info">
+                            <span class="icon-img">🏥</span>
+                            <span class="photo-name">{{ name }}</span>
+                          </div>
+                          <button type="button" class="btn-delete-photo" (click)="borrarArchivo('fileMedicos', i)">✕</button>
+                        </div>
                     </div>
+                  </div>
                 </div>
 
                 <div class="file-upload-card"
@@ -735,26 +793,35 @@
                   <div class="card-header-file">
                       <label>Constancia de CBU / Alias</label>
                       <div class="text-xs text-gray-600 mb-2 space-y-1 bg-gray-50 p-2 rounded">
-                        <p>Debe ser del titular del vehículo (o del lesionado si es distinto).</p>
-                        <p><strong>✅ SÍ:</strong> Captura de HomeBanking (con nombre, nro cuenta, cbu), Ticket de cajero o CBU nominado.</p>
-                        <p><strong>❌ NO:</strong> Datos escritos a mano o transcriptos.</p>
+                        <p>Debe ser del titular. HomeBanking, Ticket o PDF.</p>
                       </div>
                   </div>
 
                   <div class="upload-area">
-                      <input type="file" id="fileCBU" hidden (change)="onFileChange($event, 'fileCBU')">
-                      <label for="fileCBU" class="drop-zone">
+                      <input type="file" id="fileCBU" hidden multiple (change)="onFileChange($event, 'fileCBU')">
+                      <label for="fileCBU" class="drop-zone" [class.has-files]="f['fileCBU'].value">
                           <div *ngIf="!f['fileCBU'].value" class="placeholder-content">
-                              <div class="icon-upload">
-                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
-                              </div>
+                              <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg></div>
                               <span>Subir captura</span>
                           </div>
-                          <div *ngIf="f['fileCBU'].value" class="file-preview">
-                              <div class="icon-check">✓</div>
-                              <span class="filename">{{ getFileName('fileCBU') }}</span>
+                          
+                          <div *ngIf="f['fileCBU'].value" class="add-more-container">
+                            <div class="btn-add-another" *ngIf="getFilesList('fileCBU').length < 4">
+                                <span class="plus-icon">+</span>
+                                <span>Agregar otra</span>
+                            </div>
                           </div>
                       </label>
+
+                      <div *ngIf="f['fileCBU'].value" class="uploaded-photos-list">
+                        <div *ngFor="let name of getFilesList('fileCBU'); let i = index" class="photo-item-row fade-in">
+                          <div class="photo-info">
+                            <span class="icon-img">🏧</span>
+                            <span class="photo-name">{{ name }}</span>
+                          </div>
+                          <button type="button" class="btn-delete-photo" (click)="borrarArchivo('fileCBU', i)">✕</button>
+                        </div>
+                      </div>
                   </div>
                   
                   <small class="error-msg" *ngIf="f['fileCBU'].invalid && (f['fileCBU'].dirty || f['fileCBU'].touched)">
@@ -763,40 +830,46 @@
                 </div>
 
                 <div class="file-upload-card" 
-                   [class.uploaded]="f['fileComplementaria'].value">
-                
-                <div class="card-header-file">
-                  <label>Documentación Complementaria (Opcional)</label>
-                  
-                  <div *ngIf="f['rol_victima']?.value === 'Peaton'" class="info-box-green" style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 0.75rem; color: #15803d; font-size: 0.85rem; margin-bottom: 0.5rem;">
-                    <p>📸 Si tenés <strong>fotos de los daños</strong>, lesiones visibles o presupuesto, subilos acá.</p>
+                  [class.uploaded]="f['fileComplementaria'].value">
+              
+                  <div class="card-header-file">
+                    <label>Documentación Complementaria (Opcional)</label>
+                    <div *ngIf="f['rol_victima']?.value === 'Peaton'" class="info-box-green">
+                      <p>📸 Si tenés <strong>fotos de los daños</strong>, lesiones o presupuesto, subilos acá.</p>
+                    </div>
+                    <span class="file-hint" *ngIf="f['rol_victima']?.value !== 'Peaton'">
+                      Cualquier otro documento útil.
+                    </span>
                   </div>
 
-                  <span class="file-hint" *ngIf="f['rol_victima']?.value !== 'Peaton'">
-                    Cualquier otro documento útil (Ej: ampliación de denuncia).
-                  </span>
-                </div>
-
-                <div class="upload-area">
-                  <input type="file" id="fileComplementaria" hidden multiple (change)="onFileChange($event, 'fileComplementaria')">
-                  <label for="fileComplementaria" class="drop-zone">
-                    
-                    <div *ngIf="!f['fileComplementaria'].value" class="placeholder-content">
-                      <div class="icon-upload">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                  <div class="upload-area">
+                    <input type="file" id="fileComplementaria" hidden multiple (change)="onFileChange($event, 'fileComplementaria')">
+                    <label for="fileComplementaria" class="drop-zone" [class.has-files]="f['fileComplementaria'].value">
+                      
+                      <div *ngIf="!f['fileComplementaria'].value" class="placeholder-content">
+                        <div class="icon-upload"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg></div>
+                        <span>Subir extra</span>
                       </div>
-                      <span>Subir extra</span>
-                    </div>
 
-                    <div *ngIf="f['fileComplementaria'].value" class="file-preview">
-                      <div class="icon-check">✓</div>
-                      <span class="filename">{{ getFileName('fileComplementaria') }}</span>
-                      <span class="change-text">Cambiar archivos</span>
+                      <div *ngIf="f['fileComplementaria'].value" class="add-more-container">
+                          <div class="btn-add-another" *ngIf="getFilesList('fileComplementaria').length < 4">
+                              <span class="plus-icon">+</span>
+                              <span>Agregar otro</span>
+                          </div>
+                      </div>
+                    </label>
+
+                    <div *ngIf="f['fileComplementaria'].value" class="uploaded-photos-list">
+                      <div *ngFor="let name of getFilesList('fileComplementaria'); let i = index" class="photo-item-row fade-in">
+                          <div class="photo-info">
+                            <span class="icon-img">📎</span>
+                            <span class="photo-name">{{ name }}</span>
+                          </div>
+                          <button type="button" class="btn-delete-photo" (click)="borrarArchivo('fileComplementaria', i)">✕</button>
+                      </div>
                     </div>
-                  </label>
+                  </div>
                 </div>
-              </div>
-
               </div>
             </div>
 
@@ -813,7 +886,6 @@
             </div>
 
           </div>
-
         </form>
       </div>
 
@@ -955,7 +1027,7 @@
                   (click)="docActivo = 'poder'"
                   [class.active-tab]="docActivo === 'poder'"
                   class="tab-btn">
-                  Poder
+                  Representación
               </button>
 
               <button type="button" 
