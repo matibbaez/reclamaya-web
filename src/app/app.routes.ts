@@ -12,6 +12,7 @@ import { DetalleReclamoComponent } from './pages/dashboard/detalle-reclamo/detal
 import { LegalesComponent } from './pages/legales/legales';
 import { authGuard } from './auth/auth-guard';
 import { adminGuard } from './auth/admin.guard';
+import { LandingProductoresComponent } from './pages/landing-productores/landing-productores';
 
 export const routes: Routes = [
   { 
@@ -68,6 +69,9 @@ export const routes: Routes = [
   },
 
   { path: 'legales', component: LegalesComponent },
+
+  // app.routes.ts
+  { path: 'productores', component: LandingProductoresComponent }, 
 
   { 
     path: 'cuenta-pendiente', 
