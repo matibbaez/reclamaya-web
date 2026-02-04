@@ -106,7 +106,7 @@
         <div class="cta-content">
           <h2>Llevá tu servicio al siguiente nivel</h2>
           <p>Unite a la red de productores que están modernizando el mercado asegurador.</p>
-          <button routerLink="/registro" class="btn-primary-glow large">
+          <button [routerLink]="['/login']" [queryParams]="{ mode: 'register' }" class="btn-primary-glow large">
             Registrarme Ahora
           </button>
         </div>

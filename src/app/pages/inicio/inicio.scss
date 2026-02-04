@@ -320,7 +320,7 @@ h1 {
 
   .btn-primary-glow, .btn-glass {
     width: 100%; 
-    padding: 12px 0; 
+    padding: 12px 10px; 
     justify-content: center; 
     font-size: 0.95rem;
     border-radius: 12px;
@@ -430,4 +430,83 @@ h1 {
 @media (max-width: 768px) {
   .mobile-only { display: inline !important; }
   .desktop-only { display: none !important; }
+}
+
+.producers-bridge {
+  padding: 5rem 0;
+  background-color: #0f172a; /* Fondo oscuro consistente */
+
+  .bridge-card {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3rem;
+    align-items: center;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+    }
+  }
+
+  .bridge-content {
+    /* Título h2: Respetando el tamaño de tus otras secciones */
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 1.2rem;
+      line-height: 1.1;
+
+      @media (max-width: 900px) {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* Párrafo: Respetando el tamaño de tus textos body/subtitle */
+    .bridge-text {
+      font-size: 1.15rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+      max-width: 550px;
+
+      @media (max-width: 900px) {
+        font-size: 0.95rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  }
+
+  /* Botón: Hereda btn-primary-glow ya definido */
+  .bridge-actions {
+    @media (max-width: 900px) {
+      .btn-primary-glow {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  .bridge-visual {
+    display: flex;
+    justify-content: center;
+    
+    .icon-box-large {
+      width: 120px;
+      height: 120px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3b82f6;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+  }
 }
