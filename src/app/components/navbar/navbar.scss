@@ -277,7 +277,7 @@ $danger: #ef4444;
     color: white;
     text-decoration: none;
     
-    padding: 8px 0; /* Menos padding vertical */
+    padding: 8px 8px; /* Menos padding vertical */
     margin-bottom: 0.2rem; /* Items más juntos */
     width: 100%;
     text-align: left;
@@ -395,12 +395,12 @@ $danger: #ef4444;
 
 /* Ajuste para pantallas muy bajitas (Landscape) */
 @media (max-height: 600px) {
-    .mobile-menu-dropdown {
-        padding-top: 70px;
-        a:not(.highlight-mobile) { font-size: 1.4rem; }
-        .divider { margin: 1rem 0; }
-        .actions-mobile { padding-top: 1rem; }
-    }
+  .mobile-menu-dropdown {
+      padding-top: 70px;
+      a:not(.highlight-mobile) { font-size: 1.4rem; }
+      .divider { margin: 1rem 0; }
+      .actions-mobile { padding-top: 1rem; }
+  }
 }
 
 @keyframes slideDown {
@@ -500,3 +500,34 @@ $danger: #ef4444;
         margin-top: 2rem !important;
     }
 }
+
+.btn-productor-nav {
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  
+  /* Estilo similar al btn-glass pero más visible */
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-right: 10px;
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.1); /* Un toque azul */
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+  }
+}
+
+/* En mobile, lo hacemos destacar en la lista */
+.highlight-mobile-productores {
+  background: rgba(59, 130, 246, 0.1) !important;
+  padding: 5px;
+  color: #3b82f6 !important;
+  font-weight: 700 !important;
+  border-radius: 8px;
+}
+

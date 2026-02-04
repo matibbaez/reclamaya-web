@@ -7,6 +7,7 @@
     
     <div class="navbar-links-desktop">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Inicio</a>
+      <!-- <a routerLink="/productores" routerLinkActive="active" class="nav-link">Productores</a> -->
       <a routerLink="/iniciar-reclamo" routerLinkActive="active" class="nav-link">Iniciar Reclamo</a>
       <a routerLink="/consultar-tramite" routerLinkActive="active" class="nav-link">
         Consultar Estado
@@ -25,6 +26,12 @@
         <a routerLink="/admin-dashboard" class="nav-link highlight">Panel Admin</a>
         <a routerLink="/mi-equipo" class="nav-link highlight">Equipo</a>
       </ng-container>
+
+      <a *ngIf="!authService.isAuthenticated()" 
+        routerLink="/productores" 
+        class="btn-productor-nav">
+        Acceso Productores
+      </a>
 
       <a *ngIf="!authService.isAuthenticated()" routerLink="/login" class="btn-login">
         Ingresar
@@ -53,6 +60,7 @@
     <a routerLink="/" (click)="cerrarMenu()">Inicio</a>
     <a routerLink="/iniciar-reclamo" (click)="cerrarMenu()">Iniciar Reclamo</a>
     <a routerLink="/consultar-tramite" (click)="cerrarMenu()">Consultar</a>
+    <a routerLink="/productores" (click)="cerrarMenu()" class="highlight-mobile-productores">Acceso Productores</a>
     
     <div class="divider" *ngIf="authService.isAuthenticated()"></div>
 

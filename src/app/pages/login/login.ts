@@ -44,14 +44,27 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit() {
+    // Escuchamos los parámetros de la URL (ref y mode)
     this.route.queryParams.subscribe(params => {
       const ref = params['ref'];
+      const mode = params['mode'];
+
+      // 1. Manejo de Código de Referido
       if (ref) {
         this.referralCode = ref;
         this.isRegisterMode = true; 
-        this.actualizarValidaciones(); 
         this.notificacionService.showSuccess('Código de invitación aplicado.');
       }
+
+      // 2. Manejo de Modo (desde Landing Productores)
+      if (mode === 'register') {
+        this.isRegisterMode = true;
+      } else if (mode === 'login') {
+        this.isRegisterMode = false;
+      }
+
+      // Ejecutamos validaciones según el modo resultante
+      this.actualizarValidaciones();
     });
   }
 

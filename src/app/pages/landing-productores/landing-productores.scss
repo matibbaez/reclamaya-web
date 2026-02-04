@@ -18,6 +18,7 @@ $text-muted-dark: #64748b;
   background-color: $bg-dark;
   color: $text-light;
   overflow-x: hidden;
+  position: relative;
 }
 
 .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
@@ -44,6 +45,15 @@ $text-muted-dark: #64748b;
   }
 }
 
+.hero-section {
+  // position: relative;
+  padding-top: 120px; /* Espacio para que el contenido no quede debajo del navbar fijo */
+  min-height: 50vh;
+  // display: flex;
+  // align-items: center;
+  overflow: hidden;
+}
+
 .hero-bg-glow {
   position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
   width: 1000px; height: 800px;
@@ -58,14 +68,41 @@ $text-muted-dark: #64748b;
 }
 
 /* Badge */
+/* src/app/pages/landing-productores/landing-productores.scss */
+
 .badge-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba($primary, 0.1); border: 1px solid rgba($primary, 0.2);
-  padding: 6px 14px; border-radius: 50px;
-  font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem;
-  color: $primary; letter-spacing: 0.5px; text-transform: uppercase;
-  .dot { width: 6px; height: 6px; background-color: $primary; border-radius: 50%; box-shadow: 0 0 8px $primary; }
-  @media (max-width: 900px) { align-self: center; }
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba($primary, 0.1);
+  border: 1px solid rgba($primary, 0.2);
+  
+  /* Ajuste de tamaño exacto a la Home */
+  padding: 8px 16px; 
+  font-size: 0.8rem; 
+  line-height: 1;
+  
+  border-radius: 50px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: $primary;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  @media (max-width: 900px) {
+    align-self: flex-start; 
+    margin-left: 0;
+    font-size: 0.6rem; 
+    padding: 6px 14px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    background-color: $primary;
+    border-radius: 50%;
+    box-shadow: 0 0 8px $primary;
+  }
 }
 
 h1 {

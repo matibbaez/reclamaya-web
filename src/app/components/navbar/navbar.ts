@@ -40,7 +40,9 @@ export class NavbarComponent implements OnInit {
   }
 
   checkUrl() {
-    this.isHome = this.router.url === '/';
+    const url = this.router.url;
+    // Esto asegura que tanto en la Home como en Productores el navbar inicie transparente
+    this.isHome = url === '/' || url.includes('productores'); 
   }
 
   // 👇 CERRAR SESIÓN PREMIUM

@@ -22,9 +22,8 @@
         </p>
 
         <div class="hero-actions">
-          <button routerLink="/registro" class="btn-primary-glow">
+          <button [routerLink]="['/login']" [queryParams]="{ mode: 'register' }" class="btn-primary-glow">
             Crear cuenta Productor
-            <lucide-icon [img]="icons.ChevronRight" size="20"></lucide-icon>
           </button>
           <button routerLink="/login" class="btn-glass">
             Ya tengo cuenta
