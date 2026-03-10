@@ -7,6 +7,7 @@ import { ReclamosService } from '../../services/reclamos.service';
 import { NotificacionService } from '../../services/notificacion';
 import { ImageCompressService } from '../../services/image-compress.service';
 import { UiSignatureComponent } from '../../components/ui-signature/ui-signature';
+import { AuthService } from '../../services/auth.service'; // <-- 1. IMPORTAMOS EL AUTH SERVICE
 
 @Component({
   selector: 'app-iniciar-reclamo',
@@ -26,6 +27,7 @@ export class IniciarReclamoComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private notificacionService = inject(NotificacionService);
   private imageCompressService = inject(ImageCompressService);
+  private authService = inject(AuthService); // <-- 2. INYECTAMOS EL AUTH SERVICE
 
   docActivo: 'poder' | 'honorarios' | 'no_seguro' = 'poder';
   mostrarTerminos = true; 
@@ -131,6 +133,11 @@ export class IniciarReclamoComponent implements OnInit {
         this.reclamoForm.patchValue({ codigo_ref: referido });
       }
     });
+  }
+
+  // <-- 3. AGREGAMOS EL GETTER PARA SABER SI ESTÁ LOGUEADO
+  get noRequiereFirma(): boolean {
+    return this.authService.isAuthenticated(); 
   }
 
   // --- GETTERS DE TEXTOS LEGALES ---
@@ -496,7 +503,8 @@ export class IniciarReclamoComponent implements OnInit {
 
   // --- ENVÍO DEL FORMULARIO ---
   async confirmarConFirma() {
-    if (this.firmaPad.isEmpty()) {
+    // <-- 4. EVITAMOS VALIDAR LA FIRMA SI NO ES REQUERIDA
+    if (!this.noRequiereFirma && this.firmaPad.isEmpty()) {
       this.errorFirma = true;
       this.notificacionService.showError('Por favor, firme en el recuadro para continuar.');
       return;
@@ -506,9 +514,11 @@ export class IniciarReclamoComponent implements OnInit {
     const v = this.reclamoForm.value;
     const formData = new FormData();
 
-    // A. FIRMA
-    const firmaBlob = await this.firmaPad.getSignatureBlob();
-    formData.append('fileFirma', firmaBlob, 'firma_digital.png'); 
+    // A. FIRMA <-- 5. SÓLO OBTENEMOS Y GUARDAMOS LA FIRMA SI ES NECESARIA
+    if (!this.noRequiereFirma) {
+      const firmaBlob = await this.firmaPad.getSignatureBlob();
+      formData.append('fileFirma', firmaBlob, 'firma_digital.png'); 
+    }
 
     // B. DATOS TEXTO Y ARCHIVOS
     for (const key of Object.keys(v)) {

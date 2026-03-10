@@ -1012,7 +1012,7 @@
             </div>
         </div>
 
-        <div class="signature-section fade-in" style="margin: 2rem 0;">
+        <div class="signature-section fade-in" style="margin: 2rem 0;" *ngIf="!noRequiereFirma">
         
           <div class="header-center" style="margin-bottom: 1.5rem; text-align: center;">
               <h3>Documentación a Firmar</h3>
@@ -1072,7 +1072,9 @@
                 Editar
             </button>
             <button class="btn-submit-glow" (click)="confirmarConFirma()" [disabled]="isLoading">
-                <span *ngIf="!isLoading">Confirmar y Enviar</span>
+                <span *ngIf="!isLoading">
+                  {{ noRequiereFirma ? 'Crear Reclamo' : 'Confirmar y Enviar' }}
+                </span>
                 <div *ngIf="isLoading" class="spinner-loader"></div> 
             </button>
         </div>
