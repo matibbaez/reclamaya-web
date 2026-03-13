@@ -22,7 +22,7 @@ $primary: #3b82f6; /* Azul para Login principal */
   width: 35%;
   background-color: $bg-dark;
   color: white;
-  padding: 8rem 3rem 4rem 3rem; /* Mismo padding para alinear visualmente */
+  padding: 10rem 3rem 4rem 3rem; /* Mismo padding para alinear visualmente */
   
   /* Sticky Effect */
   position: sticky;
@@ -125,7 +125,7 @@ h2 {
    ========================================================= */
 .main-content {
   width: 65%;
-  padding: 8rem 4rem 4rem 4rem; /* Mismo padding */
+  padding: 10rem 4rem 4rem 4rem; /* Mismo padding */
   display: flex;
   justify-content: center;
 }
@@ -265,7 +265,7 @@ h2 {
     position: relative;
     
     /* CORRECCIÓN: 9rem arriba para despegar del Navbar */
-    padding: 9rem 1.5rem 3rem 1.5rem; 
+    padding: 10rem 1.5rem 3rem 1.5rem; 
     
     h2 { text-align: center; font-size: 2rem; }
     .panel-desc { text-align: center; margin: 0 auto 2rem auto; }
@@ -311,6 +311,25 @@ h2 {
     
     .icon-wrap {
       transform: translateX(-5px); /* Desplazamiento */
+    }
+  }
+}
+
+/* --- OLVIDÉ MI CONTRASEÑA --- */
+.password-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+
+  .forgot-link {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+    text-decoration: none;
+    
+    &:hover {
+      color: $primary; /* Se pone azulcito al pasar el mouse */
+      text-decoration: underline;
     }
   }
 }

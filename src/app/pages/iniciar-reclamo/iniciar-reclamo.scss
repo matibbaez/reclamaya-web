@@ -27,7 +27,7 @@ $danger: #ef4444; /* Agregué esta variable que faltaba */
   width: 35%;
   background-color: $bg-dark;
   color: white;
-  padding: 8rem 3rem 4rem 3rem;
+  padding: 10rem 3rem 4rem 3rem;
   
   /* Sticky Behavior */
   position: sticky;
@@ -127,7 +127,7 @@ $danger: #ef4444; /* Agregué esta variable que faltaba */
    ========================================= */
 .main-content {
   width: 65%;
-  padding: 8rem 4rem 4rem 4rem;
+  padding: 10rem 4rem 4rem 4rem;
   display: flex;
   justify-content: center;
 }
@@ -441,7 +441,7 @@ input:checked + .slider:before { transform: translateX(22px); }
   /* --- Panel Izquierdo (Móvil) --- */
   .side-panel {
     width: 100%; height: auto; position: relative;
-    padding: 9rem 1.5rem 2rem 1.5rem; 
+    padding: 10rem 1.5rem 2rem 1.5rem; 
     
     .steps-vertical, .trust-badge { display: none; }
     h2 { font-size: 2rem; text-align: center; }

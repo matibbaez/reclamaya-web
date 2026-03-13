@@ -24,7 +24,7 @@ $text-muted: #64748b;
   width: 35%;
   background-color: $bg-dark;
   color: white;
-  padding: 8rem 3rem 4rem 3rem;
+  padding: 10rem 3rem 4rem 3rem;
   
   position: sticky; 
   top: 0; 
@@ -338,7 +338,7 @@ $text-muted: #64748b;
   /* Ajuste del Panel Izquierdo para Móvil */
   .side-panel {
     width: 100%; height: auto; position: relative;
-    padding: 8rem 1.5rem 2.5rem 1.5rem; text-align: center;
+    padding: 10rem 1.5rem 2.5rem 1.5rem; text-align: center;
     .trust-badge { display: none; } 
     h2 { font-size: 2rem; margin-bottom: 0.5rem; }
     .panel-desc { font-size: 0.95rem; margin-bottom: 0; opacity: 0.9; }

@@ -63,7 +63,7 @@ $success: #10b981; /* Verde Éxito */
   color: white;
   
   /* PADDING CLAVE: 8rem arriba, 4rem abajo (Igual que Iniciar Trámite) */
-  padding: 8rem 3rem 4rem 3rem; 
+  padding: 10rem 3rem 4rem 3rem; 
   
   position: sticky;
   top: 0;
@@ -281,7 +281,7 @@ h2 {
     width: 100%; height: auto; position: relative;
     
     /* Padding igual al de trámite en móvil (9rem arriba) */
-    padding: 9rem 1.5rem 3rem 1.5rem; 
+    padding: 10rem 1.5rem 3rem 1.5rem; 
     
     .steps-vertical { display: none; } 
     .trust-badge { display: none; } /* Ocultamos igual que en el otro form */

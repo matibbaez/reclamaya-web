@@ -129,6 +129,10 @@
                <small class="error-msg">Mínimo 8 caracteres, 1 mayúscula y 1 número.</small>
              </div>
           </div>
+          
+          <div class="password-options" *ngIf="!isRegisterMode">
+            <a (click)="recuperarPassword()" class="link-action forgot-link">¿Olvidaste tu contraseña?</a>
+          </div>
         </div>
 
         <div class="form-actions" style="margin-top: 2rem;">

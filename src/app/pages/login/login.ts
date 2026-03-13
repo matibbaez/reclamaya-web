@@ -204,4 +204,20 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
+  recuperarPassword() {
+    // Agarramos el email si es que ya lo escribió, sino queda en blanco
+    const emailIngresado = this.loginForm.get('email')?.value || '...';
+    
+    // Armamos el mensaje
+    const mensaje = `¡Hola! Olvidé la contraseña de mi cuenta de productor en ReclamaYa. Mi correo registrado es: ${emailIngresado}`;
+    
+    // 👇 PONÉ TU NÚMERO DE WHATSAPP ACÁ (con código de país, ej: 5491123456789)
+    const numeroAdmin = "5491133360425"; 
+    
+    const urlWa = `https://wa.me/${numeroAdmin}?text=${encodeURIComponent(mensaje)}`;
+    
+    // Abre WhatsApp en una pestaña nueva
+    window.open(urlWa, '_blank');
+  }
 }

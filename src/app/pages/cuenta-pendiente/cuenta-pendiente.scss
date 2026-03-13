@@ -23,7 +23,7 @@ $text-dark: #1e293b;
   width: 35%;
   background-color: $bg-dark;
   color: white;
-  padding: 8rem 3rem 4rem 3rem; /* Padding estandarizado */
+  padding: 10rem 3rem 4rem 3rem; /* Padding estandarizado */
   
   position: sticky;
   top: 0;
@@ -251,7 +251,7 @@ h2 {
     position: relative;
     
     /* CORRECCIÓN: 9rem arriba para despegar del Navbar */
-    padding: 9rem 1.5rem 3rem 1.5rem; 
+    padding: 10rem 1.5rem 3rem 1.5rem; 
     
     h2 { text-align: center; font-size: 2rem; }
     .panel-desc { text-align: center; margin: 0 auto 2rem auto; }
