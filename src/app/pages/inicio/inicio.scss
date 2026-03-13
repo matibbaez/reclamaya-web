@@ -36,7 +36,11 @@ $text-muted: #64748b;
   position: relative;
   background-color: $bg-dark;
   color: white;
-  padding: 8rem 0 6rem 0;
+  
+  /* ANTES: padding: 8rem 0 6rem 0; */
+  /* AHORA: Le damos más espacio arriba (11rem) para despegarlo del navbar */
+  padding: 11rem 0 6rem 0; 
+  
   overflow: hidden;
   text-align: center;
 }
@@ -282,8 +286,9 @@ h1 {
   .container { padding: 0 1.5rem; }
   
   .hero-section { 
-    /* Menos padding para no dejar tanto hueco */
-    padding: 7rem 0 5rem 0; 
+    /* ANTES: padding: 7rem 0 5rem 0; */
+    /* AHORA: Compensamos la altura del nuevo navbar en mobile */
+    padding: 10rem 0 5rem 0; 
     min-height: auto; 
   }
 

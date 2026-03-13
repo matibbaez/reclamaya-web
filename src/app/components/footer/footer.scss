@@ -23,44 +23,29 @@ $primary: #3b82f6;
   padding-bottom: 4rem;
 }
 
-/* --- LOGO TIPOGRÁFICO --- */
+/* --- LOGO --- */
 .footer-logo {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem; /* Le damos un poquito más de aire abajo para que no se pegue al texto */
 }
 
 .footer-logo-link {
   text-decoration: none;
-  font-size: 2rem;
-  line-height: 1;
   display: flex;
-  align-items: baseline;
+  align-items: center; /* Centramos verticalmente */
   
-  .text-reclama {
-    font-weight: 700;
-    color: white;
-    letter-spacing: -1px;
+  .footer-logo-img {
+    height: 80px; /* Un tamaño apenas más chico que el navbar para el footer */
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
   }
 
-  .text-ya {
-    font-weight: 900;
-    color: $accent;
-    font-style: italic;
+  &:hover { 
+    opacity: 0.9; 
+    .footer-logo-img {
+      transform: scale(1.02);
+    }
   }
-
-  .dot {
-    color: $primary; 
-    font-size: 2.5rem;
-    line-height: 0;
-  }
-
-  &:hover { opacity: 0.9; }
-}
-
-.brand-desc {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  max-width: 320px;
-  color: rgba(255, 255, 255, 0.5); 
 }
 
 /* --- COLUMNAS --- */

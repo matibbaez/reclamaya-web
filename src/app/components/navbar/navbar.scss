@@ -22,7 +22,7 @@ $danger: #ef4444;
   backdrop-filter: none;
   border-bottom: 1px solid transparent;
   
-  height: 70px;
+  height: 110px;
   display: flex;
   align-items: center;
   transition: all 0.4s ease;
@@ -48,35 +48,25 @@ $danger: #ef4444;
 /* --- LOGO --- */
 .brand-logo {
   text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.6rem;
-  line-height: 1;
   display: flex;
-  align-items: baseline;
+  align-items: center; /* Cambiamos baseline por center para que la imagen quede centrada verticalmente */
   cursor: pointer;
   user-select: none;
 
-  .text-reclama {
-    font-weight: 700;
-    color: white;
-    letter-spacing: -1px;
+  .logo-img {
+    height: 90px; /* Tamaño ideal para que no rompa tu navbar de 70px */
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
   }
 
-  .text-ya {
-    font-weight: 900;
-    color: $accent;
-    font-style: italic;
-    margin-left: 2px;
+  &:hover { 
+    opacity: 0.9;
+    
+    .logo-img {
+      transform: scale(1.02); /* Le da un efectito muy sutil de zoom al hacer hover */
+    }
   }
-
-  .dot {
-    color: $primary; /* var(--color-brand) */
-    font-size: 2rem;
-    line-height: 0;
-    margin-left: 2px;
-  }
-
-  &:hover { opacity: 0.9; }
 }
 
 /* --- LINKS ESCRITORIO --- */
@@ -411,6 +401,11 @@ $danger: #ef4444;
 @media (max-width: 900px) {
   .navbar-links-desktop { display: none; }
   .mobile-menu-button { display: block; }
+
+  /* --- AGREGÁ ESTO PARA ACHICAR EL LOGO EN MOBILE --- */
+  .brand-logo .logo-img {
+    height: 65px; /* Podés ir jugando con este número (50px, 60px) hasta que te guste */
+  }
 }
 
 /* =========================================
