@@ -9,7 +9,7 @@ $bg-card: #ffffff;
 $bg-page: #f8fafc;
 
 .dashboard-container {
-  padding: 120px 1.5rem 3rem 2rem;
+  padding: 140px 1.5rem 3rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
@@ -327,7 +327,7 @@ $bg-page: #f8fafc;
 @media (max-width: 768px) {
   
   .dashboard-container {
-    padding: 100px 1rem 2rem 1rem; /* Menos padding lateral en mobile */
+    padding: 120px 1rem 2rem 1rem; /* Menos padding lateral en mobile */
   }
 
   .modern-table {

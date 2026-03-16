@@ -9,14 +9,14 @@ $danger: #ef4444;
 
 .dashboard-container {
   /* Espacio superior para el Navbar fijo */
-  padding: 110px 1rem 3rem 1rem; /* Ajuste mobile */
+  padding: 140px 1rem 3rem 1rem; /* Ajuste mobile */
   max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
   background-color: $bg-page;
 
   @media (min-width: 768px) {
-    padding: 120px 2rem 3rem 2rem;
+    padding: 140px 2rem 3rem 2rem;
   }
 }
 
