@@ -180,6 +180,10 @@ h2 {
   &.with-icon {
       padding-left: 2.8rem;
   }
+
+  &.with-toggle {
+      padding-right: 2.8rem;
+  }
   
   /* Estado de error */
   &.error-border {
@@ -202,6 +206,23 @@ h2 {
     .input-modern:focus + .input-icon, 
     .input-modern:focus ~ .input-icon { 
         color: $primary; 
+    }
+
+    .btn-toggle-password {
+        position: absolute; 
+        right: 0.8rem; 
+        top: 50%; 
+        transform: translateY(-50%);
+        background: transparent; 
+        border: none;
+        color: #94a3b8; 
+        display: flex; 
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.2s;
+        
+        &:hover, &:focus { color: $primary; outline: none; }
+        svg { width: 20px; height: 20px; }
     }
 }
 

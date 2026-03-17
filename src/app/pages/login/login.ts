@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   isRegisterMode = false;
   isLoading = false;
   referralCode: string | null = null; 
+  showPassword = false;
 
   // --- VALIDACIONES CUSTOM (REGEX) ---
   // DNI: Solo números, entre 7 y 8 caracteres
@@ -123,6 +124,10 @@ export class LoginComponent implements OnInit {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { 'whitespace': true };
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   get f() { return this.loginForm.controls; }
