@@ -54,6 +54,10 @@ export class UsersService {
     return this.http.post<IUser>(this.apiUrl, user);
   }
 
+  cambiarRol(id: string, nuevoRol: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/role`, { role: nuevoRol });
+  }
+
   delete(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }

@@ -207,6 +207,34 @@ $bg-page: #f8fafc;
   .meta-text { font-size: 0.8rem; color: $text-light; }
 }
 
+/* INTEGRACIÓN VISUAL DEL NUEVO SELECTOR DE ROLES */
+.role-selector {
+  margin: 0;
+  
+  select {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+    color: $text-dark;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: #94a3b8;
+      background-color: #ffffff;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
 .role-badge {
   padding: 4px 12px;
   border-radius: 20px;
@@ -318,8 +346,8 @@ $bg-page: #f8fafc;
 /* 1. Habilitar el scroll horizontal */
 .table-responsive {
   width: 100%;
-  overflow-x: auto; /* La clave para que se mueva a los costados */
-  -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   margin-bottom: 1rem;
 }
 
@@ -327,18 +355,17 @@ $bg-page: #f8fafc;
 @media (max-width: 768px) {
   
   .dashboard-container {
-    padding: 120px 1rem 2rem 1rem; /* Menos padding lateral en mobile */
+    /* 👇 UNIFICADO CON ADMIN DASHBOARD PARA EVITAR COLISIÓN CON EL NAVBAR FIJO */
+    padding: 140px 1rem 2rem 1rem; 
   }
 
   .modern-table {
-    /* Forzamos que la tabla mida mínimo 800px. 
-       Esto obliga al navegador a activar el scroll horizontal 
-       en vez de apretar todas las columnas */
     min-width: 800px; 
     
     th, td {
-      padding: 10px 15px; /* Achicamos un poco el padding de celdas */
-      font-size: 0.85rem; /* Letra un poco más chica */
+      padding: 10px 15px; 
+      font-size: 0.85rem; 
     }
   }
 }
+

@@ -20,7 +20,7 @@ export class MiEquipoComponent implements OnInit {
 
   private usersService = inject(UsersService);
   private notificacionService = inject(NotificacionService);
-  public authService = inject(AuthService); // Para saber si soy admin
+  public authService = inject(AuthService); 
   private fb = inject(FormBuilder);
 
   // Iconos
@@ -54,15 +54,18 @@ export class MiEquipoComponent implements OnInit {
   cargarDatos() {
     this.isLoading = true;
     
-    // 1. Cargamos TODOS los usuarios (luego filtramos en memoria para optimizar)
     this.usersService.getAll().subscribe({
       next: (data) => {
-        // Separamos Activos vs Pendientes
-        this.listaUsuarios = data.filter(u => u.isApproved);
-        this.listaPendientes = data.filter(u => !u.isApproved);
+        // 👇 FILTRADO CRÍTICO: Excluimos a los administradores de la vista de gestión
+        const usuariosNoAdmins = data.filter(u => u.role !== 'Admin' && u.role !== 'ADMIN');
+
+        // Separamos Activos vs Pendientes solo de los que NO son admins
+        this.listaUsuarios = usuariosNoAdmins.filter(u => u.isApproved);
+        this.listaPendientes = usuariosNoAdmins.filter(u => !u.isApproved);
+        
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error(err);
         this.isLoading = false;
         this.notificacionService.showError('Error al cargar datos.');
@@ -99,9 +102,10 @@ export class MiEquipoComponent implements OnInit {
       next: (nuevoUser) => {
         this.notificacionService.showSuccess(`Usuario ${nuevoUser.nombre} creado!`);
         
-        // Lo agregamos a la lista correcta según si nace aprobado o no (usualmente backend decide)
-        // Asumimos que si lo crea un admin, ya está aprobado, o lo metemos en activos.
-        this.listaUsuarios.push({ ...nuevoUser, isApproved: true }); 
+        // Si el admin crea a alguien, lo sumamos a la lista local si no es admin
+        if (nuevoUser.role !== 'Admin' && nuevoUser.role !== 'ADMIN') {
+          this.listaUsuarios.push({ ...nuevoUser, isApproved: true }); 
+        }
         
         this.mostrarFormulario = false;
         this.userForm.reset({ role: 'Productor' });
@@ -117,18 +121,79 @@ export class MiEquipoComponent implements OnInit {
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sí, Aprobar',
-      confirmButtonColor: '#10b981'
+      confirmButtonColor: '#10b981',
+      customClass: {
+        popup: 'premium-modal-popup-mobile',
+        actions: 'modal-actions-mobile',
+        confirmButton: 'btn-confirm-mobile',
+        cancelButton: 'btn-cancel-mobile'
+      }
     }).then((res) => {
       if (res.isConfirmed) {
         this.usersService.aprobarUsuario(user.id).subscribe({
           next: () => {
-            // Mover de pendientes a activos visualmente
             this.listaPendientes = this.listaPendientes.filter(u => u.id !== user.id);
             this.listaUsuarios.push({ ...user, isApproved: true });
             this.notificacionService.showSuccess('Usuario aprobado correctamente.');
           },
           error: () => this.notificacionService.showError('Error al aprobar.')
         });
+      }
+    });
+  }
+
+  actualizarRol(usuario: IUser, event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const nuevoRol = selectElement.value;
+    const rolAnterior = usuario.role;
+
+    Swal.fire({
+      title: '¿Cambiar privilegios?',
+      html: `
+        <p style="margin-bottom: 14px; color: #334155;">
+          Está por asignar el rol de <strong>${nuevoRol}</strong> a <strong>${usuario.nombre}</strong>.
+        </p>
+        <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; border-radius: 6px; text-align: left;">
+          <span style="color: #b91c1c; font-weight: 800; font-size: 0.85rem; display: block; margin-bottom: 4px;">
+            IMPORTANTE: RIESGO DE DESVINCULACIÓN
+          </span>
+          <span style="color: #7f1d1d; font-size: 0.85rem; line-height: 1.4; display: block;">
+            Modificar el rol de un Organizador o Productor puede alterar irreversiblemente su acceso y la visibilidad de los casos registrados.
+          </span>
+        </div>
+      `,
+      icon: 'warning',
+      width: '90%',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar Cambio',
+      cancelButtonText: 'Cancelar',
+      buttonsStyling: false,
+      customClass: {
+        popup: 'premium-modal-popup-mobile',
+        actions: 'modal-actions-mobile',
+        confirmButton: 'btn-confirm-mobile',
+        cancelButton: 'btn-cancel-mobile'
+      }
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.usersService.cambiarRol(usuario.id, nuevoRol).subscribe({
+          next: () => {
+            this.listaUsuarios = this.listaUsuarios.map(u => 
+              u.id === usuario.id ? { ...u, role: nuevoRol } : u
+            );
+            this.listaPendientes = this.listaPendientes.map(u => 
+              u.id === usuario.id ? { ...u, role: nuevoRol } : u
+            );
+            this.notificacionService.showSuccess('Rol actualizado correctamente.');
+          },
+          error: (err: any) => {
+            console.error(err);
+            this.notificacionService.showError('Error al cambiar el rol.');
+            selectElement.value = rolAnterior;
+          }
+        });
+      } else {
+        selectElement.value = rolAnterior;
       }
     });
   }
@@ -140,7 +205,13 @@ export class MiEquipoComponent implements OnInit {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Eliminar',
-      confirmButtonColor: '#ef4444'
+      confirmButtonColor: '#ef4444',
+      customClass: {
+        popup: 'premium-modal-popup-mobile',
+        actions: 'modal-actions-mobile',
+        confirmButton: 'btn-confirm-mobile',
+        cancelButton: 'btn-cancel-mobile'
+      }
     }).then((res) => {
       if (res.isConfirmed) {
         this.usersService.delete(user.id).subscribe({
@@ -156,7 +227,6 @@ export class MiEquipoComponent implements OnInit {
   }
 
   copiarLinkInvitacion(user: IUser) {
-    // Generamos link basado en el ID del usuario como referido
     const link = `${window.location.origin}/login?ref=${user.id}`;
     navigator.clipboard.writeText(link).then(() => {
       this.notificacionService.showSuccess('Enlace copiado al portapapeles');

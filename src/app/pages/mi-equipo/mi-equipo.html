@@ -138,9 +138,13 @@
             </td>
 
             <td>
-              <span class="role-badge" [ngClass]="u.role.toLowerCase()">
-                {{ u.role }}
-              </span>
+              <div class="select-wrapper role-selector">
+                <select [value]="u.role" (change)="actualizarRol(u, $event)">
+                  <option value="Productor">Productor (P.A.S)</option>
+                  <option value="Organizador">Organizador (Broker)</option>
+                  <option value="Tramitador">Tramitador (Interno)</option>
+                </select>
+              </div>
             </td>
 
             <td *ngIf="activeTab === 'activos'">
