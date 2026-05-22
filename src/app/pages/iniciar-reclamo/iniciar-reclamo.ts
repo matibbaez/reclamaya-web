@@ -555,8 +555,10 @@ export class IniciarReclamoComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.notificacionService.showError('Error de conexión o datos inválidos.');
-        console.error(err);
+        // Capturamos el mensaje que devuelve el backend
+        const mensaje = err.error?.message || 'Error de conexión o datos inválidos.';
+        this.notificacionService.showError(mensaje);
+        console.error('Error detallado:', err);
       }
     });
   }
