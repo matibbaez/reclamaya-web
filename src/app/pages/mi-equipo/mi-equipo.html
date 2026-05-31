@@ -31,7 +31,16 @@
 
       <div class="field">
         <label>Contraseña</label>
-        <input type="password" formControlName="password" placeholder="******">
+        <input type="password" formControlName="password" placeholder="Mín. 8 caracteres, 1 mayúscula y 1 número">
+        
+        <div class="error-container" *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+          <span class="error-text" *ngIf="userForm.get('password')?.errors?.['minlength']">
+            Mínimo 8 caracteres.
+          </span>
+          <span class="error-text" *ngIf="userForm.get('password')?.errors?.['pattern']">
+            Debe incluir una mayúscula y un número.
+          </span>
+        </div>
       </div>
 
       <div class="field">

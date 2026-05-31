@@ -61,4 +61,14 @@ export class UsersService {
   delete(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  // ----------------------------------------------------------------------
+  // AUTOGESTIÓN DE PERFIL
+  // ----------------------------------------------------------------------
+  cambiarMiPassword(passwordActual: string, passwordNueva: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/perfil/cambiar-password`, {
+      passwordActual,
+      passwordNueva
+    });
+  }
 }

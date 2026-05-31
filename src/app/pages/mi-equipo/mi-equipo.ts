@@ -36,11 +36,16 @@ export class MiEquipoComponent implements OnInit {
   activeTab: 'activos' | 'pendientes' = 'activos';
   searchTerm = '';
 
-  // Formulario de Alta
+// Formulario de Alta en mi-equipo.ts
   userForm: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    // 👇 Validaciones estrictas agregadas acá
+    password: ['', [
+      Validators.required, 
+      Validators.minLength(8),
+      Validators.pattern(/^(?=.*[A-Z])(?=.*\d).*$/)
+    ]],
     dni: [''],
     telefono: [''],
     matricula: [''], 

@@ -1,0 +1,74 @@
+<div class="dashboard-container fade-in">
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Mi Perfil</h1>
+      <p>Gestioná tu información personal y seguridad.</p>
+    </div>
+  </header>
+
+  <div class="profile-grid">
+    <div class="profile-card info-card">
+      <div class="card-header">
+        <div class="icon-wrapper blue">
+          <lucide-icon [img]="icons.User" size="24"></lucide-icon>
+        </div>
+        <h3>Datos de la Cuenta</h3>
+      </div>
+      <div class="info-content" *ngIf="authService.currentUserValue as user">
+        <div class="info-item">
+          <label>Nombre Completo</label>
+          <p>{{ user.nombre }}</p>
+        </div>
+        <div class="info-item">
+          <label>Email</label>
+          <p>{{ user.email }}</p>
+        </div>
+        <div class="info-item">
+          <label>Rol Asignado</label>
+          <span class="role-badge" [ngClass]="user.role.toLowerCase()">{{ user.role }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-card form-card">
+      <div class="card-header">
+        <div class="icon-wrapper orange">
+          <lucide-icon [img]="icons.ShieldCheck" size="24"></lucide-icon>
+        </div>
+        <h3>Seguridad</h3>
+      </div>
+      
+      <form [formGroup]="passwordForm" (ngSubmit)="cambiarPassword()" class="grid-form">
+        <div class="field full-width">
+          <label>Contraseña Actual</label>
+          <input type="password" formControlName="passwordActual" placeholder="Ingresá tu contraseña actual">
+        </div>
+        
+        <div class="field full-width">
+          <label>Nueva Contraseña</label>
+          <input type="password" formControlName="passwordNueva" placeholder="Mínimo 8 caracteres, 1 mayúscula y 1 número">
+          
+          <div class="error-container" *ngIf="passwordForm.get('passwordNueva')?.touched && passwordForm.get('passwordNueva')?.invalid">
+            <span class="error-text" *ngIf="passwordForm.get('passwordNueva')?.errors?.['required']">
+              La contraseña es obligatoria.
+            </span>
+            <span class="error-text" *ngIf="passwordForm.get('passwordNueva')?.errors?.['minlength']">
+              Debe tener al menos 8 caracteres.
+            </span>
+            <span class="error-text" *ngIf="passwordForm.get('passwordNueva')?.errors?.['pattern']">
+              Debe incluir al menos una letra mayúscula y un número.
+            </span>
+          </div>
+        </div>
+
+        <div class="actions-row full-width">
+          <button type="submit" class="btn-primary-glow" [disabled]="passwordForm.invalid || isLoading">
+            <lucide-icon [img]="icons.Lock" size="18" *ngIf="!isLoading"></lucide-icon>
+            <span *ngIf="!isLoading">Actualizar Contraseña</span>
+            <span *ngIf="isLoading" class="spinner-text">Actualizando...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

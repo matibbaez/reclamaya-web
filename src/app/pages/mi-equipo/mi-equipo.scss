@@ -16,6 +16,26 @@ $bg-page: #f8fafc;
   background-color: $bg-page;
 }
 
+/* VALIDACIONES DE ERROR */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  padding-left: 4px;
+
+  .error-text {
+    color: $danger;
+    font-size: 0.8rem;
+    font-weight: 600;
+    
+    &::before {
+      content: '*';
+      margin-right: 4px;
+    }
+  }
+}
+
 /* HEADER */
 .page-header {
   display: flex;

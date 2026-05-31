@@ -14,6 +14,9 @@ import { authGuard } from './auth/auth-guard';
 import { adminGuard } from './auth/admin.guard';
 import { LandingProductoresComponent } from './pages/landing-productores/landing-productores';
 
+// 👇 IMPORTAMOS EL NUEVO COMPONENTE
+import { MiPerfilComponent } from './pages/mi-perfil/mi-perfil';
+
 export const routes: Routes = [
   { 
     path: '', 
@@ -47,6 +50,14 @@ export const routes: Routes = [
     path: 'mi-equipo', 
     component: MiEquipoComponent, 
     canActivate: [adminGuard], 
+  },
+  
+  // 👇 AGREGAMOS LA RUTA DE PERFIL PROTEGIDA
+  { 
+    path: 'mi-perfil', 
+    component: MiPerfilComponent, 
+    canActivate: [authGuard], 
+    data: { animation: 'PerfilPage' } 
   },
   
   { 
