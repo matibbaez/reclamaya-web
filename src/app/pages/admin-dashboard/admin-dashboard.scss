@@ -331,3 +331,44 @@ $danger: #ef4444;
 .spinner { width: 30px; height: 30px; border: 3px solid #e2e8f0; border-top-color: $primary; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .empty-state { padding: 3rem; text-align: center; color: $text-muted; font-style: italic; }
+
+.btn-action.delete {
+  color: #94a3b8; /* Gris por defecto */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.2s;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    color: #ef4444; /* Rojo Danger */
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
+/* Contenedor flexible para alinear los iconos al final de la fila */
+.action-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  height: 100%; /* Obliga al div a centrarse verticalmente con el resto de la fila */
+}
+
+/* Ajuste sutil para que la flecha y el basurero convivan en armonía */
+.action-cell .arrow-icon {
+  color: #94a3b8;
+  transition: transform 0.2s, color 0.2s;
+}
+
+/* Efecto hover general de la fila afecta a la flecha pero no interfiere con el basurero */
+.clickable-row:hover .action-cell .arrow-icon {
+  color: #3b82f6;
+  transform: translateX(3px);
+}

@@ -1,11 +1,13 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { LucideAngularModule, Users, FileText, TrendingUp, ArrowRight, AlertCircle, Search, ArrowUpDown, Filter,} from 'lucide-angular';
+import { LucideAngularModule, Users, FileText, TrendingUp, ArrowRight, AlertCircle, Search, ArrowUpDown, Filter } from 'lucide-angular';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../services/auth.service';
+import { NotificacionService } from '../../services/notificacion'; // <-- IMPORTAMOS NOTIFICACION
+import Swal from 'sweetalert2'; // <-- IMPORTAMOS SWEETALERT
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -20,6 +22,7 @@ export class AdminDashboardComponent implements OnInit {
   private reclamosService = inject(ReclamosService);
   private usersService = inject(UsersService);
   public authService = inject(AuthService);
+  private notificacionService = inject(NotificacionService); // <-- INYECTAMOS
   private router = inject(Router);
 
   // Iconos
@@ -120,6 +123,38 @@ export class AdminDashboardComponent implements OnInit {
   }
   irAEquipo() { this.router.navigate(['/mi-equipo']); }
   verDetalle(id: string) { this.router.navigate(['/reclamo', id]); }
+
+  // 👇 NUEVO MÉTODO PARA ELIMINAR RECLAMOS
+  eliminarReclamo(id: string, event: Event) {
+    event.stopPropagation(); // Evita que se dispare el click de "verDetalle" de la fila
+
+    Swal.fire({
+      title: '¿Eliminar este expediente?',
+      text: 'Esta acción borrará todos los datos del reclamo permanentemente y no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'premium-modal-popup'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.reclamosService.eliminarReclamo(id).subscribe({
+          next: () => {
+            this.notificacionService.showSuccess('Reclamo eliminado correctamente.');
+            this.cargarDatos(); // Volvemos a fetchear para que desaparezca la fila y se actualicen los KPIs
+          },
+          error: (err) => {
+            this.notificacionService.showError('Error al eliminar el reclamo.');
+            console.error(err);
+          }
+        });
+      }
+    });
+  }
 
   // --- EVENTOS FILTROS ---
   aplicarBusqueda(e: Event) { this.filtroTexto.set((e.target as HTMLInputElement).value); }
