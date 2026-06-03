@@ -32,6 +32,7 @@ export class IniciarReclamoComponent implements OnInit {
   docActivo: 'poder' | 'honorarios' | 'no_seguro' = 'poder';
   mostrarTerminos = true; 
   isLoading = false;
+  isCompressing = false; // Nuevo estado para compresión de imágenes
   pasoActual = 0; 
   
   provincias = [
@@ -401,6 +402,7 @@ export class IniciarReclamoComponent implements OnInit {
 
     // 3. PROCESAR ARCHIVOS
     const newFiles = Array.from(input.files) as File[];
+    this.isCompressing = true;
     this.isLoading = true; 
 
     try {
@@ -445,6 +447,7 @@ export class IniciarReclamoComponent implements OnInit {
       console.error("Error procesando archivos", e);
       this.notificacionService.showError('Error al procesar el archivo. Intente nuevamente.');
     } finally {
+      this.isCompressing = false;
       this.isLoading = false;
       input.value = ''; 
     }

@@ -4,6 +4,12 @@
   (cancelar)="cancelarTerminos()">
 </app-terminos-modal>
 
+<div class="processing-overlay fade-in" *ngIf="isCompressing">
+  <div class="spinner-moderno"></div>
+  <h3>Optimizando documentos...</h3>
+  <p>Aguarde un instante por favor.</p>
+</div>
+
 <div class="split-layout" *ngIf="!mostrarTerminos">
 
   <aside class="side-panel">

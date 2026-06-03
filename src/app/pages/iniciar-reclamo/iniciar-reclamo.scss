@@ -986,3 +986,47 @@ input:checked + .slider:before { transform: translateX(22px); }
     cursor: pointer;
   }
 }
+
+/* =========================================
+   OVERLAY DE PROCESAMIENTO (IS COMPRESSING)
+   ========================================= */
+.processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.85); /* Fondo oscuro semitransparente */
+  backdrop-filter: blur(6px); /* Efecto vidrio borroso de iOS */
+  z-index: 99999; /* Por encima de absolutamente todo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+
+  h3 {
+    margin: 1rem 0 0.2rem 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  .spinner-moderno {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #3b82f6; /* Color primario azul */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
