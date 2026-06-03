@@ -404,9 +404,12 @@ export class IniciarReclamoComponent implements OnInit {
     this.isLoading = true; 
 
     try {
-      const compressedNewFiles = await Promise.all(
-        newFiles.map(file => this.imageCompressService.compressFile(file))
-      );
+      // 👇 SOLUCIÓN: Procesamos una por una (secuencial) en vez de todas juntas
+      const compressedNewFiles: File[] = [];
+      for (const file of newFiles) {
+        const compressed = await this.imageCompressService.compressFile(file);
+        compressedNewFiles.push(compressed);
+      }
 
       if (isMultiple) {
         // --- LÓGICA ACUMULATIVA (Para todos los documentos ahora) ---

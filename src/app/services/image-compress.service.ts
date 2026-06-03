@@ -14,10 +14,9 @@ export class ImageCompressService {
       return file;
     }
 
-    // Opciones de compresión optimizadas para documentos
     const options = {
-      maxSizeMB: 0.8,          // Máximo 800KB aprox
-      maxWidthOrHeight: 1920,  // Full HD
+      maxSizeMB: 0.3,          // Bajamos de 0.8 a 0.3 (Máx 300KB por foto)
+      maxWidthOrHeight: 1280,  // Resolución HD (Suficiente para leer patentes/DNI)
       useWebWorker: true,      // No traba la UI
       initialQuality: 0.7      // Buena calidad, poco peso
     };
