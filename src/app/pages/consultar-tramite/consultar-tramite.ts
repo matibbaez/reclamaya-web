@@ -33,11 +33,11 @@ export class ConsultarTramiteComponent {
 
   readonly pasosTimeline = [
     { id: 'Enviado', label: 'Enviado' },
-    { id: 'Recepcionado', label: 'Recepcionado' },
+    { id: 'Recepcionado', label: 'Recibido' }, // <-- Cambió de Recepcionado a Recibido
     { id: 'Iniciado', label: 'Iniciado' },
     { id: 'Negociacion', label: 'Negociación' },
-    { id: 'Indemnizando', label: 'Indemnizando' },
-    { id: 'Indemnizado', label: 'Finalizado' } 
+    { id: 'Indemnizando', label: 'En pago' }, // <-- Cambió de Indemnizando a En pago
+    { id: 'Indemnizado', label: 'Cobrado' }   // <-- Cambió de Finalizado a Cobrado
   ];
 
   pasoActual = 0; 
