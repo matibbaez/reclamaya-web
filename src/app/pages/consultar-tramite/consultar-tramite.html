@@ -85,7 +85,8 @@
           </div>
           <div class="status-details">
             <span class="lbl">Estado Actual</span>
-            <h2>{{ resultado.estado }}</h2>
+            <h2 *ngIf="resultado.estado === 'Rechazado'">Rechazado</h2>
+            <h2 *ngIf="resultado.estado !== 'Rechazado'">{{ pasosTimeline[pasoActual]?.label }}</h2>
           </div>
         </div>
 
