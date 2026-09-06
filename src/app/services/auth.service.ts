@@ -1,6 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core'; // <-- 1. Importar PLATFORM_ID
+import { isPlatformBrowser } from '@angular/common'; // <-- 2. Importar isPlatformBrowser
 import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http'; // 👈 Importante
+import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -19,22 +20,24 @@ export class AuthService {
   
   private http = inject(HttpClient);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID); // <-- 3. Inyectar el ID de la plataforma
   private apiUrl = environment.apiUrl;
-  // private apiUrl = 'http://localhost:3000'; 
 
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
 
   constructor() {
-    // Intentamos recuperar sesión al recargar página
-    const token = localStorage.getItem('access_token');
     let user = null;
 
-    if (token) {
-      try {
-        user = jwtDecode<User>(token);
-      } catch (error) {
-        console.error('Error al decodificar token inicial', error);
+    // 👇 4. ENCAPSULAMOS EL ACCESO AL STORAGE
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          user = jwtDecode<User>(token);
+        } catch (error) {
+          console.error('Error al decodificar token inicial', error);
+        }
       }
     }
 
@@ -46,19 +49,18 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  // 👇 ESTE ES EL MÉTODO QUE FALTABA
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/login`, credentials);
   }
 
-  // Método de Registro
   registro(datosUsuario: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/register`, datosUsuario);
   }
 
-  // Guardar sesión
   setSession(token: string) {
-    localStorage.setItem('access_token', token);
+    if (isPlatformBrowser(this.platformId)) { // <-- También lo protegemos por las dudas
+      localStorage.setItem('access_token', token);
+    }
     try {
       const user = jwtDecode<User>(token);
       this.currentUserSubject.next(user);
@@ -68,7 +70,9 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('access_token');
+    if (isPlatformBrowser(this.platformId)) { // <-- Protegido
+      localStorage.removeItem('access_token');
+    }
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
@@ -81,15 +85,12 @@ export class AuthService {
   get esAdmin(): boolean {
     return this.currentUserValue?.role === 'Admin';
   }
-
   get esOrganizador(): boolean {
     return this.currentUserValue?.role === 'Organizador';
   }
-
   get esTramitador(): boolean {
     return this.currentUserValue?.role === 'Tramitador';
   }
-
   get esProductor(): boolean {
     return this.currentUserValue?.role === 'Productor';
   }
