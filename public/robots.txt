@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /panel
+Disallow: /expedientes
+Disallow: /mi-equipo
+Disallow: /mis-referidos

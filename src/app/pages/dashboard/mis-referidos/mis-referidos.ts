@@ -15,6 +15,7 @@ import { ReclamosService, IReclamo } from '../../../services/reclamos.service';
 import { AuthService } from '../../../services/auth.service';
 import { NotificacionService } from '../../../services/notificacion';
 import { UsersService, IUser } from '../../../services/users.service'; 
+import { SeoService } from '../../../services/seo.service';
 
 @Component({
   selector: 'app-mis-referidos',
@@ -29,6 +30,7 @@ export class MisReferidosComponent implements OnInit {
   public authService = inject(AuthService); // Public para usar en HTML
   private notificacionService = inject(NotificacionService);
   private usersService = inject(UsersService); 
+  private seoService = inject(SeoService);
 
   // Iconos
   readonly icons = { 
@@ -99,6 +101,7 @@ export class MisReferidosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.seoService.bloquearIndexacion();
     this.generarLinks();
     this.cargarDatos();
   }

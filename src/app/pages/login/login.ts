@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, Validati
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { NotificacionService } from '../../services/notificacion';
 import { AuthService } from '../../services/auth.service';
+import { SeoService } from '../../services/seo.service'; // <-- 1. IMPORTAR SEO
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
   private notificacionService = inject(NotificacionService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private seoService = inject(SeoService); // <-- 2. INYECTAR SEO
 
   isRegisterMode = false;
   isLoading = false;
@@ -45,6 +47,14 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit() {
+    // 👇 3. INYECTAMOS METADATOS (Clave para cuando comparten link de referido)
+    this.seoService.actualizarMetaTags({
+      title: 'Acceso | ReclamaYa',
+      description: 'Ingresá a tu cuenta de ReclamaYa o registrate como productor para gestionar los expedientes.',
+      ogImage: 'https://reclamaya.ar/logo-seo.png',
+      ogUrl: 'https://reclamaya.ar/login'
+    });
+
     // Escuchamos los parámetros de la URL (ref y mode)
     this.route.queryParams.subscribe(params => {
       const ref = params['ref'];

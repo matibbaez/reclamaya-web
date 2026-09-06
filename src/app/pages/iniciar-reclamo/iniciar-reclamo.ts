@@ -8,6 +8,7 @@ import { NotificacionService } from '../../services/notificacion';
 import { ImageCompressService } from '../../services/image-compress.service';
 import { UiSignatureComponent } from '../../components/ui-signature/ui-signature';
 import { AuthService } from '../../services/auth.service'; // <-- 1. IMPORTAMOS EL AUTH SERVICE
+import { SeoService } from '../../services/seo.service'; // <-- AGREGAR ESTE IMPORT
 
 @Component({
   selector: 'app-iniciar-reclamo',
@@ -28,6 +29,7 @@ export class IniciarReclamoComponent implements OnInit {
   private notificacionService = inject(NotificacionService);
   private imageCompressService = inject(ImageCompressService);
   private authService = inject(AuthService); // <-- 2. INYECTAMOS EL AUTH SERVICE
+  private seoService = inject(SeoService); // <-- INYECTAMOS EL SEO SERVICE
 
   docActivo: 'poder' | 'honorarios' | 'no_seguro' = 'poder';
   mostrarTerminos = true; 
@@ -110,6 +112,13 @@ export class IniciarReclamoComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.seoService.actualizarMetaTags({
+      title: 'Iniciar Reclamo | ReclamaYa',
+      description: 'Iniciá tu reclamo de forma 100% online y gratuita. Completá el formulario, adjuntá la documentación y seguí tu expediente.',
+      ogImage: 'https://reclamaya.ar/logo-seo.png', // Usando la imagen raíz que me confirmaste
+      ogUrl: 'https://reclamaya.ar/iniciar-reclamo'
+    });
+
     const valoresIniciales = {
       nombre: '', dni: '', email: '', telefono: '', domicilio_usuario: '', cbu: '',
       rol_victima: '', 

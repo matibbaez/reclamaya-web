@@ -1,25 +1,24 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core'; // <-- 1. Agregamos OnInit
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
+import { SeoService } from '../../services/seo.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-// 👇 Importamos Lucide Angular para los íconos
 import { LucideAngularModule, Mail } from 'lucide-angular';
 
 @Component({
   selector: 'app-consultar-tramite',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule], // Agregado Lucide
+  imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   templateUrl: './consultar-tramite.html',
   styleUrl: './consultar-tramite.scss'
 })
-export class ConsultarTramiteComponent {
+export class ConsultarTramiteComponent implements OnInit { // <-- 2. Implementamos OnInit
 
-  // Íconos para el template
   readonly icons = { Mail };
-
   private fb = inject(FormBuilder);
+  private seoService = inject(SeoService);
   private reclamosService = inject(ReclamosService);
 
   consultaForm = this.fb.group({
@@ -33,20 +32,30 @@ export class ConsultarTramiteComponent {
 
   readonly pasosTimeline = [
     { id: 'Enviado', label: 'Enviado' },
-    { id: 'Recepcionado', label: 'Recibido' }, // <-- Cambió de Recepcionado a Recibido
+    { id: 'Recepcionado', label: 'Recibido' },
     { id: 'Iniciado', label: 'Iniciado' },
     { id: 'Negociacion', label: 'Negociación' },
-    { id: 'Indemnizando', label: 'En pago' }, // <-- Cambió de Indemnizando a En pago
-    { id: 'Indemnizado', label: 'Cobrado' }   // <-- Cambió de Finalizado a Cobrado
+    { id: 'Indemnizando', label: 'En pago' },
+    { id: 'Indemnizado', label: 'Cobrado' } 
   ];
 
   pasoActual = 0; 
   claseEstado = 'info'; 
   isInputFocused = false; 
 
+  // 👇 3. Agregamos el ngOnInit con la inyección de metadatos
+  ngOnInit(): void {
+    this.seoService.actualizarMetaTags({
+      title: 'Consultar Trámite | ReclamaYa',
+      description: 'Consultá el estado de tu expediente ingresando tu DNI y código de seguimiento de forma rápida y segura.',
+      ogImage: 'https://reclamaya.ar/logo-seo.png', // Provisorio
+      ogUrl: 'https://reclamaya.ar/consultar-tramite'
+    });
+  }
+
   onSubmit() {
     if (this.consultaForm.invalid) {
-        this.consultaForm.markAllAsTouched(); // Para mostrar errores rojos si intenta enviar vacío
+        this.consultaForm.markAllAsTouched();
         return;
     }
 
@@ -54,9 +63,8 @@ export class ConsultarTramiteComponent {
     this.resultado = null;
     this.errorMensaje = '';
 
-    const { codigo, dni } = this.consultaForm.value; // Extraemos ambos
+    const { codigo, dni } = this.consultaForm.value;
 
-    // 👇 Llamamos con los dos parámetros
     this.reclamosService.consultarEstado(codigo!, dni!)
       .pipe(
         catchError((err) => {

@@ -6,8 +6,9 @@ import { ChangeDetectionStrategy } from '@angular/core';
 import { ReclamosService, IReclamo } from '../../services/reclamos.service';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../services/auth.service';
-import { NotificacionService } from '../../services/notificacion'; // <-- IMPORTAMOS NOTIFICACION
-import Swal from 'sweetalert2'; // <-- IMPORTAMOS SWEETALERT
+import { NotificacionService } from '../../services/notificacion'; 
+import Swal from 'sweetalert2'; 
+import { SeoService } from '../../services/seo.service'; 
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -22,8 +23,9 @@ export class AdminDashboardComponent implements OnInit {
   private reclamosService = inject(ReclamosService);
   private usersService = inject(UsersService);
   public authService = inject(AuthService);
-  private notificacionService = inject(NotificacionService); // <-- INYECTAMOS
+  private notificacionService = inject(NotificacionService); 
   private router = inject(Router);
+  private seoService = inject(SeoService); 
 
   // Iconos
   readonly icons = { Users, FileText, TrendingUp, ArrowRight, AlertCircle, Search, Filter, arrowUp: ArrowUpDown };
@@ -87,6 +89,7 @@ export class AdminDashboardComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.seoService.bloquearIndexacion(); 
     this.cargarDatos();
   }
 

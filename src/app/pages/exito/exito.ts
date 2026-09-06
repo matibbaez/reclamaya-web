@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { NotificacionService } from '../../services/notificacion';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-exito',
@@ -14,6 +15,7 @@ export class ExitoComponent implements OnInit {
   
   private router = inject(Router);
   private notificacionService = inject(NotificacionService);
+  private seoService = inject(SeoService);
 
   // Variables para el HTML
   codigo: string = '---';
@@ -21,6 +23,7 @@ export class ExitoComponent implements OnInit {
   copiado: boolean = false; // <--- Agregamos esta para controlar el texto del botón
 
   ngOnInit() {
+    this.seoService.bloquearIndexacion();
     // Recuperamos los datos del 'state'
     const estadoNavegacion = history.state;
     

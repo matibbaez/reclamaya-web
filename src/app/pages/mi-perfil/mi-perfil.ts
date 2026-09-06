@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core'; // <-- 1. Agregamos OnInit acá
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UsersService } from '../../services/users.service';
 import { NotificacionService } from '../../services/notificacion';
 import { AuthService } from '../../services/auth.service';
+import { SeoService } from '../../services/seo.service';
 import { LucideAngularModule, Lock, ShieldCheck, User } from 'lucide-angular';
 
 @Component({
@@ -13,11 +14,12 @@ import { LucideAngularModule, Lock, ShieldCheck, User } from 'lucide-angular';
   templateUrl: './mi-perfil.html',
   styleUrls: ['./mi-perfil.scss']
 })
-export class MiPerfilComponent {
+export class MiPerfilComponent implements OnInit { // <-- 2. Le agregamos "implements OnInit"
   private fb = inject(FormBuilder);
   private usersService = inject(UsersService);
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService);
+  private seoService = inject(SeoService);
 
   readonly icons = { Lock, ShieldCheck, User };
   isLoading = false;
@@ -31,6 +33,10 @@ export class MiPerfilComponent {
       Validators.pattern(/^(?=.*[A-Z])(?=.*\d).*$/)
     ]]
   });
+
+  ngOnInit(): void {
+    this.seoService.bloquearIndexacion();
+  }
 
   cambiarPassword() {
     if (this.passwordForm.invalid) {

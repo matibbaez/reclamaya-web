@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } 
 import { UsersService, IUser } from '../../services/users.service';
 import { NotificacionService } from '../../services/notificacion';
 import { AuthService } from '../../services/auth.service';
+import { SeoService } from '../../services/seo.service';
 import Swal from 'sweetalert2';
 
 // Iconos Lucide
@@ -18,6 +19,7 @@ import { LucideAngularModule, Search, UserPlus, Trash2, CheckCircle, Users, Cloc
 })
 export class MiEquipoComponent implements OnInit {
 
+  private seoService = inject(SeoService);
   private usersService = inject(UsersService);
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService); 
@@ -53,6 +55,7 @@ export class MiEquipoComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.seoService.bloquearIndexacion();
     this.cargarDatos();
   }
 

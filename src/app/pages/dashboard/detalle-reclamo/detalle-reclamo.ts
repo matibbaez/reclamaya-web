@@ -16,6 +16,7 @@ import {
 } from 'lucide-angular';
 
 /* Services */
+import { SeoService } from '../../../services/seo.service';
 import { ReclamosService, IReclamo } from '../../../services/reclamos.service';
 import { NotificacionService } from '../../../services/notificacion';
 import { AuthService } from '../../../services/auth.service';
@@ -46,6 +47,7 @@ export class DetalleReclamoComponent implements OnInit {
   private usersService = inject(UsersService);
   private notificacionService = inject(NotificacionService);
   public authService = inject(AuthService);
+  private seoService = inject(SeoService);
 
   // --- VARIABLES DE MENSAJES ---
   tabActual: 'publico' | 'interno' = 'publico'; 
@@ -85,6 +87,7 @@ export class DetalleReclamoComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.seoService.bloquearIndexacion();
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) { this.volver(); return; }
 
