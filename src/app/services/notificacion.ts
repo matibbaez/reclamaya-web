@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core'; // <-- 1. AGREGAR PLATFORM_ID e inject
+import { isPlatformBrowser } from '@angular/common'; // <-- 2. AGREGAR isPlatformBrowser
 import { BehaviorSubject } from 'rxjs';
 
 export interface Notificacion {
@@ -15,8 +16,9 @@ export class NotificacionService {
 
   private notificacionesSubject = new BehaviorSubject<Notificacion[]>([]);
   public notificaciones$ = this.notificacionesSubject.asObservable();
-
   private idCounter = 0;
+  
+  private platformId = inject(PLATFORM_ID); // <-- 3. INYECTAMOS EL ESCUDO
 
   constructor() { }
 
@@ -39,13 +41,16 @@ export class NotificacionService {
     const notificacionesActuales = [...this.notificacionesSubject.value, nuevaNotificacion];
     this.notificacionesSubject.next(notificacionesActuales);
 
-    setTimeout(() => {
-      this.setFadeOut(id);
-    }, 4000); 
+    // 🔥 4. ESCUDO: Solo corremos los setTimeout en el navegador
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.setFadeOut(id);
+      }, 4000); 
 
-    setTimeout(() => {
-      this.removerNotificacion(id);
-    }, 4500);
+      setTimeout(() => {
+        this.removerNotificacion(id);
+      }, 4500);
+    }
   }
 
   private setFadeOut(id: number) {

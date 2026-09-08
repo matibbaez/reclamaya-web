@@ -1,6 +1,11 @@
 User-agent: *
 Allow: /
-Disallow: /panel
-Disallow: /expedientes
+ 
+Disallow: /admin-dashboard
+Disallow: /mi-perfil
 Disallow: /mi-equipo
 Disallow: /mis-referidos
+Disallow: /reclamo
+Disallow: /cuenta-pendiente
+ 
+Sitemap: https://reclamaya.ar/sitemap.xml

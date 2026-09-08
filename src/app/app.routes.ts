@@ -1,94 +1,81 @@
 import { Routes } from '@angular/router';
-import { InicioComponent } from './pages/inicio/inicio';
-import { IniciarReclamoComponent } from './pages/iniciar-reclamo/iniciar-reclamo';
-import { ConsultarTramiteComponent } from './pages/consultar-tramite/consultar-tramite';
-import { LoginComponent } from './pages/login/login';
-import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard';
-import { MiEquipoComponent } from './pages/mi-equipo/mi-equipo';
-import { ExitoComponent } from './pages/exito/exito';
-import { CuentaPendienteComponent } from './pages/cuenta-pendiente/cuenta-pendiente';
-import { MisReferidosComponent } from './pages/dashboard/mis-referidos/mis-referidos';
-import { DetalleReclamoComponent } from './pages/dashboard/detalle-reclamo/detalle-reclamo';
-import { LegalesComponent } from './pages/legales/legales';
 import { authGuard } from './auth/auth-guard';
 import { adminGuard } from './auth/admin.guard';
-import { LandingProductoresComponent } from './pages/landing-productores/landing-productores';
-
-// 👇 IMPORTAMOS EL NUEVO COMPONENTE
-import { MiPerfilComponent } from './pages/mi-perfil/mi-perfil';
 
 export const routes: Routes = [
   { 
     path: '', 
-    component: InicioComponent, 
+    loadComponent: () => import('./pages/inicio/inicio').then(m => m.InicioComponent),
     pathMatch: 'full',
     data: { animation: 'InicioPage' }
   },
   { 
     path: 'iniciar-reclamo', 
-    component: IniciarReclamoComponent,
+    loadComponent: () => import('./pages/iniciar-reclamo/iniciar-reclamo').then(m => m.IniciarReclamoComponent),
     data: { animation: 'IniciarPage' } 
   },
   { 
     path: 'consultar-tramite', 
-    component: ConsultarTramiteComponent,
+    loadComponent: () => import('./pages/consultar-tramite/consultar-tramite').then(m => m.ConsultarTramiteComponent),
     data: { animation: 'ConsultarPage' } 
   },
   { 
     path: 'login', 
-    component: LoginComponent,
+    loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent),
     data: { animation: 'LoginPage' } 
   },
   { 
     path: 'admin-dashboard', 
-    component: AdminDashboardComponent, 
+    loadComponent: () => import('./pages/admin-dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
     canActivate: [adminGuard], 
     data: { animation: 'AdminPage' } 
   },
-
   { 
     path: 'mi-equipo', 
-    component: MiEquipoComponent, 
+    loadComponent: () => import('./pages/mi-equipo/mi-equipo').then(m => m.MiEquipoComponent),
     canActivate: [adminGuard], 
   },
-  
-  // 👇 AGREGAMOS LA RUTA DE PERFIL PROTEGIDA
   { 
     path: 'mi-perfil', 
-    component: MiPerfilComponent, 
+    loadComponent: () => import('./pages/mi-perfil/mi-perfil').then(m => m.MiPerfilComponent),
     canActivate: [authGuard], 
     data: { animation: 'PerfilPage' } 
   },
-  
   { 
     path: 'reclamo/:id', 
-    component: DetalleReclamoComponent,
+    loadComponent: () => import('./pages/dashboard/detalle-reclamo/detalle-reclamo').then(m => m.DetalleReclamoComponent),
     canActivate: [authGuard], 
     data: { animation: 'DetallePage' } 
   },
-
   { 
     path: 'mis-referidos', 
-    component: MisReferidosComponent, 
+    loadComponent: () => import('./pages/dashboard/mis-referidos/mis-referidos').then(m => m.MisReferidosComponent),
     canActivate: [authGuard], 
     data: { animation: 'ReferidosPage' } 
   },
   { 
     path: 'exito', 
-    component: ExitoComponent,
+    loadComponent: () => import('./pages/exito/exito').then(m => m.ExitoComponent),
     data: { animation: 'ExitoPage' } 
   },
-
-  { path: 'legales', component: LegalesComponent },
-
-  // app.routes.ts
-  { path: 'productores', component: LandingProductoresComponent }, 
-
+  { 
+    path: 'legales', 
+    loadComponent: () => import('./pages/legales/legales').then(m => m.LegalesComponent) 
+  },
+  { 
+    path: 'productores', 
+    loadComponent: () => import('./pages/landing-productores/landing-productores').then(m => m.LandingProductoresComponent) 
+  },
+  { 
+    path: 'landing-productores', 
+    loadComponent: () => import('./pages/landing-productores/landing-productores').then(m => m.LandingProductoresComponent) 
+  },
   { 
     path: 'cuenta-pendiente', 
-    component: CuentaPendienteComponent,
+    loadComponent: () => import('./pages/cuenta-pendiente/cuenta-pendiente').then(m => m.CuentaPendienteComponent),
     data: { animation: 'PendientePage' } 
   },
-  
+  { path: 'inicio', redirectTo: '', pathMatch: 'full' },
+  { path: 'landing-productores', redirectTo: 'productores', pathMatch: 'full' },
   { path: '**', redirectTo: '' } 
 ];

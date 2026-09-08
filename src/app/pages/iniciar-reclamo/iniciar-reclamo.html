@@ -1064,14 +1064,17 @@
               <p style="position: absolute; top: -12px; left: 20px; background: white; padding: 0 10px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
                   Tu Firma Aquí 👇
               </p>
-              <app-ui-signature #firmaPad (firmaHecha)="onFirmaRealizada()"></app-ui-signature>
+              
+              @if (isBrowser) {
+                  <app-ui-signature #firmaPad (firmaHecha)="onFirmaRealizada()"></app-ui-signature>
+              }
           </div>
           
           <p *ngIf="errorFirma" style="color: #ef4444; text-align: center; margin-top: 1rem; font-weight: 600; background: #fee2e2; padding: 0.5rem; border-radius: 6px;">
               ⚠ Es obligatorio firmar para aceptar los términos y continuar.
           </p>
 
-      </div>
+        </div>
 
         <div class="buttons-row">
             <button class="btn-secondary" (click)="editarDatos()">

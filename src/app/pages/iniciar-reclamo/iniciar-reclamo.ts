@@ -1,25 +1,29 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, ViewChild, PLATFORM_ID } from '@angular/core'; // <-- 1. PLATFORM_ID
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- 2. isPlatformBrowser
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { TerminosModalComponent } from '../../components/terminos-modal/terminos-modal';
 import { ReclamosService } from '../../services/reclamos.service';
 import { NotificacionService } from '../../services/notificacion';
 import { ImageCompressService } from '../../services/image-compress.service';
-import { UiSignatureComponent } from '../../components/ui-signature/ui-signature';
-import { AuthService } from '../../services/auth.service'; // <-- 1. IMPORTAMOS EL AUTH SERVICE
-import { SeoService } from '../../services/seo.service'; // <-- AGREGAR ESTE IMPORT
+import { UiSignatureComponent } from '../../components/ui-signature/ui-signature'; // <-- DESCOMENTADO
+import { AuthService } from '../../services/auth.service'; 
+import { SeoService } from '../../services/seo.service'; 
 
 @Component({
   selector: 'app-iniciar-reclamo',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, TerminosModalComponent, UiSignatureComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TerminosModalComponent, UiSignatureComponent], // <-- DESCOMENTADO
   templateUrl: './iniciar-reclamo.html',
   styleUrl: './iniciar-reclamo.scss'
 })
 export class IniciarReclamoComponent implements OnInit {
 
-  @ViewChild('firmaPad') firmaPad!: UiSignatureComponent;
+  // 🔥 3. LA CAPA DE INVISIBILIDAD
+  private platformId = inject(PLATFORM_ID);
+  public isBrowser = isPlatformBrowser(this.platformId);
+
+  @ViewChild('firmaPad') firmaPad!: UiSignatureComponent; // <-- DESCOMENTADO
   errorFirma = false;
   
   private fb = inject(FormBuilder);
@@ -28,13 +32,13 @@ export class IniciarReclamoComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private notificacionService = inject(NotificacionService);
   private imageCompressService = inject(ImageCompressService);
-  private authService = inject(AuthService); // <-- 2. INYECTAMOS EL AUTH SERVICE
-  private seoService = inject(SeoService); // <-- INYECTAMOS EL SEO SERVICE
+  private authService = inject(AuthService); 
+  private seoService = inject(SeoService); 
 
   docActivo: 'poder' | 'honorarios' | 'no_seguro' = 'poder';
   mostrarTerminos = true; 
   isLoading = false;
-  isCompressing = false; // Nuevo estado para compresión de imágenes
+  isCompressing = false; 
   pasoActual = 0; 
   
   provincias = [
@@ -60,62 +64,51 @@ export class IniciarReclamoComponent implements OnInit {
 
   reclamoForm = this.fb.group({
     codigo_ref: [''],
-    
-    // --- DATOS PERSONALES ---
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(this.nombrePattern), this.noWhitespaceValidator]],
     dni: ['', [Validators.required, Validators.pattern(this.dniPattern)]],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.pattern(this.telPattern)]],
     domicilio_usuario: ['', [Validators.required, this.noWhitespaceValidator]],
-    cbu: ['', [Validators.pattern(this.cbuPattern)]], // Ahora es requerido dinámicamente según archivo, pero validamos formato si escriben
-
-    // --- DATOS SINIESTRO ---
+    cbu: ['', [Validators.pattern(this.cbuPattern)]],
     rol_victima: ['', Validators.required],
     tiene_seguro: [true], 
     hizo_denuncia: [false],
     sufrio_lesiones: [false], 
     in_itinere: [false],
     posee_art: [false],
-
     fecha_hecho: ['', [Validators.required, this.fechaValidator]], 
     hora_hecho: ['', Validators.required],
     lugar_hecho: ['', [Validators.required, Validators.minLength(5), this.noWhitespaceValidator]],
     localidad: ['', [Validators.required, Validators.minLength(4), this.noWhitespaceValidator]],
     provincia: ['', Validators.required],
     relato_hecho: [''], 
-    
     intervino_policia: [false],
     intervino_ambulancia: [false],
     patente_propia: ['', [Validators.pattern(this.patentePattern)]], 
-
-    // --- TERCERO ---
     aseguradora_tercero: ['', Validators.required],
     patente_tercero: ['', [Validators.pattern(this.patentePattern)]],
     tercero_nombre: [''],
     tercero_apellido: [''],
     tercero_dni: [''],
     tercero_marca_modelo: [''],
-
-    // --- ARCHIVOS (Null o Array<File>) ---
-    fileDNI: [null],           // Múltiple
-    fileLicencia: [null],      // Múltiple
-    fileCedula: [null],        // Múltiple
-    fileFotos: [null],         // Múltiple
-    fileComplementaria: [null],// Múltiple (NUEVO)
-    
-    fileSeguro: [null],        // Único
-    fileDenuncia: [null],      // Único
-    filePresupuesto: [null],   // Único
-    fileMedicos: [null],       // Único
-    fileCBU: [null],           // Único
-    fileDenunciaPenal: [null]  // Único
+    fileDNI: [null], 
+    fileLicencia: [null], 
+    fileCedula: [null], 
+    fileFotos: [null], 
+    fileComplementaria: [null],
+    fileSeguro: [null], 
+    fileDenuncia: [null], 
+    filePresupuesto: [null], 
+    fileMedicos: [null], 
+    fileCBU: [null], 
+    fileDenunciaPenal: [null] 
   });
 
   ngOnInit(): void {
     this.seoService.actualizarMetaTags({
       title: 'Iniciar Reclamo | ReclamaYa',
       description: 'Iniciá tu reclamo de forma 100% online y gratuita. Completá el formulario, adjuntá la documentación y seguí tu expediente.',
-      ogImage: 'https://reclamaya.ar/logo-seo.png', // Usando la imagen raíz que me confirmaste
+      ogImage: 'https://reclamaya.ar/logo-seo.png', 
       ogUrl: 'https://reclamaya.ar/iniciar-reclamo'
     });
 
@@ -145,12 +138,9 @@ export class IniciarReclamoComponent implements OnInit {
     });
   }
 
-  // <-- 3. AGREGAMOS EL GETTER PARA SABER SI ESTÁ LOGUEADO
   get noRequiereFirma(): boolean {
     return this.authService.isAuthenticated(); 
   }
-
-  // --- GETTERS DE TEXTOS LEGALES ---
 
   get textoPoder(): string {
     return `SE PRESENTA – DESIGNA LETRADO – CONSTITUYE DOMICILIO
@@ -186,7 +176,6 @@ export class IniciarReclamoComponent implements OnInit {
       "${this.v.relato_hecho || 'No especificado'}"`;
   }
 
-  // --- VALIDATORS HELPERS ---
   onFirmaRealizada() { this.errorFirma = false; }
 
   noWhitespaceValidator(control: AbstractControl): ValidationErrors | null {
@@ -199,7 +188,7 @@ export class IniciarReclamoComponent implements OnInit {
     const fecha = new Date(control.value);
     const hoy = new Date();
     const limitePasado = new Date();
-    limitePasado.setFullYear(hoy.getFullYear() - 3); // 3 años prescripción
+    limitePasado.setFullYear(hoy.getFullYear() - 3); 
     if (fecha > hoy) return { futuro: true };
     if (fecha < limitePasado) return { prescripto: true };
     return null;
@@ -208,7 +197,6 @@ export class IniciarReclamoComponent implements OnInit {
   get f() { return this.reclamoForm.controls; }
   get v() { return this.reclamoForm.value; }
 
-  // --- NAVEGACIÓN Y STEPS ---
   aceptarTerminos() { this.mostrarTerminos = false; }
   cancelarTerminos() { this.router.navigate(['/']); }
 
@@ -221,12 +209,12 @@ export class IniciarReclamoComponent implements OnInit {
     }
     this.actualizarValidaciones(rol);
     this.pasoActual = 1;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' }); // <-- BLINDADO
   }
 
   volverAStep1() { 
     this.pasoActual = 0; 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' }); // <-- BLINDADO
   }
 
   avanzarAPaso2() {
@@ -254,17 +242,17 @@ export class IniciarReclamoComponent implements OnInit {
 
     if (errorEncontrado) {
       this.notificacionService.showError('Completá los campos obligatorios del Paso 1.');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     this.pasoActual = 2;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   volverAPaso1() {
     this.pasoActual = 1;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   irAConfirmacion() {
@@ -274,22 +262,20 @@ export class IniciarReclamoComponent implements OnInit {
       return;
     }
     
-    // Validar fotos SOLO si no es Peatón (Peatón las tiene opcionales en complementaria)
     if (!this.reclamoForm.get('fileFotos')?.value && this.esConductor) {
        this.notificacionService.showError('Las fotos del daño son obligatorias para vehículos.');
        return;
     }
 
     this.pasoActual = 3;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   editarDatos() {
     this.pasoActual = 1; 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // --- LOGICA TOGGLES ---
   get hizoDenuncia(): boolean { return this.reclamoForm.get('hizo_denuncia')?.value === true; }
   get esConductor(): boolean { return this.reclamoForm.get('rol_victima')?.value === 'Conductor'; }
   get tieneSeguro(): boolean { return this.reclamoForm.get('tiene_seguro')?.value === true; }
@@ -305,13 +291,11 @@ export class IniciarReclamoComponent implements OnInit {
     this.actualizarValidaciones(this.reclamoForm.get('rol_victima')?.value || 'Conductor');
   }
 
-  // --- ACTUALIZACIÓN DINÁMICA DE VALIDACIONES ---
   actualizarValidaciones(rol: string) {
     const c = this.reclamoForm.controls;
     const tieneSeguro = this.reclamoForm.get('tiene_seguro')?.value;
     const hizoDenuncia = this.reclamoForm.get('hizo_denuncia')?.value;
 
-    // 1. Campos a resetear validación
     const camposDinamicos = [
         'fecha_hecho', 'hora_hecho', 'lugar_hecho', 'localidad', 'provincia', 'relato_hecho',
         'patente_propia', 'patente_tercero', 
@@ -319,7 +303,6 @@ export class IniciarReclamoComponent implements OnInit {
         'tercero_nombre', 'tercero_apellido', 'tercero_dni', 'tercero_marca_modelo'
     ];
 
-    // Limpiamos validadores previos
     camposDinamicos.forEach(key => {
         // @ts-ignore
         c[key]?.clearValidators();
@@ -327,7 +310,6 @@ export class IniciarReclamoComponent implements OnInit {
         c[key]?.updateValueAndValidity({ emitEvent: false });
     });
 
-    // 2. Detalles del Siniestro (Si NO hizo denuncia en su seguro, estos datos son CRÍTICOS)
     if (!hizoDenuncia) {
        c.fecha_hecho.setValidators([Validators.required, this.fechaValidator]);
        c.hora_hecho.setValidators([Validators.required]);
@@ -337,18 +319,16 @@ export class IniciarReclamoComponent implements OnInit {
        c.relato_hecho.setValidators([Validators.required, Validators.minLength(20), this.noWhitespaceValidator]);
     }
 
-    // 3. Documentación y Datos según ROL
     c.fileDNI.setValidators([Validators.required]);
     c.fileCBU.setValidators([Validators.required]);
     c.patente_tercero.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
 
     if (rol === 'Conductor') {
-       // CONDUCTOR: Necesita todo lo del auto
        c.patente_propia.setValidators([Validators.required, Validators.pattern(this.patentePattern)]);
        c.fileLicencia.setValidators([Validators.required]);
        c.fileCedula.setValidators([Validators.required]);
        c.fileFotos.setValidators([Validators.required]); 
-       c.filePresupuesto.setValidators([Validators.required]); // Factura o Presupuesto
+       c.filePresupuesto.setValidators([Validators.required]); 
 
        if (tieneSeguro) {
            c.fileSeguro.setValidators([Validators.required]);
@@ -357,12 +337,9 @@ export class IniciarReclamoComponent implements OnInit {
            }
        }
     } else {
-       // PEATÓN / ACOMPAÑANTE / CICLISTA
-       // NO pide patente propia, ni licencia, ni cédula, ni fotos obligatorias (van en complementaria)
        c.fileMedicos.setValidators([Validators.required]);
     }
 
-    // 4. Datos del Tercero (Si no hay seguro propio o es peatón, necesitamos saber a quién reclamar sí o sí)
     if (!tieneSeguro || rol !== 'Conductor') {
         c.tercero_nombre.setValidators([Validators.required]);
         c.tercero_apellido.setValidators([Validators.required]);
@@ -370,12 +347,10 @@ export class IniciarReclamoComponent implements OnInit {
         c.tercero_marca_modelo.setValidators([Validators.required]);
     }
     
-    // Si marcó lesiones manualmente (aunque sea conductor)
     if (this.reclamoForm.get('sufrio_lesiones')?.value) {
         c.fileMedicos.setValidators([Validators.required]);
     }
 
-    // Aplicar cambios
     camposDinamicos.forEach(key => {
         // @ts-ignore
         c[key]?.updateValueAndValidity({ emitEvent: false });
@@ -384,38 +359,27 @@ export class IniciarReclamoComponent implements OnInit {
     this.reclamoForm.updateValueAndValidity();
   }
 
-  // --- MANEJO DE ARCHIVOS (Múltiples y Únicos) ---
   async onFileChange(event: any, controlName: string) {
     const input = event.target;
     if (!input.files || input.files.length === 0) return;
 
-    // 1. DEFINIR QUÉ CAMPOS SON MÚLTIPLES
-    // Antes solo eran unos pocos, ahora son TODOS los de documentación.
-    // Simplemente verificamos si NO es la firma (o podrías listar todos).
     const isMultiple = [
-        'fileFotos', 
-        'fileDNI', 'fileLicencia', 'fileCedula', 
-        'fileSeguro', 'fileDenuncia', 
-        'fileMedicos', 'filePresupuesto', 
-        'fileCBU', 'fileDenunciaPenal', 
-        'fileComplementaria'
+        'fileFotos', 'fileDNI', 'fileLicencia', 'fileCedula', 
+        'fileSeguro', 'fileDenuncia', 'fileMedicos', 'filePresupuesto', 
+        'fileCBU', 'fileDenunciaPenal', 'fileComplementaria'
     ].includes(controlName);
     
-    // 2. DEFINIR LÍMITES
-    let maxFiles = 4; // Límite estándar para documentos (DNI, Póliza, etc.)
+    let maxFiles = 4; 
     
     if (controlName === 'fileFotos') {
-        maxFiles = 7; // Excepción para fotos del daño
+        maxFiles = 7; 
     } 
-    // Nota: Eliminamos los "if" específicos de DNI/Licencia porque ahora todos caen en 4.
 
-    // 3. PROCESAR ARCHIVOS
     const newFiles = Array.from(input.files) as File[];
     this.isCompressing = true;
     this.isLoading = true; 
 
     try {
-      // 👇 SOLUCIÓN: Procesamos una por una (secuencial) en vez de todas juntas
       const compressedNewFiles: File[] = [];
       for (const file of newFiles) {
         const compressed = await this.imageCompressService.compressFile(file);
@@ -423,7 +387,6 @@ export class IniciarReclamoComponent implements OnInit {
       }
 
       if (isMultiple) {
-        // --- LÓGICA ACUMULATIVA (Para todos los documentos ahora) ---
         const currentVal = this.reclamoForm.get(controlName)?.value as any;
         let currentFiles: File[] = [];
 
@@ -433,17 +396,14 @@ export class IniciarReclamoComponent implements OnInit {
               : (Array.isArray(currentVal) ? currentVal : [currentVal]);
         }
         
-        // Validar Cantidad Total
         if (currentFiles.length + compressedNewFiles.length > maxFiles) {
             this.notificacionService.showError(`Máximo ${maxFiles} archivos permitidos para este campo.`);
-            // Opcional: Podrías agregar los que quepan, pero bloquear es más seguro.
         } else {
             const combinedFiles = [...currentFiles, ...compressedNewFiles];
             this.reclamoForm.patchValue({ [controlName]: combinedFiles as any });
         }
 
       } else {
-        // --- LÓGICA ARCHIVO ÚNICO (Por si queda alguno o futuro uso) ---
         if (newFiles.length > 1) {
             this.notificacionService.showError('Solo se permite un archivo para este campo.');
         }
@@ -462,36 +422,31 @@ export class IniciarReclamoComponent implements OnInit {
     }
   }
 
-  // Método genérico para borrar un archivo de un array
   borrarArchivo(controlName: string, index: number) {
      const currentVal = this.reclamoForm.get(controlName)?.value as any;
      
      if (currentVal) {
         let currentFiles: File[] = [];
         if (Array.isArray(currentVal)) {
-            currentFiles = [...currentVal]; // Clonar para mutar
+            currentFiles = [...currentVal]; 
         } else if (currentVal instanceof FileList) {
             currentFiles = Array.from(currentVal);
         } else {
-            // Era un archivo único, si borran index 0, se vacía
             this.reclamoForm.patchValue({ [controlName]: null });
             return;
         }
 
         currentFiles.splice(index, 1);
         
-        // Si queda vacío, ponemos null para que salte required si corresponde
         const newValue = currentFiles.length > 0 ? currentFiles : null;
         this.reclamoForm.patchValue({ [controlName]: newValue as any });
      }
   }
 
-  // Alias para compatibilidad con el HTML viejo si usa 'borrarFoto'
   borrarFoto(index: number) {
       this.borrarArchivo('fileFotos', index);
   }
 
-  // Helper para el HTML: Obtener lista de nombres para mostrar "tags"
   getFilesList(controlName: string): string[] {
       const files = this.reclamoForm.get(controlName)?.value as any;
       if (!files) return [];
@@ -503,7 +458,6 @@ export class IniciarReclamoComponent implements OnInit {
       return [];
   }
 
-  // Helper simple para mostrar nombre único (para inputs simples)
   getFileName(controlName: string): string {
      const list = this.getFilesList(controlName);
      if (list.length === 0) return '';
@@ -511,14 +465,12 @@ export class IniciarReclamoComponent implements OnInit {
      return `${list.length} archivos seleccionados`;
   }
   
-  // Getter específico para fotos (usado en tu HTML actual)
   get fotosList(): string[] {
       return this.getFilesList('fileFotos');
   }
 
-  // --- ENVÍO DEL FORMULARIO ---
+  // <-- DESCOMENTADO
   async confirmarConFirma() {
-    // <-- 4. EVITAMOS VALIDAR LA FIRMA SI NO ES REQUERIDA
     if (!this.noRequiereFirma && this.firmaPad.isEmpty()) {
       this.errorFirma = true;
       this.notificacionService.showError('Por favor, firme en el recuadro para continuar.');
@@ -529,40 +481,34 @@ export class IniciarReclamoComponent implements OnInit {
     const v = this.reclamoForm.value;
     const formData = new FormData();
 
-    // A. FIRMA <-- 5. SÓLO OBTENEMOS Y GUARDAMOS LA FIRMA SI ES NECESARIA
-    if (!this.noRequiereFirma) {
+    // 🔥 4. SÓLO BUSCAMOS EL BLOB SI ESTAMOS EN EL NAVEGADOR
+    if (!this.noRequiereFirma && this.isBrowser) {
       const firmaBlob = await this.firmaPad.getSignatureBlob();
       formData.append('fileFirma', firmaBlob, 'firma_digital.png'); 
     }
 
-    // B. DATOS TEXTO Y ARCHIVOS
     for (const key of Object.keys(v)) {
         // @ts-ignore
         const value = v[key];
 
-        if (!value) continue; // Skip null/undefined/empty
+        if (!value) continue; 
 
-        // Caso: Array de Archivos (Fotos, DNI, Licencia, Cedula, Complementaria)
         if (Array.isArray(value) && value.length > 0 && value[0] instanceof File) {
             value.forEach((file: File) => {
-                formData.append(key, file); // Multer recibe array con el mismo keyname
+                formData.append(key, file); 
             });
         }
-        // Caso: Archivo Único (Poliza, CBU, etc)
         else if (value instanceof File) {
             formData.append(key, value);
         }
-        // Caso: Booleanos
         else if (typeof value === 'boolean') {
              formData.append(key, String(value));
         }
-        // Caso: Textos / Números
         else {
              formData.append(key, String(value));
         }
     }
 
-    // C. ENVIAR
     this.reclamosService.crearReclamo(formData).subscribe({
       next: (res: any) => {
         this.isLoading = false;
@@ -570,7 +516,6 @@ export class IniciarReclamoComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        // Capturamos el mensaje que devuelve el backend
         const mensaje = err.error?.message || 'Error de conexión o datos inválidos.';
         this.notificacionService.showError(mensaje);
         console.error('Error detallado:', err);

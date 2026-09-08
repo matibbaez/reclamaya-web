@@ -168,7 +168,9 @@
     </div>
   </section>
 
-  <app-faq></app-faq>
+  @if (isBrowser) {
+    <app-faq></app-faq>
+  }
 
   <section class="producers-bridge">
     <div class="container">

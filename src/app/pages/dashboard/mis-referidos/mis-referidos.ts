@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core'; // <-- PLATFORM_ID
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- isPlatformBrowser
 import { RouterModule } from '@angular/router'; 
 import { jwtDecode } from 'jwt-decode';
 
@@ -31,6 +31,9 @@ export class MisReferidosComponent implements OnInit {
   private notificacionService = inject(NotificacionService);
   private usersService = inject(UsersService); 
   private seoService = inject(SeoService);
+
+  // 🔥 ESCUDO: necesario porque generarLinks() toca localStorage/window
+  private platformId = inject(PLATFORM_ID);
 
   // Iconos
   readonly icons = { 
@@ -107,6 +110,11 @@ export class MisReferidosComponent implements OnInit {
   }
 
   generarLinks() {
+    // 🔥 ESCUDO: sin esto, el server intenta leer localStorage/window
+    // durante un render en vivo de /mis-referidos y explota (igual que
+    // pasó con el prerender antes de blindar el resto de los servicios).
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const tokenRaw = localStorage.getItem('access_token');
     if (!tokenRaw) return;
 

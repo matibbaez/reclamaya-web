@@ -1,15 +1,21 @@
-import { Injectable } from '@angular/core';
-import imageCompression from 'browser-image-compression';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common'; // 👈 IMPORTAMOS EL ESCUDO
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageCompressService {
+  private platformId = inject(PLATFORM_ID); // 👈 INYECTAMOS EL ESCUDO
 
   constructor() { }
 
   async compressFile(file: File): Promise<File> {
-    // Si no es imagen (ej: PDF), devolvemos el archivo original sin tocar
+    // 🔥 1. ESCUDO NODE.JS: Si esto corre en el servidor (durante el build), ignoramos todo
+    if (!isPlatformBrowser(this.platformId)) {
+      return file;
+    }
+
+    // 2. Si no es imagen (ej: PDF), devolvemos el archivo original sin tocar
     if (!file.type.startsWith('image/')) {
       return file;
     }
@@ -22,6 +28,9 @@ export class ImageCompressService {
     };
 
     try {
+      // ✅ 3. IMPORTACIÓN DINÁMICA: Node.js nunca lee esta línea, solo el navegador
+      const imageCompression = (await import('browser-image-compression')).default;
+      
       const compressedFile = await imageCompression(file, options);
       
       // La librería devuelve un Blob, lo convertimos a File para mantener el nombre original

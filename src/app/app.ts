@@ -1,55 +1,41 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router'; // IMPORTAR ROUTER
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common'; // <-- EL ESCUDO
+import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar';
-import { CommonModule } from '@angular/common';
-import { NotificacionComponent } from './components/notificacion/notificacion';
 import { FooterComponent } from './components/footer/footer';
-import { NotificacionService } from './services/notificacion';
-import { fadeAnimation } from './animations';
-import Lenis from 'lenis';
-import { filter } from 'rxjs/operators'; // IMPORTAR FILTER
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet, 
-    NavbarComponent, 
-    CommonModule, 
-    NotificacionComponent,
-    FooterComponent 
-  ],
-  templateUrl: './app.html',
-  styleUrl: './app.scss',
-  animations: [fadeAnimation]
+  imports: [RouterOutlet, NavbarComponent, FooterComponent],
+  template: `
+    <app-navbar></app-navbar>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
+  `
 })
 export class AppComponent implements OnInit {
-  public notificacionService = inject(NotificacionService);
-  private router = inject(Router); // INYECTAMOS EL ROUTER
-
-  prepareRoute(outlet: RouterOutlet) {
-    return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
-  }
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
-    // 1. Configuración de Lenis
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
+    // 🔥 BLOQUEAMOS EL BUCLE INFINITO EN EL SERVIDOR
+    if (isPlatformBrowser(this.platformId)) {
+      
+      // 👇 1. LE DECIMOS A TYPESCRIPT QUE IGNORE EL ERROR DE TIPOS
+      // @ts-ignore
+      import('lenis').then(module => {
+        
+        // Dependiendo de la versión de Lenis, puede venir en default o directo
+        const Lenis = module.default;
+        const lenis = new Lenis();
 
-    // 2. Loop de animación
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
+        function raf(time: any) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+      }).catch(err => console.error('Error cargando Lenis:', err));
+      
     }
-    requestAnimationFrame(raf);
-
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd) 
-    ).subscribe(() => {
-      lenis.scrollTo(0, { immediate: false });
-    });
   }
 }

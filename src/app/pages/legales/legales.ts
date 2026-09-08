@@ -1,8 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core'; // <-- 1. Agregamos OnInit e inject
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core'; 
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- Agregamos isPlatformBrowser
 import { NavbarComponent } from '../../components/navbar/navbar'; 
 import { FooterComponent } from '../../components/footer/footer'; 
-import { SeoService } from '../../services/seo.service'; // <-- 2. Importamos el servicio
+import { SeoService } from '../../services/seo.service'; 
 
 @Component({
   selector: 'app-legales',
@@ -11,13 +11,13 @@ import { SeoService } from '../../services/seo.service'; // <-- 2. Importamos el
   templateUrl: './legales.html',
   styleUrls: ['./legales.scss']
 })
-export class LegalesComponent implements OnInit { // <-- 3. Implementamos OnInit
+export class LegalesComponent implements OnInit { 
 
-  private seoService = inject(SeoService); // <-- 4. Inyectamos el servicio
+  private seoService = inject(SeoService); 
+  private platformId = inject(PLATFORM_ID); // 🛡️ ESCUDO
 
   activeTab: 'terminos' | 'privacidad' = 'terminos';
 
-  // 👇 5. Configuramos los metadatos al inicializar
   ngOnInit(): void {
     this.seoService.actualizarMetaTags({
       title: 'Términos y Privacidad | ReclamaYa',
@@ -29,6 +29,10 @@ export class LegalesComponent implements OnInit { // <-- 3. Implementamos OnInit
 
   setTab(tab: 'terminos' | 'privacidad') {
     this.activeTab = tab;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // 🛡️ BLINDAMOS EL SCROLL
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }

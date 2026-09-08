@@ -1,11 +1,11 @@
-import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideHttpClient, withInterceptors } from '@angular/common/http'; 
-import { provideRouter, withInMemoryScrolling, withRouterConfig } from '@angular/router';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http'; 
+import { provideRouter } from '@angular/router';
+
+// 🔥 1. CAMBIAMOS EL IMPORT AL ASÍNCRONO
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { routes } from './app.routes';
-import { jwtInterceptor } from './auth/jwt-interceptor';
-
 import { registerLocaleData } from '@angular/common';
 import localeEsAr from '@angular/common/locales/es-AR';
 
@@ -13,23 +13,13 @@ registerLocaleData(localeEsAr);
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient(),
     
-    provideRouter(routes, 
-      withInMemoryScrolling({
-        scrollPositionRestoration: 'disabled', 
-        anchorScrolling: 'enabled',      
-      }), 
-      withRouterConfig({ onSameUrlNavigation: 'reload' })
-    ),
+    // 🔥 2. USAMOS LA VERSIÓN ASÍNCRONA PARA NO COLGAR A NODE.JS
+    provideAnimationsAsync(),
     
-    provideHttpClient(
-      withInterceptors([jwtInterceptor])
-    ),
-    
-    provideAnimations(),
-
     { provide: LOCALE_ID, useValue: 'es-AR' }
   ]
 };

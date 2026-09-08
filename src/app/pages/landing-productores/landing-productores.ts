@@ -1,7 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core'; // <-- 1. Agregamos OnInit e inject
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core'; // <-- 1. Agregamos PLATFORM_ID
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- 2. Agregamos isPlatformBrowser
 import { RouterModule } from '@angular/router';
-import { SeoService } from '../../services/seo.service'; // <-- 2. Importamos el servicio
+import { SeoService } from '../../services/seo.service'; 
 import { 
   LucideAngularModule, 
   Zap, 
@@ -23,11 +23,14 @@ import { FooterComponent } from '../../components/footer/footer';
   templateUrl: './landing-productores.html',
   styleUrls: ['./landing-productores.scss']
 })
-export class LandingProductoresComponent implements OnInit { // <-- 3. Implementamos OnInit
+export class LandingProductoresComponent implements OnInit { 
 
-  private seoService = inject(SeoService); // <-- 4. Inyectamos el servicio
+  private seoService = inject(SeoService); 
+  
+  // 🔥 3. LA CAPA DE INVISIBILIDAD
+  private platformId = inject(PLATFORM_ID);
+  public isBrowser = isPlatformBrowser(this.platformId);
 
-  // Añadir Menu al objeto de iconos
   readonly icons = { 
     Zap, 
     Shield, 
@@ -39,13 +42,14 @@ export class LandingProductoresComponent implements OnInit { // <-- 3. Implement
     Menu 
   };
 
-  // 👇 5. Metadatos al cargar
   ngOnInit(): void {
     this.seoService.actualizarMetaTags({
       title: 'Productores | ReclamaYa',
       description: 'Sumate como productor y gestioná los reclamos de tus clientes sin adelantos. Trazabilidad total para que tu cliente vea el estado en línea.',
       ogImage: 'https://reclamaya.ar/logo-seo.png',
-      ogUrl: 'https://reclamaya.ar/landing-productores'
+      // 🔧 FIX: coincide con la ruta real prerenderizada (/productores),
+      // antes decía /landing-productores, que en el sitio es solo un alias/redirect.
+      ogUrl: 'https://reclamaya.ar/productores'
     });
   }
 }

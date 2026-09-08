@@ -1,8 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core'; // <-- 1. Agregamos OnInit e inject
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core'; // <-- 1. Agregamos PLATFORM_ID
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // <-- 2. Agregamos isPlatformBrowser
 import { RouterModule } from '@angular/router';
 import { FaqComponent } from '../../components/faq/faq';
-import { SeoService } from '../../services/seo.service'; // <-- 2. Importamos el servicio
+import { SeoService } from '../../services/seo.service'; 
 
 @Component({
   selector: 'app-inicio',
@@ -11,11 +11,14 @@ import { SeoService } from '../../services/seo.service'; // <-- 2. Importamos el
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })
-export class InicioComponent implements OnInit { // <-- 3. Implementamos OnInit
+export class InicioComponent implements OnInit { 
 
-  private seoService = inject(SeoService); // <-- 4. Inyectamos el servicio
+  private seoService = inject(SeoService);
+  
+  // 🔥 3. LA CAPA DE INVISIBILIDAD
+  private platformId = inject(PLATFORM_ID);
+  public isBrowser = isPlatformBrowser(this.platformId);
 
-  // 👇 5. Configuramos los metadatos al inicializar
   ngOnInit(): void {
     this.seoService.actualizarMetaTags({
       title: 'ReclamaYa | Gestión de Siniestros',

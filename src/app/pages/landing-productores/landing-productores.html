@@ -40,14 +40,24 @@
           </div>
           <div class="card-body">
             <div class="stat-row">
-              <div class="icon-box-mini blue"><lucide-icon [img]="icons.Zap" size="18"></lucide-icon></div>
+              <div class="icon-box-mini blue">
+                <!-- 🔥 ESCUDO EN EL ÍCONO -->
+                @if (isBrowser) {
+                  <lucide-icon [img]="icons.Zap" size="18"></lucide-icon>
+                }
+              </div>
               <div>
                 <strong>Sin adelantos</strong>
                 <span>El productor no pone plata</span>
               </div>
             </div>
             <div class="stat-row">
-              <div class="icon-box-mini purple"><lucide-icon [img]="icons.Users" size="18"></lucide-icon></div>
+              <div class="icon-box-mini purple">
+                <!-- 🔥 ESCUDO EN EL ÍCONO -->
+                @if (isBrowser) {
+                  <lucide-icon [img]="icons.Users" size="18"></lucide-icon>
+                }
+              </div>
               <div>
                 <strong>Trazabilidad</strong>
                 <span>Tu cliente ve el estado</span>
@@ -71,19 +81,34 @@
 
       <div class="features-grid">
         <div class="feature-card-light">
-          <div class="icon-circle orange"><lucide-icon [img]="icons.Shield" size="24"></lucide-icon></div>
+          <div class="icon-circle orange">
+            <!-- 🔥 ESCUDO EN EL ÍCONO -->
+            @if (isBrowser) {
+              <lucide-icon [img]="icons.Shield" size="24"></lucide-icon>
+            }
+          </div>
           <h3>Delegación Total</h3>
           <p>Desde la denuncia administrativa hasta la mediación legal. Liberá tu tiempo operativo.</p>
         </div>
 
         <div class="feature-card-light">
-          <div class="icon-circle blue"><lucide-icon [img]="icons.BarChart3" size="24"></lucide-icon></div>
+          <div class="icon-circle blue">
+            <!-- 🔥 ESCUDO EN EL ÍCONO -->
+            @if (isBrowser) {
+              <lucide-icon [img]="icons.BarChart3" size="24"></lucide-icon>
+            }
+          </div>
           <h3>Panel en Tiempo Real</h3>
           <p>Accedé a tu dashboard exclusivo. Seguí el estado de cada caso minuto a minuto.</p>
         </div>
 
         <div class="feature-card-light">
-          <div class="icon-circle purple"><lucide-icon [img]="icons.Zap" size="24"></lucide-icon></div>
+          <div class="icon-circle purple">
+            <!-- 🔥 ESCUDO EN EL ÍCONO -->
+            @if (isBrowser) {
+              <lucide-icon [img]="icons.Zap" size="24"></lucide-icon>
+            }
+          </div>
           <h3>Tecnología + Derecho</h3>
           <p>Automatizamos la burocracia para acelerar los tiempos de cobro. Innovación aplicada.</p>
         </div>

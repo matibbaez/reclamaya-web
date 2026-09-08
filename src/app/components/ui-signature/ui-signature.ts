@@ -1,6 +1,6 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import SignaturePad from 'signature_pad';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, Output, EventEmitter, PLATFORM_ID, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import type SignaturePad from 'signature_pad'; // ✅ Importamos SOLO EL TIPO para TypeScript, esto no rompe Node
 
 @Component({
   selector: 'app-ui-signature',
@@ -28,89 +28,82 @@ import SignaturePad from 'signature_pad';
       height: 100%;
       display: block;
     }
-    .actions {
-      margin-top: 5px;
-      text-align: right;
-    }
-    .btn-clear {
-      background: #f8f9fa;
-      border: 1px solid #ddd;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
+    .actions { margin-top: 5px; text-align: right; }
+    .btn-clear { background: #f8f9fa; border: 1px solid #ddd; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
     .btn-clear:hover { background: #e2e6ea; }
   `]
 })
 export class UiSignatureComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
   private signaturePad!: SignaturePad;
+  private platformId = inject(PLATFORM_ID); // 👈 Escudo activado
   
-  // Emitimos evento cuando el usuario termina de trazar
   @Output() firmaHecha = new EventEmitter<void>();
 
-  ngAfterViewInit() {
-    this.initPad();
-    // Ajustar el tamaño del canvas al redimensionar ventana
-    window.addEventListener('resize', this.resizeCanvas.bind(this));
+  async ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      await this.initPad();
+      // Protegemos el objeto window
+      window.addEventListener('resize', this.resizeCanvas.bind(this));
+    }
   }
 
   ngOnDestroy() {
-    window.removeEventListener('resize', this.resizeCanvas.bind(this));
+    if (isPlatformBrowser(this.platformId)) {
+      // Protegemos el objeto window
+      window.removeEventListener('resize', this.resizeCanvas.bind(this));
+    }
   }
 
-  private initPad() {
+  private async initPad() {
+    // ✅ IMPORTACIÓN DINÁMICA DE LA LIBRERÍA
+    const SignaturePadClass = (await import('signature_pad')).default;
+    
     const canvas = this.canvasRef.nativeElement;
-    this.signaturePad = new SignaturePad(canvas, {
+    this.signaturePad = new SignaturePadClass(canvas, {
       backgroundColor: 'rgba(255, 255, 255, 0)',
       penColor: 'rgb(0, 0, 0)'
     });
     
-    // Ajuste inicial de tamaño
     this.resizeCanvas();
 
-    // Detectar cuando se dibuja
     this.signaturePad.addEventListener('endStroke', () => {
       this.firmaHecha.emit();
     });
   }
 
-  // Truco para que el canvas se vea nítido en pantallas retina/móviles
   private resizeCanvas() {
-    const canvas = this.canvasRef.nativeElement;
-    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    
-    // Obtenemos el ancho del contenedor padre
-    const width = canvas.offsetWidth * ratio;
-    const height = canvas.offsetHeight * ratio;
+    if (isPlatformBrowser(this.platformId)) {
+      const canvas = this.canvasRef.nativeElement;
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const width = canvas.offsetWidth * ratio;
+      const height = canvas.offsetHeight * ratio;
 
-    canvas.width = width;
-    canvas.height = height;
-    
-    // Escalamos el contexto
-    canvas.getContext('2d')?.scale(ratio, ratio);
-    
-    // Limpiamos al redimensionar (opcional, pero recomendado para evitar deformaciones)
-    this.signaturePad.clear(); 
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d')?.scale(ratio, ratio);
+      
+      if (this.signaturePad) {
+        this.signaturePad.clear(); 
+      }
+    }
   }
 
   clear() {
-    this.signaturePad.clear();
+    if (this.signaturePad) this.signaturePad.clear();
   }
 
   isEmpty(): boolean {
-    return this.signaturePad.isEmpty();
+    return this.signaturePad ? this.signaturePad.isEmpty() : true;
   }
 
-  // Devuelve la imagen en Base64 (PNG)
   getSignatureData(): string {
-    return this.signaturePad.toDataURL('image/png');
+    return this.signaturePad ? this.signaturePad.toDataURL('image/png') : '';
   }
   
-  // Convierte Base64 a Blob (para enviar al backend como archivo)
   getSignatureBlob(): Promise<Blob> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      if (!this.signaturePad) return reject('No hay pad inicializado');
       const dataURL = this.getSignatureData();
       fetch(dataURL)
         .then(res => res.blob())
