@@ -1,9 +1,12 @@
 import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http'; 
-import { provideRouter } from '@angular/router';
 
-// 🔥 1. CAMBIAMOS EL IMPORT AL ASÍNCRONO
+// 🔥 1. IMPORTAMOS withInterceptors
+import { provideHttpClient, withInterceptors } from '@angular/common/http'; 
+import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+// 🔥 2. IMPORTAMOS TU INTERCEPTOR (Verificá que la ruta sea correcta)
+import { jwtInterceptor } from './auth/jwt-interceptor'; 
 
 import { routes } from './app.routes';
 import { registerLocaleData } from '@angular/common';
@@ -15,9 +18,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
     
-    // 🔥 2. USAMOS LA VERSIÓN ASÍNCRONA PARA NO COLGAR A NODE.JS
+    // 🔥 3. CONECTAMOS EL INTERCEPTOR AL HTTP CLIENT
+    provideHttpClient(withInterceptors([jwtInterceptor])),
+    
     provideAnimationsAsync(),
     
     { provide: LOCALE_ID, useValue: 'es-AR' }
