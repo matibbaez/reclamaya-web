@@ -264,9 +264,7 @@
           <label class="section-label">Responsable</label>
           
           <div class="tramitador-card fade-in" *ngIf="!editandoTramitador() && r.tramitador">
-            <div class="tramitador-avatar">
-              {{ r.tramitador.nombre.charAt(0) }}
-            </div>
+            <div class="tramitador-avatar">{{ r.tramitador.nombre.charAt(0) }}</div>
             <div class="tramitador-info">
               <span class="name">{{ r.tramitador.nombre }}</span>
               <span class="badge">Tramitador</span>
@@ -297,7 +295,6 @@
         <div class="divider-dark"></div>
 
         <div class="control-section communication-panel">
-          
           <div class="tabs-header">
             <button class="tab-btn" 
                     [class.active]="tabActual === 'publico'"
@@ -312,9 +309,7 @@
           </div>
           
           <div class="tab-content" *ngIf="tabActual === 'publico'">
-            <div class="info-banner">
-              <small>Visible por el cliente en la web.</small>
-            </div>
+            <div class="info-banner"><small>Visible por el cliente en la web.</small></div>
 
             <div class="messages-feed" *ngIf="r.mensajes && r.mensajes.length > 0">
               <div class="msg-bubble" *ngFor="let msg of r.mensajes">
@@ -332,9 +327,9 @@
 
             <div class="new-message-area">
               <input type="text" 
-                     [(ngModel)]="observacionTexto" 
-                     placeholder="Mensaje para el cliente..." 
-                     (keyup.enter)="guardarObservacion()">
+                    [(ngModel)]="observacionTexto" 
+                    placeholder="Mensaje para el cliente..." 
+                    (keyup.enter)="guardarObservacion()">
               <button class="btn-send" (click)="guardarObservacion()" [disabled]="guardandoObservacion">
                 <lucide-icon [img]="icons.Send" size="18"></lucide-icon>
               </button>
@@ -342,9 +337,7 @@
           </div>
 
           <div class="tab-content internal-mode" *ngIf="tabActual === 'interno'">
-            <div class="info-banner warning">
-              <small>🔒 Solo visible por el equipo.</small>
-            </div>
+            <div class="info-banner warning"><small>🔒 Solo visible por el equipo.</small></div>
 
             <div class="messages-feed internal-feed" *ngIf="r.notas_internas && r.notas_internas.length > 0">
               <div class="msg-bubble internal" *ngFor="let nota of r.notas_internas">
@@ -362,15 +355,14 @@
 
             <div class="new-message-area internal">
               <input type="text" 
-                     [(ngModel)]="notaInternaTexto" 
-                     placeholder="Nota interna (no visible)..." 
-                     (keyup.enter)="guardarNotaInterna()">
+                    [(ngModel)]="notaInternaTexto" 
+                    placeholder="Nota interna (no visible)..." 
+                    (keyup.enter)="guardarNotaInterna()">
               <button class="btn-send internal" (click)="guardarNotaInterna()" [disabled]="guardandoNotaInterna">
                 <lucide-icon [img]="icons.Save" size="18"></lucide-icon>
               </button>
             </div>
           </div>
-
         </div>
 
         <div class="divider-dark"></div>
@@ -389,6 +381,31 @@
                     (click)="cambiarEstado('Rechazado')">
               <div class="dot"></div> Rechazar
             </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 👇 NUEVO: chat con el cliente, en modo lectura, para Productor/Organizador -->
+      <section class="card admin-panel" *ngIf="!(authService.esAdmin || authService.esTramitador) && (authService.esProductor || authService.esOrganizador)">
+        <div class="panel-header">
+          <h3><lucide-icon [img]="icons.Mail" size="20"></lucide-icon> Comunicación con el Estudio</h3>
+        </div>
+
+        <div class="control-section communication-panel">
+          <div class="tab-content">
+            <div class="messages-feed" *ngIf="r.mensajes && r.mensajes.length > 0">
+              <div class="msg-bubble" *ngFor="let msg of r.mensajes">
+                <div class="msg-meta">
+                  <span class="author">Estudio</span>
+                  <span class="date">{{ msg.fecha | date:'dd/MM HH:mm' }}</span>
+                </div>
+                <p class="msg-text">{{ msg.texto }}</p>
+              </div>
+            </div>
+
+            <div class="empty-feed" *ngIf="!r.mensajes || r.mensajes.length === 0">
+              <p>Todavía no hay novedades del estudio para este caso.</p>
+            </div>
           </div>
         </div>
       </section>
