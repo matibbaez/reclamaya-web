@@ -7,46 +7,35 @@ import { NotificacionService } from '../services/notificacion';
 import { AuthService } from '../services/auth.service';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  // 1. Inyectamos los servicios necesarios
   const router = inject(Router);
   const notificacionService = inject(NotificacionService);
   const authService = inject(AuthService);
-  const platformId = inject(PLATFORM_ID); // 👈 INYECTAMOS EL DETECTOR
+  const platformId = inject(PLATFORM_ID);
 
-  // 2. Buscamos el token SOLO si estamos en el navegador real
   let token = null;
   if (isPlatformBrowser(platformId)) {
     token = localStorage.getItem('access_token');
   }
 
-  // 3. Clonamos la petición si hay token
   let requestToForward = req;
   if (token) {
     requestToForward = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+      setHeaders: { Authorization: `Bearer ${token}` }
     });
   }
 
-  // 4. Enviamos la petición y atajamos la respuesta
+  // 👇 El login/register NUNCA deben disparar el "logout automático":
+  // un 401 ahí significa credenciales inválidas, no sesión vencida.
+  const esAuthPublico = req.url.includes('/auth/login') || req.url.includes('/auth/register');
+
   return next(requestToForward).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Si el backend nos patea con un 401
-      if (error.status === 401) {
+      if (error.status === 401 && !esAuthPublico) {
         console.warn('Interceptor: Token rechazado por el backend. Cerrando sesión...');
-        
-        // Limpiamos el localStorage y el estado del servicio
         authService.logout();
-        
-        // Le avisamos al usuario
         notificacionService.showError('Tu sesión ha expirado por seguridad. Por favor, volvé a ingresar.');
-        
-        // Lo mandamos al login
         router.navigate(['/login']);
       }
-
-      // Dejamos que el error siga su curso
       return throwError(() => error);
     })
   );
