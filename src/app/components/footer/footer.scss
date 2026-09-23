@@ -4,6 +4,7 @@ $accent: #f59e0b;
 $primary: #3b82f6;       
 
 .site-footer {
+  min-height: 350px; /* Fija la altura base para evitar saltos en PC */
   background-color: $bg-dark;
   color: rgba(255, 255, 255, 0.7);
   padding-top: 5rem;
@@ -123,7 +124,7 @@ $primary: #3b82f6;
 @media (max-width: 768px) {
   
   .site-footer {
-    /* 1. Reducimos mucho el padding superior */
+    min-height: 600px; /* Reserva el espacio para la versión apilada en mobile */
     padding-top: 3rem; 
   }
 

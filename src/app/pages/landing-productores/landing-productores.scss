@@ -34,28 +34,18 @@ $text-muted-dark: #64748b;
    ========================================= */
 .hero-section {
   position: relative;
-  padding: 8rem 0 6rem 0;
-  display: flex; align-items: center;
+  /* Padding superior grande para esquivar el navbar fijo */
+  padding: 180px 0 6rem 0;
+  min-height: 50vh;
+  display: flex; 
+  align-items: center;
   background-color: $bg-dark;
   text-align: left;
-
-  @media (max-width: 900px) {
-    padding: 7rem 0 5rem 0;
-    text-align: center;
-  }
-}
-
-.hero-section {
-  // position: relative;
-  padding-top: 180px; /* Espacio para que el contenido no quede debajo del navbar fijo en Desktop */
-  min-height: 50vh;
-  // display: flex;
-  // align-items: center;
   overflow: hidden;
 
-  /* 👇 AGREGA ESTO PARA MOBILE 👇 */
   @media (max-width: 900px) {
-    padding-top: 150px;
+    padding: 150px 0 5rem 0; /* Ajuste para el navbar mobile */
+    text-align: center;
   }
 }
 
