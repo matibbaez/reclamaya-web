@@ -73,8 +73,7 @@ export class MiEquipoComponent implements OnInit {
         
         this.isLoading = false;
       },
-      error: (err: any) => {
-        console.error(err);
+      error: () => {
         this.isLoading = false;
         this.notificacionService.showError('Error al cargar datos.');
       }
@@ -194,8 +193,7 @@ export class MiEquipoComponent implements OnInit {
             );
             this.notificacionService.showSuccess('Rol actualizado correctamente.');
           },
-          error: (err: any) => {
-            console.error(err);
+          error: () => {
             this.notificacionService.showError('Error al cambiar el rol.');
             selectElement.value = rolAnterior;
           }

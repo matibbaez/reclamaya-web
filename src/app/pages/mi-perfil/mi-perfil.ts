@@ -54,7 +54,6 @@ export class MiPerfilComponent implements OnInit { // <-- 2. Le agregamos "imple
         this.isLoading = false;
       },
       error: (err: any) => {
-        console.error(err);
         const msg = err.error?.message || 'Error al actualizar la contraseña.';
         this.notificacionService.showError(msg);
         this.isLoading = false;

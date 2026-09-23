@@ -412,8 +412,7 @@ export class IniciarReclamoComponent implements OnInit {
       
       this.reclamoForm.get(controlName)?.updateValueAndValidity();
 
-    } catch (e) {
-      console.error("Error procesando archivos", e);
+    } catch {
       this.notificacionService.showError('Error al procesar el archivo. Intente nuevamente.');
     } finally {
       this.isCompressing = false;
@@ -518,7 +517,6 @@ export class IniciarReclamoComponent implements OnInit {
         this.isLoading = false;
         const mensaje = err.error?.message || 'Error de conexión o datos inválidos.';
         this.notificacionService.showError(mensaje);
-        console.error('Error detallado:', err);
       }
     });
   }

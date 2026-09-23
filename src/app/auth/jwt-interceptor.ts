@@ -31,7 +31,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   return next(requestToForward).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && !esAuthPublico) {
-        console.warn('Interceptor: Token rechazado por el backend. Cerrando sesión...');
         authService.logout();
         notificacionService.showError('Tu sesión ha expirado por seguridad. Por favor, volvé a ingresar.');
         router.navigate(['/login']);

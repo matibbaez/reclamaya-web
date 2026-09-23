@@ -132,8 +132,8 @@ export class MisReferidosComponent implements OnInit {
             this.linkProductores = `${baseUrl}/login?ref=${userId}`;
         }
       } 
-    } catch (error) {
-      console.error('Error decodificando token:', error);
+    } catch {
+      // Si el token es inválido, simplemente no se generan links de invitación.
     }
   }
 

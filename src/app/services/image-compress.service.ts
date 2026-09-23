@@ -35,10 +35,8 @@ export class ImageCompressService {
       
       // La librería devuelve un Blob, lo convertimos a File para mantener el nombre original
       return new File([compressedFile], file.name, { type: compressedFile.type });
-    } catch (error) {
-      // Dejamos el error por si falla la librería, para poder debugear si un cliente se queja
-      console.error('Error al comprimir imagen:', error);
-      return file; // Ante la duda, devolvemos el original
+    } catch {
+      return file;
     }
   }
 }

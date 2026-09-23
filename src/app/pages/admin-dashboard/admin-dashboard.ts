@@ -150,9 +150,8 @@ export class AdminDashboardComponent implements OnInit {
             this.notificacionService.showSuccess('Reclamo eliminado correctamente.');
             this.cargarDatos(); // Volvemos a fetchear para que desaparezca la fila y se actualicen los KPIs
           },
-          error: (err) => {
+          error: () => {
             this.notificacionService.showError('Error al eliminar el reclamo.');
-            console.error(err);
           }
         });
       }

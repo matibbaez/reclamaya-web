@@ -16,19 +16,14 @@ export const authGuard: CanActivateFn = (route, state) => {
       
       // 3. Verificamos si la fecha de expiración (exp) ya pasó
       if (decoded.exp < currentTime) {
-        // ¡El token venció! Lo borramos y lo pateamos al Login
-        console.warn('AuthGuard: Token vencido, redirigiendo a /login');
         localStorage.removeItem('access_token');
         router.navigate(['/login']);
         return false;
       }
       
-      // ¡PERFECTO! Tiene el sello y todavía es válido. Dejalo pasar.
       return true; 
       
-    } catch (e) {
-      // Si el token está mal formado o hay un error al decodificar
-      console.error('AuthGuard: Error al decodificar token', e);
+    } catch {
       localStorage.removeItem('access_token');
       router.navigate(['/login']);
       return false;

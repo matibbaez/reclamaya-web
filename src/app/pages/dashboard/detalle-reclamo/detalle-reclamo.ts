@@ -133,7 +133,6 @@ export class DetalleReclamoComponent implements OnInit {
       },
       error: () => {
         this.cargandoFotos = false;
-        console.error('Error cargando galería');
       }
     });
   }

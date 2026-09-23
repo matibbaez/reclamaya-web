@@ -165,7 +165,6 @@ export class LoginComponent implements OnInit {
         },
         error: (err: any) => { 
           this.isLoading = false;
-          console.error(err);
           const mensaje = err.error?.message || 'Error al registrarse.';
           this.notificacionService.showError(mensaje);
         }

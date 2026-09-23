@@ -35,8 +35,8 @@ export class AuthService {
       if (token) {
         try {
           user = jwtDecode<User>(token);
-        } catch (error) {
-          console.error('Error al decodificar token inicial', error);
+        } catch {
+          // El token corrupto se limpia sin exponer el contenido del JWT ni detalles del error.
         }
       }
     }
@@ -64,8 +64,8 @@ export class AuthService {
     try {
       const user = jwtDecode<User>(token);
       this.currentUserSubject.next(user);
-    } catch (e) {
-      console.error('Error al decodificar al hacer setSession', e);
+    } catch {
+      // El JWT inválido se ignora sin registrar contenido sensible.
     }
   }
 

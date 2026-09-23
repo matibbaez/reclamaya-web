@@ -53,8 +53,7 @@ export class ExitoComponent implements OnInit {
           this.copiado = false;
         }, 2000);
 
-      }).catch(err => {
-        console.error('Error al copiar', err);
+      }).catch(() => {
         this.notificacionService.showError('No se pudo copiar el código');
       });
     }
